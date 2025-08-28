@@ -1260,6 +1260,7 @@ Per riconoscere `L'`, un automa deve:
 Questo processo richiede una memoria illimitata (la pila) e non determinismo.
 
 *   **Formalismo a Potenza Minima:** Il modello necessario è un **Automa a Pila Non Deterministico (NPDA)**. Il linguaggio `L'` è **libero dal contesto e non regolare**. La grammatica a potenza minima sarebbe una **Grammatica Libera dal Contesto (Context-Free Grammar)**.
+## Es 5
 
 
 # FUNZIONI CALCOLABILI(DECIDIBILI)
@@ -2042,7 +2043,7 @@ Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evide
 
 La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM4NTE4NzkyNiwtMTkzMzY3MzI3MywtNz
+eyJoaXN0b3J5IjpbMTI3NzYwODk0MywtMTkzMzY3MzI3MywtNz
 A5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3
 LDE2NzU4MDM3NjMsLTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMT
 Q0NDEwMjAxMSw0Nzg5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4
