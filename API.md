@@ -588,7 +588,72 @@ Il compito **non è fattibile** (è indecidibile). Non esiste un algoritmo gener
 
 **Conclusione (Punto 2):**
 Il compito **è fattibile** (è decidibile). A differenza dei programmi C, l'equivalenza degli automi a stati finiti può essere verificata automaticamente e in modo affidabile. Possiamo implementare uno degli algoritmi sopra descritti per confrontare l'automa di riferimento con quello generato e ottenere una risposta certa "Sì" o "No".
+## Es 3
+#### **1. Stabilire se ogni macchina di Turing il cui indice è pari e minore di 100 si arresta ricevendo in ingresso il proprio indice.**
 
+*   **Analisi del problema:** La domanda riguarda un insieme **finito e specifico** di macchine di Turing. Le macchine da controllare sono quelle con indice `i` appartenente a `{0, 2, 4, ..., 98}`. Sono esattamente 50 macchine. Per ciascuna di queste 50 macchine, la domanda "si arresta sul proprio indice?" (`f_i(i)` termina?) ha una risposta fissa e determinata: o "sì" o "no". Di conseguenza, la domanda complessiva "TUTTE queste 50 macchine si arrestano?" ha una sola risposta possibile, che è o "Vero" o "Falso".
+
+*   **Motivazione ("La domanda è chiusa"):** Il termine "domanda chiusa" significa che la risposta è un valore booleano costante (vero o falso), anche se non lo conosciamo a priori. Poiché la risposta è una costante, esiste un algoritmo che la decide:
+    *   Se la risposta vera è "Sì", allora l'algoritmo `return "Sì"` è un algoritmo corretto che termina sempre.
+    *   Se la risposta vera è "No", allora l'algoritmo `return "No"` è un algoritmo corretto che termina sempre.
+    Poiché un tale algoritmo esiste, il problema è, per definizione, **decidibile**.
+
+*   **Conclusione:**
+    *   **Decidibile? SÌ.** Il problema riguarda una verifica su un insieme finito di istanze.
+    *   **Semidecidibile? SÌ.** Ogni problema decidibile è anche semidecidibile.
+
+---
+
+#### **2. Stabilire se ogni macchina di Turing il cui indice è pari si arresta ricevendo in ingresso il proprio indice.**
+
+*   **Analisi del problema:** Qui la situazione cambia radicalmente. La domanda ora riguarda un insieme **infinito** di macchine di Turing: quelle con indice `i` in `{0, 2, 4, 6, ...}`. Non possiamo più controllarle una per una.
+
+*   **Motivazione:** Dobbiamo decidere la verità di un'affermazione universale (`∀`) su un insieme infinito di computazioni: `∀k ∈ N, f_{2k}(2k) termina`. Questo è un problema strettamente legato al Problema dell'Arresto, che è indecidibile.
+    *   **Perché non è decidibile?** Non esiste un algoritmo generale che possa prendere un indice `i` e determinare se `f_i(i)` termina. A maggior ragione, non esiste un algoritmo che possa farlo per un'infinità di indici.
+    *   **Perché non è semidecidibile?** Un algoritmo per semidecidere questo problema dovrebbe terminare e dire "Sì" se la proprietà è vera. Ma per verificare che *tutte* le infinite macchine si arrestino, l'algoritmo dovrebbe, in teoria, simularle tutte e vederle terminare, il che è impossibile. Non c'è un punto in cui ci si può fermare ed essere sicuri che non ci sia una macchina più avanti nell'enumerazione che non termini.
+    *   **Nota sulla soluzione fornita:** La motivazione "La domanda è ancora chiusa" qui è **scorretta o fuorviante**. Mentre per il punto 1 si applicava a un numero finito di casi, per un numero infinito di casi questo ragionamento non è più valido e porta a una conclusione errata. Questo problema è una variante del Problema della Totalità ed è **altamente indecidibile** (non è nemmeno semidecidibile).
+
+*   **Conclusione:**
+    *   **Decidibile? NO.** È un'affermazione universale su un insieme infinito di computazioni, riconducibile al Problema dell'Arresto.
+    *   **Semidecidibile? NO.** Per confermare la risposta "Sì", si dovrebbero verificare infinite computazioni.
+
+---
+
+#### **3. Stabilire se una generica macchina di Turing ha un indice pari.**
+
+*   **Analisi del problema:** L'input è una "generica macchina di Turing". Generalmente, questo significa che ci viene fornito il suo indice `i` (il suo numero di Gödel). Il problema è semplicemente: "Dato un numero `i`, `i` è pari?".
+
+*   **Motivazione:** Questo è un semplice problema aritmetico. L'algoritmo consiste nel calcolare `i mod 2` e verificare se il risultato è 0. Questo algoritmo è banale, termina sempre e dà la risposta corretta. La complessità della macchina di Turing associata a quell'indice è completamente irrilevante.
+
+*   **Conclusione:**
+    *   **Decidibile? SÌ.** Il problema si riduce a una semplice verifica di parità su un numero intero.
+    *   **Semidecidibile? SÌ.** Poiché è decidibile.
+
+---
+
+#### **4. Stabilire se una generica macchina di Turing restituisce un numero pari per almeno un ingresso.**
+
+*   **Analisi del problema:** Data una macchina `M_i`, dobbiamo stabilire se esiste (`∃`) un input `x` tale che `f_i(x)` termina e il suo valore è un numero pari.
+
+*   **Motivazione per l'indecidibilità (Teorema di Rice):** Questa è una domanda sul **comportamento** della funzione calcolata dalla macchina (`f_i`), non sulla sua sintassi o sul suo indice. Possiamo quindi applicare il Teorema di Rice.
+    1.  **La proprietà è "semantica"?** Sì, riguarda il codominio (l'insieme dei valori di output) della funzione.
+    2.  **La proprietà è "non banale"?**
+        *   Esiste almeno una funzione che la soddisfa? Sì, ad esempio `f(x) = 2`, che restituisce sempre un numero pari.
+        *   Esiste almeno una funzione che non la soddisfa? Sì, ad esempio `f(x) = 1`, che non restituisce mai un numero pari.
+    Poiché la proprietà è semantica e non banale, per il Teorema di Rice il problema è **indecidibile**.
+
+*   **Motivazione per la semidecidibilità:** Dobbiamo verificare se esiste un algoritmo che termina e dice "Sì" quando la risposta è "Sì". La struttura della domanda ("per **almeno un** ingresso") suggerisce che possiamo cercarlo.
+    *   Non possiamo testare gli input uno dopo l'altro (`x=0`, `x=1`, ...) perché la macchina potrebbe non terminare su uno di essi, bloccando la ricerca.
+    *   Possiamo usare una tecnica di ricerca esaustiva chiamata **dovetailing (o enumerazione diagonale)**: si simulano tutte le computazioni possibili in parallelo.
+    1.  Esegui 1 passo di `f_i(0)`.
+    2.  Esegui 2 passi di `f_i(0)` e 1 passo di `f_i(1)`.
+    3.  Esegui 3 passi di `f_i(0)`, 2 passi di `f_i(1)` e 1 passo di `f_i(2)`.
+    4.  ...e così via.
+    Se esiste un input `x` per cui la macchina termina con un output pari, questa procedura di ricerca prima o poi eseguirà quella computazione per un numero sufficiente di passi, troverà il risultato, verificherà che è pari e si arresterà dicendo "Sì". Se non esiste un tale input, la procedura non terminerà mai. Questo corrisponde esattamente alla definizione di **semidecidibilità**.
+
+*   **Conclusione:**
+    *   **Decidibile? NO.** Per il Teorema di Rice.
+    *   **Semidecidibile? SÌ.** Tramite una ricerca esaustiva (dovetailing).
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -1122,6 +1187,6 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTcyMTIyMjksLTI0MzgyODY1OCwzOTk4Nj
-QzNTIsLTU4NDAzMTk4M119
+eyJoaXN0b3J5IjpbNDc4OTQxNzQsOTcyMTIyMjksLTI0MzgyOD
+Y1OCwzOTk4NjQzNTIsLTU4NDAzMTk4M119
 -->
