@@ -1444,6 +1444,88 @@ La strategia è quasi identica, ma la condizione di accettazione cambia radicalm
 **La Differenza Chiave:**
 In L1, una volta raggiunto lo stato finale `q₃`, l'automa accetta indipendentemente da cosa viene dopo. In L2, non esiste uno stato del genere. L'automa rimane nello stato di riscontro `q₂` per tutta la durata di `w`. Se durante questo percorso legge una `a` ma la pila è già vuota, la computazione si blocca (fallisce). L'accettazione avviene solo alla fine dell'input, passando da `q₂` a `q_f` se e solo se la pila si è svuotata perfettamente.
 
+
+## Es 7
+Si considerino i linguaggi seguenti:
+*   `L1 = {aⁿbⁿcⁿ | n > 0}`
+*   `L2 = {b}*.{a,b,c}+`
+
+Per ciascuno dei linguaggi indicati di seguito, utilizzare un formalismo a potenza minima (tra tutti quelli visti a lezione) che lo caratterizzi:
+
+1.  `L = L1 \ L2` (differenza insiemistica)
+2.  `L' = L1 ∪ L2` (unione)
+
+---
+
+### **Analisi Preliminare dei Linguaggi di Partenza**
+
+Prima di risolvere i punti, è fondamentale capire la natura di `L1` e `L2`.
+
+*   **L1 = {aⁿbⁿcⁿ | n > 0}**
+    *   **Descrizione:** Questo è il linguaggio "modello" dei **linguaggi sensibili al contesto (Context-Sensitive)**. Contiene stringhe come `abc`, `aabbcc`, `aaabbbccc`, etc.
+    *   **Classe:** Non è regolare e non è nemmeno libero dal contesto. Richiede una memoria più potente di una pila per essere riconosciuto.
+
+*   **L2 = {b}*.{a,b,c}+**
+    *   **Descrizione:** Questa è un'**espressione regolare**. Analizziamola:
+        *   `{b}*`: significa "zero o più `b` all'inizio".
+        *   `.`: concatenato con...
+        *   `{a,b,c}+`: significa "almeno un carattere dall'alfabeto `{a,b,c}`".
+    *   **Semplificazione:** Cosa descrive questa espressione? Qualsiasi stringa che inizia con zero o più `b` ed è seguita da almeno una lettera (a, b, o c). In pratica, questo descrive **qualsiasi stringa non vuota sull'alfabeto {a,b,c}**. Ad esempio, `a`, `b`, `c`, `bbb`, `abacaba` sono tutte in `L2`.
+    *   **Classe:** Poiché è descritto da un'espressione regolare, `L2` è un **linguaggio regolare**.
+
+---
+
+### **1. Soluzione per L = L1 \ L2 (Differenza Insiemistica)**
+
+#### **Passo 1: Comprendere la Relazione tra L1 e L2**
+
+L'operazione `L1 \ L2` significa "prendi tutte le stringhe che sono in `L1` ma **non** sono in `L2`". Per calcolare questo, dobbiamo chiederci: esiste qualche stringa in `L1` che non sia anche in `L2`?
+
+*   Prendiamo una qualsiasi stringa `w` da `L1`. Ad esempio, `w = aabbcc`.
+*   Questa stringa `w` è composta dai caratteri `{a,b,c}`? Sì.
+*   Questa stringa `w` è non vuota? Sì, perché la condizione è `n > 0`, quindi la stringa più corta è `abc`.
+*   Abbiamo stabilito che `L2` è l'insieme di *tutte* le stringhe non vuote sull'alfabeto `{a,b,c}`.
+*   Poiché ogni stringa di `L1` è non vuota e usa solo i caratteri `{a,b,c}`, allora **ogni stringa di `L1` è anche una stringa di `L2`**.
+
+In termini insiemistici, **L1 è un sottoinsieme di L2** (`L1 ⊂ L2`).
+
+#### **Passo 2: Calcolare la Differenza e Scegliere il Formalismo**
+
+Se togliamo da `L1` tutte le stringhe che sono anche in `L2`, e abbiamo appena dimostrato che *tutte* le stringhe di `L1` sono in `L2`, cosa rimane? Nulla.
+
+`L = L1 \ L2 = ∅` (il **linguaggio vuoto**).
+
+*   **Classe del Linguaggio Vuoto:** Il linguaggio vuoto è un linguaggio **finito** (contiene zero stringhe). Tutti i linguaggi finiti sono **regolari**.
+*   **Formalismo a Potenza Minima:** Il formalismo a potenza minima è quello per i linguaggi regolari. Tra le opzioni (Automi Finiti, Grammatiche Regolari, Espressioni Regolari, MFO), la **Logica Monadica del Primo Ordine (MFO)** è una scelta valida e potente.
+*   **Spiegazione della Formula MFO:** `φL : ∃x(a(x) ∧ ¬a(x))`
+    *   `∃x`: "Esiste una posizione `x`..."
+    *   `a(x) ∧ ¬a(x)`: "...tale che il carattere in quella posizione è 'a' E contemporaneamente NON è 'a'."
+    *   Questa è una palese **contraddizione logica**. Nessuna stringa può mai soddisfare questa condizione. Pertanto, la formula descrive perfettamente il linguaggio vuoto.
+
+---
+
+### **2. Soluzione per L' = L1 ∪ L2 (Unione)**
+
+#### **Passo 1: Calcolare l'Unione**
+
+L'operazione `L1 ∪ L2` significa "prendi tutte le stringhe che sono in `L1`, o in `L2`, o in entrambi".
+
+*   Abbiamo già stabilito che `L1` è un sottoinsieme di `L2`.
+*   Quando si unisce un insieme con un suo sottoinsieme, il risultato è semplicemente l'insieme più grande. (Esempio: l'unione dell'insieme dei "cani" e dell'insieme dei "mammiferi" è semplicemente l'insieme dei "mammiferi").
+
+Quindi, `L' = L1 ∪ L2 = L2`.
+
+#### **Passo 2: Scegliere il Formalismo**
+
+Abbiamo ridotto il problema a trovare il formalismo a potenza minima per `L2`.
+
+*   **Classe di L2:** Come analizzato all'inizio, `L2` è un **linguaggio regolare**.
+*   **Formalismo a Potenza Minima:** Ancora una volta, MFO è una scelta appropriata.
+*   **Spiegazione della Formula MFO:** `φL' : (a(0) ∨ b(0) ∨ c(0)) ∧ ∀x(a(x) ∨ b(x) ∨ c(x))`
+    *   `∀x(a(x) ∨ b(x) ∨ c(x))`: Questa parte dice "per ogni posizione `x`, il carattere è 'a' o 'b' o 'c'". Questo definisce l'insieme di tutte le stringhe sull'alfabeto `{a,b,c}`, ovvero `{a,b,c}*`.
+    *   `(a(0) ∨ b(0) ∨ c(0))`: Questa parte aggiunge una condizione: "il carattere in posizione 0 (cioè il primo carattere) deve essere 'a' o 'b' o 'c'". Questo è un modo formale per dire "la stringa non deve essere vuota".
+    *   Mettendo insieme le due parti con `∧` (AND), la formula dice: "la stringa non è vuota E è composta solo da `a`, `b`, `c`". Questo è esattamente il linguaggio `{a,b,c}+`, che è la nostra versione semplificata di `L2`.
+
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
 ## Es1
@@ -2337,10 +2419,11 @@ La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conosc
         
     -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MD
-QwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMy
-NzMsLTcwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4Mz
-gzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODEx
-NzUsLTE0NDQxMDIwMTEsNDc4OTQxNzQsOTcyMTIyMjksLTI0Mz
-gyODY1OCwzOTk4NjQzNTIsLTU4NDAzMTk4M119
+eyJoaXN0b3J5IjpbLTY4MTU4Mzc3OCwxODc1NDQ4ODkyLDIwMz
+czOTMzLC02OTcwNDA0ODksLTE0NjEyMzE4MjksMTI3NzYwODk0
+MywtMTkzMzY3MzI3MywtNzA5MjY0MTEwLC02OTU1MzIwNywtMz
+MxNTU2MTQsNTgzODM4MTE3LDE2NzU4MDM3NjMsLTE0ODkzOTUx
+OTksLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nzg5NDE3NCw5Nz
+IxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1MiwtNTg0MDMxOTgz
+XX0=
 -->
