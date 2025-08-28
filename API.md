@@ -938,6 +938,93 @@ La strategia generale per risolvere questi problemi è la seguente:
 
 6.  **Conclusione:** Abbiamo "ridotto" il problema dell'inclusione dei codomini al problema di stabilire se una macchina calcola la **funzione indefinita ovunque**. Questo è un problema **indecidibile**, come si può dimostrare direttamente con il **Teorema di Rice**: la proprietà "essere la funzione indefinita ovunque" è non banale (alcune funzioni la possiedono, altre no). Poiché il nostro problema generale può essere usato per risolvere un problema indecidibile, concludiamo che anche il problema originale **non è decidibile**.
 
+## Es 4
+
+1.  Si consideri la seguente funzione e si dica se essa sia calcolabile o meno, motivando la risposta:
+    $h(x,y) = \begin{cases} 1 & \text{se } f_{y+1}(x+1) > f_y(x) \\ \perp & \text{altrimenti} \end{cases}$
+2.  Si consideri la seguente funzione e si dica se essa sia calcolabile o meno, motivando la risposta:
+    $h'(x, y) = \begin{cases} 0 & \text{se } f_{y+1}(x+1) \le f_y(x) \\ \perp & \text{altrimenti} \end{cases}$
+3.  Si considerino due generiche MT a nastro singolo, Mi e Mj. Si dica se è decidibile il problema di stabilire se $f_i(i) \le f_j(j)$.
+    *Suggerimento: si può assumere che l’enumerazione E delle MT inizi con la macchina che calcola la funzione $f_0(x) = x$.*
+
+---
+
+### Spiegazione e Svolgimento Passo Passo
+
+#### **Domanda 1: Calcolabilità di h(x, y)**
+
+**Obiettivo:** Dobbiamo stabilire se esiste un algoritmo (una Macchina di Turing) che si comporta esattamente come `h`.
+
+**Analisi della funzione `h`:**
+*   `h` è una funzione **parziale**. Deve restituire un valore (`1`) solo se una condizione specifica è soddisfatta.
+*   La condizione è `$f_{y+1}(x+1) > f_y(x)$`. Per verificare questa condizione, entrambe le computazioni, $f_{y+1}(x+1)$ e $f_y(x)$, devono **terminare** e produrre dei valori numerici confrontabili.
+*   Il caso "altrimenti", in cui `h` deve restituire `⊥` (cioè non terminare), si verifica in tre scenari:
+    1.  $f_{y+1}(x+1)$ non termina.
+    2.  $f_y(x)$ non termina.
+    3.  Entrambe terminano, ma il risultato del primo non è maggiore del secondo.
+
+**Costruzione di un algoritmo per calcolare `h`:**
+Possiamo costruire un algoritmo che simuli questo comportamento. La sfida è gestire il fatto che una delle due computazioni potrebbe non terminare, bloccando l'intero processo. La soluzione è la **simulazione in parallelo (dovetailing)**:
+
+1.  Dati `x` e `y`, l'algoritmo deve simulare due macchine: la macchina `y` con input `x`, e la macchina `y+1` con input `x+1`.
+2.  Si esegue un passo della simulazione di $f_y(x)$.
+3.  Si esegue un passo della simulazione di $f_{y+1}(x+1)$.
+4.  Si ripete dal passo 2, alternando i passi delle due simulazioni.
+
+Questo processo si arresta **solo se e quando entrambe le simulazioni sono terminate**.
+*   **Se l'alternanza non si arresta mai** (perché almeno una delle due computazioni non termina), il nostro algoritmo per `h` non terminerà. Questo è esattamente il comportamento richiesto da `h` in questi casi.
+*   **Se l'alternanza si arresta**, significa che abbiamo ottenuto due valori: `risultato_y` e `risultato_y+1`. A questo punto:
+    *   Confrontiamo i risultati: `if (risultato_y+1 > risultato_y)`.
+    *   Se la condizione è **vera**, l'algoritmo termina e restituisce `1`.
+    *   Se la condizione è **falsa**, l'algoritmo deve entrare deliberatamente in un loop infinito (es. `while(true){}`) per non terminare, come richiesto dalla specifica.
+
+**Conclusione:**
+Sì, la funzione `h` **è calcolabile**. Abbiamo descritto un algoritmo che si comporta esattamente come `h`, terminando e restituendo `1` nel caso specificato, e non terminando in tutti gli altri casi.
+
+---
+
+#### **Domanda 2: Calcolabilità di h'(x, y)**
+
+**Analisi della funzione `h'`:**
+Questa funzione è strutturalmente identica alla precedente. È una funzione parziale che restituisce un valore (`0`) solo se una certa condizione (`f_{y+1}(x+1) \le f_y(x)`) è verificata dopo che entrambe le computazioni sono terminate.
+
+**Ragionamento:**
+Il ragionamento è esattamente lo stesso del punto 1. Si può usare lo stesso algoritmo di simulazione in parallelo. Le uniche differenze sono:
+*   La condizione da verificare sui risultati ( `≤` invece di `>` ).
+*   Il valore da restituire in caso di successo ( `0` invece di `1` ).
+
+**Conclusione:**
+Sì, la funzione `h'` **è calcolabile** per le stesse ragioni di `h`.
+
+---
+
+#### **Domanda 3: Decidibilità del problema "fi(i) ≤ fj(j)"**
+
+**Obiettivo:** Dobbiamo stabilire se il problema è **decidibile**. Questo è molto più restrittivo della calcolabilità di una funzione parziale. Un problema è decidibile se esiste un algoritmo che, per *qualsiasi* input (`i` e `j`), **termina sempre** e fornisce una risposta corretta ("sì" o "no").
+
+**Analisi del problema:**
+Decidere se $f_i(i) \le f_j(j)$ è equivalente a chiedere se la seguente funzione **totale** `t(i, j)` sia calcolabile:
+$t(i, j) = \begin{cases} 1 & \text{se } f_i(i) \le f_j(j) \\ 0 & \text{altrimenti} \end{cases}$
+
+Il caso "altrimenti" qui include il caso in cui una o entrambe le computazioni $f_i(i)$ o $f_j(j)$ non terminano. Un algoritmo per `t` dovrebbe essere in grado di rilevare la non terminazione per poter restituire `0`. Questo è un campanello d'allarme che ci fa pensare al Problema dell'Arresto.
+
+**Dimostrazione tramite Riduzione (come suggerito):**
+Usiamo la tecnica della riduzione. Mostriamo che se potessimo decidere questo problema, potremmo decidere un problema noto per essere indecidibile.
+
+1.  **Semplifichiamo il problema:** Fissiamo uno degli input. Prendiamo `i = 0`, come suggerito. Il problema diventa: "È decidibile se $f_0(0) \le f_j(j)$?".
+
+2.  **Usiamo il suggerimento:** Sappiamo che $f_0(x) = x$. Questa è una funzione totale che termina sempre. Quindi, $f_0(0) = 0$. Il problema si semplifica ulteriormente in: "È decidibile se $0 \le f_j(j)$?".
+
+3.  **Analizziamo la condizione "0 ≤ fj(j)":**
+    *   Quando è **vera**? È vera se e solo se la computazione $f_j(j)$ **termina** e produce un valore numerico (che, per convenzione, è un numero naturale, quindi sempre ≥ 0).
+    *   Quando è **falsa**? È falsa se la computazione $f_j(j)$ **non termina**.
+
+4.  **La Riduzione:** Abbiamo stabilito una diretta equivalenza:
+    *   La risposta alla domanda "$0 \le f_j(j)$?" è "sì" **se e solo se** la macchina `j` termina sull'input `j`.
+    *   La risposta è "no" **se e solo se** la macchina `j` non termina sull'input `j`.
+
+5.  **Conclusione:** Un algoritmo che decide il nostro problema (anche nel caso semplificato con `i=0`) sarebbe un algoritmo che decide il **Problema dell'Arresto nella sua forma diagonale** ("`f_j(j)` termina?"). Poiché il Problema dell'Arresto è notoriamente **indecidibile**, anche il nostro problema originale deve essere **indecidibile**.
+
 # DATA FORMULA DESCRIVO LINGUAGGIO
 
 
@@ -1035,6 +1122,6 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTMzNzQ2MTU2MSwtMjQzODI4NjU4LDM5OT
-g2NDM1MiwtNTg0MDMxOTgzXX0=
+eyJoaXN0b3J5IjpbOTcyMTIyMjksLTI0MzgyODY1OCwzOTk4Nj
+QzNTIsLTU4NDAzMTk4M119
 -->
