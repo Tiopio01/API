@@ -2127,9 +2127,9 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/Cattura.JPG)
 
-## INDEFINITO
+# Indefinito
 
-### Traccia dell'Esercizio (formattata per chiarezza)
+## Es 1
 
 Sia `L` un linguaggio **decidibile** definito sull’alfabeto `A` e `L̄` il suo complemento. Barrare le caselle opportune e motivare la propria risposta con esempi o dimostrazioni che la supportino.
 
@@ -2223,11 +2223,124 @@ Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evide
     *   Se il Caso B è vero, `L` è finito. La risposta è "No".
 
 La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
+## Es 2
+### Concetti Chiave Preliminari
+
+-   **Decidibile (o Ricorsivo):** Un insieme di indici è decidibile se esiste un algoritmo (una MT) che, dato un qualsiasi indice i, termina **sempre** e risponde correttamente "sì" (se i è nell'insieme) o "no" (se i non è nell'insieme).
+    
+-   **Semi-decidibile (o Ricorsivamente Enumerabile):** Un insieme di indici è semi-decidibile se esiste un algoritmo che, dato un indice i, termina e risponde "sì" se i è nell'insieme. Se i non è nell'insieme, l'algoritmo può rispondere "no" oppure **non terminare mai**.
+    
+-   **Teorema di Rice:** Afferma che qualsiasi proprietà **non banale** del **linguaggio** riconosciuto da una MT è indecidibile.
+    
+    -   **Proprietà del linguaggio:** Riguarda ciò che la macchina accetta (L(M)), non come è fatta (numero di stati, ecc.).
+        
+    -   **Non banale:** Esiste almeno una MT che ha la proprietà e almeno una che non ce l'ha.
+        
+
+----------
+
+### **1. S1: L'insieme di indici delle MT che accettano almeno una stringa di lunghezza k.**
+
+#### **S1 è decidibile? NO.**
+
+-   **Motivazione (Teorema di Rice):** Applichiamo il Teorema di Rice.
+    
+    1.  La proprietà "accettare almeno una stringa di lunghezza k" è una proprietà del linguaggio riconosciuto dalla macchina? **Sì**.
+        
+    2.  È una proprietà non banale? **Sì**, perché:
+        
+        -   Esiste una MT con questa proprietà (es. una macchina che accetta tutte le stringhe, A*).
+            
+        -   Esiste una MT senza questa proprietà (es. una macchina che non accetta nessuna stringa, riconoscendo il linguaggio vuoto ∅).  
+            Poiché entrambe le condizioni sono soddisfatte, per il Teorema di Rice, l'insieme S1  **non è decidibile**.
+            
+
+#### **S1 è semi-decidibile? SÌ.**
+
+-   **Motivazione (Ricerca Esaustiva):** La struttura della domanda ("almeno una") ci suggerisce che se la risposta è "sì", possiamo trovarne la prova. Dobbiamo costruire un algoritmo che termini e dica "sì" per ogni i ∈ S1.
+    
+    -   **Algoritmo:**
+        
+        1.  Dato un indice i, elenca tutte le stringhe di lunghezza k. Poiché k è un intero fissato e A è un alfabeto finito, questo è un **insieme finito** di stringhe.
+            
+        2.  Simula l'esecuzione della macchina Mᵢ su **tutte** queste stringhe "in parallelo" (usando la tecnica del **dovetailing** o interleaving, per evitare di rimanere bloccati su una computazione che non termina).
+            
+        3.  **Se anche solo una di queste simulazioni si ferma e accetta**, l'algoritmo si arresta immediatamente e restituisce "sì".
+            
+    -   **Comportamento:** Se Mᵢ accetta almeno una stringa di lunghezza k, questo algoritmo la troverà prima o poi e terminerà. Se Mᵢ non accetta nessuna stringa di lunghezza k, l'algoritmo non terminerà mai. Questo è esattamente il comportamento richiesto per un problema semi-decidibile.
+        
+
+----------
+
+### **2. S2: L'insieme di indici delle MT che accettano al più una stringa di lunghezza k.**
+
+#### **S2 è decidibile? NO.**
+
+-   **Motivazione (Teorema di Rice):** Il ragionamento è identico a quello per S1.
+    
+    1.  La proprietà "accettare al più una stringa di lunghezza k" (cioè 0 o 1 stringhe) è una proprietà del linguaggio. **Sì**.
+        
+    2.  È non banale? **Sì**, perché:
+        
+        -   Una MT che riconosce ∅ ha questa proprietà.
+            
+        -   Una MT che riconosce A* non ha questa proprietà (se |A|ᵏ > 1).  
+            Per il Teorema di Rice, l'insieme S2  **non è decidibile**.
+            
+
+#### **S2 è semi-decidibile? NO.**
+
+-   **Motivazione (Uso del Complemento):** Per dimostrare che un insieme non è semi-decidibile, una tecnica standard è dimostrare che il suo **complemento è semi-decidibile**. Esiste un teorema fondamentale: Se un insieme S e il suo complemento S̄ sono entrambi semi-decidibili, allora S è decidibile.  
+    Poiché abbiamo già stabilito che S2 è indecidibile, se riusciamo a dimostrare che S̄2 è semi-decidibile, allora S2 non può esserlo.
+    
+    1.  **Definiamo il complemento S̄2:** È l'insieme degli indici delle MT che **non** accettano al più una stringa di lunghezza k. Questo significa: l'insieme di indici delle MT che accettano **almeno due** stringhe di lunghezza k.
+        
+    2.  **Dimostriamo che S̄2 è semi-decidibile:** La logica è la stessa usata per S1.
+        
+        -   **Algoritmo per S̄2:**
+            
+            1.  Dato i, elenca tutte le stringhe di lunghezza k.
+                
+            2.  Simula Mᵢ su tutte queste stringhe in parallelo.
+                
+            3.  Tieni un contatore delle stringhe accettate.
+                
+            4.  **Non appena il contatore raggiunge 2**, l'algoritmo si arresta e restituisce "sì".
+                
+        -   Questo algoritmo termina se e solo se Mᵢ accetta almeno due stringhe di lunghezza k. Quindi, S̄2  **è semi-decidibile**.
+            
+    3.  **Conclusione:** Poiché S2 è indecidibile e il suo complemento S̄2 è semi-decidibile, S2  **non può essere semi-decidibile**.
+        
+
+----------
+
+### **3. S3: L'insieme di indici delle MT che calcolano la funzione caratteristica di S2.**
+
+#### **S3 è decidibile? SÌ.**
+
+#### **S3 è semi-decidibile? SÌ.**
+
+-   **Motivazione (Conseguenza della non decidibilità):**
+    
+    1.  Cos'è la "funzione caratteristica" di un insieme S? È una funzione totale che restituisce 1 se l'input è in S e 0 altrimenti.
+        
+    2.  Per definizione, un insieme è **decidibile** se e solo se la sua funzione caratteristica è **calcolabile** (cioè, esiste una MT che la calcola).
+        
+    3.  Nel punto precedente, abbiamo dimostrato in modo definitivo che l'insieme S2 è **indecidibile**.
+        
+    4.  Questo significa, per definizione, che **non esiste alcuna MT** in grado di calcolare la sua funzione caratteristica.
+        
+    5.  Quindi, l'insieme S3, che dovrebbe contenere gli indici di tali macchine, è necessariamente l'**insieme vuoto (∅)**.
+        
+    
+    -   **Il problema si riduce a: "L'insieme vuoto è decidibile?"** La risposta è **sì**. L'algoritmo per deciderlo è banale: "Dato un qualsiasi indice i, rispondi sempre 'no'". Questo algoritmo termina sempre ed è sempre corretto.
+        
+    -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAzNzM5MzMsLTY5NzA0MDQ4OSwtMTQ2MT
-IzMTgyOSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC03MDkyNjQx
-MTAsLTY5NTUzMjA3LC0zMzE1NTYxNCw1ODM4MzgxMTcsMTY3NT
-gwMzc2MywtMTQ4OTM5NTE5OSwtNTkwMDgxMTc1LC0xNDQ0MTAy
-MDExLDQ3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mjg2NTgsMzk5OD
-Y0MzUyLC01ODQwMzE5ODNdfQ==
+eyJoaXN0b3J5IjpbMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MD
+QwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMy
+NzMsLTcwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4Mz
+gzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODEx
+NzUsLTE0NDQxMDIwMTEsNDc4OTQxNzQsOTcyMTIyMjksLTI0Mz
+gyODY1OCwzOTk4NjQzNTIsLTU4NDAzMTk4M119
 -->
