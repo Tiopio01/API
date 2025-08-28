@@ -1348,6 +1348,9 @@ Per riconoscere `L'`, una macchina deve:
 *   Poiché il marcatore `c` rende il processo privo di ambiguità (non c'è da "indovinare" dove finisce `x`), un **automa a pila deterministico (DPDA)** è sufficiente.
 *   **Conclusione:** Il formalismo a potenza minima cambia da **Regolare (MFO/FSA)** a **Deterministico Libero dal Contesto (DPDA)**.
 
+## Es 6
+
+
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
 ## Es1
@@ -2128,9 +2131,10 @@ Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evide
 
 La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0NjEyMzE4MjksMTI3NzYwODk0MywtMT
-kzMzY3MzI3MywtNzA5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2
-MTQsNTgzODM4MTE3LDE2NzU4MDM3NjMsLTE0ODkzOTUxOTksLT
-U5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nzg5NDE3NCw5NzIxMjIy
-OSwtMjQzODI4NjU4LDM5OTg2NDM1MiwtNTg0MDMxOTgzXX0=
+eyJoaXN0b3J5IjpbLTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMj
+c3NjA4OTQzLC0xOTMzNjczMjczLC03MDkyNjQxMTAsLTY5NTUz
+MjA3LC0zMzE1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2MywtMT
+Q4OTM5NTE5OSwtNTkwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0
+MTc0LDk3MjEyMjI5LC0yNDM4Mjg2NTgsMzk5ODY0MzUyLC01OD
+QwMzE5ODNdfQ==
 -->
