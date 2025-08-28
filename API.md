@@ -887,6 +887,9 @@ Verifichiamo la non banalità.
     *   Sì. La funzione costante `f(x) = 1` produce solo output positivi, quindi non appartiene a `S4`. La funzione `g(x)=0` produce solo output non positivi, quindi non appartiene a `S4`.
 
 Poiché la proprietà è non banale, per il Teorema di Rice, l'insieme `S4` è **non ricorsivo**.
+
+## Es 6
+
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -2499,11 +2502,11 @@ La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conosc
         
     -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyOTQ1MTI0NzYsMTg3NTQ0ODg5MiwyMD
-M3MzkzMywtNjk3MDQwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5
-NDMsLTE5MzM2NzMyNzMsLTcwOTI2NDExMCwtNjk1NTMyMDcsLT
-MzMTU1NjE0LDU4MzgzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1
-MTk5LC01OTAwODExNzUsLTE0NDQxMDIwMTEsNDc4OTQxNzQsOT
-cyMTIyMjksLTI0MzgyODY1OCwzOTk4NjQzNTIsLTU4NDAzMTk4
-M119
+eyJoaXN0b3J5IjpbLTYxOTM5OTM1MCwxODc1NDQ4ODkyLDIwMz
+czOTMzLC02OTcwNDA0ODksLTE0NjEyMzE4MjksMTI3NzYwODk0
+MywtMTkzMzY3MzI3MywtNzA5MjY0MTEwLC02OTU1MzIwNywtMz
+MxNTU2MTQsNTgzODM4MTE3LDE2NzU4MDM3NjMsLTE0ODkzOTUx
+OTksLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nzg5NDE3NCw5Nz
+IxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1MiwtNTg0MDMxOTgz
+XX0=
 -->
