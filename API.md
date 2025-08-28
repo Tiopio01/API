@@ -1261,7 +1261,92 @@ Questo processo richiede una memoria illimitata (la pila) e non determinismo.
 
 *   **Formalismo a Potenza Minima:** Il modello necessario è un **Automa a Pila Non Deterministico (NPDA)**. Il linguaggio `L'` è **libero dal contesto e non regolare**. La grammatica a potenza minima sarebbe una **Grammatica Libera dal Contesto (Context-Free Grammar)**.
 ## Es 5
+Si consideri il linguaggio `L = {xy | x,y ∈ {a,b}* e #a(x) = #b(y)}`.
 
+1.  Utilizzare un formalismo a potenza minima che caratterizzi il linguaggio `L`.
+2.  Cambierebbe il formalismo a potenza minima se il linguaggio fosse `L' = {xcy | x,y ∈ {a,b}* e #a(x) = #b(y)}`?
+
+---
+
+### **1. Analisi del Linguaggio `L`**
+
+#### **L'Intuizione Sorprendente: `L` è l'insieme di TUTTE le stringhe**
+
+La parte più difficile da capire è perché `L` sia in realtà equivalente a `{a,b}*` (l'insieme di tutte le possibili stringhe con i caratteri 'a' e 'b'). La definizione di `L` ci permette di scegliere **qualsiasi punto di divisione** tra `x` e `y`. La soluzione dimostra che, data una qualsiasi stringa `w`, possiamo **sempre** trovare un punto di divisione tale che la condizione `#a(x) = #b(y)` sia soddisfatta.
+
+**Spieghiamo la dimostrazione della soluzione in modo più semplice, con un'analogia:**
+
+Immagina di camminare lungo la stringa `w` da sinistra a destra. Ad ogni passo `i`, sposti il confine tra `x` (la parte che hai già percorso) e `y` (la parte che devi ancora percorrere).
+Definiamo un "punteggio" ad ogni passo `i`:
+`Punteggio(i) = (numero di 'a' nella parte percorsa x) - (numero di 'b' nella parte restante y)`
+
+Il nostro obiettivo è dimostrare che, durante questa camminata, il nostro punteggio toccherà **esattamente lo zero** almeno una volta.
+
+1.  **All'inizio (passo i=0):**
+    *   La parte percorsa `x` è la stringa vuota. Il numero di 'a' è 0.
+    *   La parte restante `y` è l'intera stringa `w`.
+    *   `Punteggio(0) = 0 - #b(w) = -#b(w)`. Questo è un numero **minore o uguale a 0**.
+
+2.  **Alla fine (passo i=n, dove n è la lunghezza di w):**
+    *   La parte percorsa `x` è l'intera stringa `w`.
+    *   La parte restante `y` è la stringa vuota. Il numero di 'b' è 0.
+    *   `Punteggio(n) = #a(w) - 0 = #a(w)`. Questo è un numero **maggiore o uguale a 0**.
+
+3.  **Come cambia il punteggio a ogni passo?**
+    Quando ci spostiamo dal passo `i` al passo `i+1`, prendiamo il primo carattere di `y` e lo spostiamo alla fine di `x`. Vediamo come questo influisce sul punteggio.
+    *   **Se il carattere spostato è una 'a':**
+        *   Il numero di 'a' in `x` aumenta di 1.
+        *   Il numero di 'b' in `y` rimane invariato.
+        *   Il nuovo punteggio è `(vecchio #a(x) + 1) - (vecchio #b(y)) = Punteggio(i) + 1`.
+    *   **Se il carattere spostato è una 'b':**
+        *   Il numero di 'a' in `x` rimane invariato.
+        *   Il numero di 'b' in `y` diminuisce di 1.
+        *   Il nuovo punteggio è `(vecchio #a(x)) - (vecchio #b(y) - 1) = Punteggio(i) + 1`.
+
+Incredibilmente, in entrambi i casi, il punteggio **aumenta sempre di esattamente 1** ad ogni passo!
+
+**Conclusione:** Abbiamo una sequenza di punteggi che parte da un valore `≤ 0`, finisce a un valore `≥ 0`, e aumenta di 1 a ogni passo. Per il principio dei valori intermedi (in versione discreta), questa sequenza **deve necessariamente passare per lo 0**.
+Ciò significa che per qualsiasi stringa `w`, esiste un punto di divisione `i` per cui `#a(x) = #b(y)`.
+
+Poiché ogni stringa `w` appartiene a `L`, allora `L = {a,b}*`.
+
+#### **Formalismo a Potenza Minima per `L`**
+
+*   Il linguaggio `{a,b}*` è il linguaggio **regolare** per eccellenza.
+*   I formalismi a potenza minima per i linguaggi regolari sono:
+    *   Automi a Stati Finiti (FSA)
+    *   Grammatiche Regolari (Tipo 3)
+    *   Espressioni Regolari (in questo caso, `(a|b)*`)
+    *   Logica Monadica del Primo Ordine (MFO)
+*   La soluzione sceglie correttamente la **MFO**. La formula `∀x(a(x) ∨ b(x))` significa "per ogni posizione `x` nella stringa, il carattere è o una 'a' o una 'b'", che descrive perfettamente `{a,b}*`.
+
+---
+
+### **2. Analisi del Linguaggio `L'`**
+
+#### **L'Impatto del Marcatore 'c'**
+
+Il linguaggio `L'` è ` {xcy | x,y ∈ {a,b}* e #a(x) = #b(y)}`.
+L'introduzione del carattere `c` cambia tutto. Perché?
+
+Perché ora **il punto di divisione non è più una nostra scelta**. Il marcatore `c` **fissa** in modo inequivocabile dove finisce `x` e dove inizia `y`. Tutta la logica della "camminata" e della ricerca di un punto di divisione crolla.
+
+Per riconoscere `L'`, una macchina deve:
+1.  Leggere la parte `x` e **contare** il numero di 'a'.
+2.  Leggere il marcatore `c`, che segnala di cambiare comportamento.
+3.  Leggere la parte `y` e **contare** il numero di 'b'.
+4.  Alla fine, confrontare i due conteggi.
+
+#### **Formalismo a Potenza Minima per `L'`**
+
+*   Questa operazione di conteggio richiede una memoria potenzialmente illimitata. Un Automa a Stati Finiti non è più sufficiente.
+*   Il modello perfetto per questo compito è un **Automa a Pila (Pushdown Automaton)**.
+    *   Mentre legge `x`, per ogni `a` spinge un simbolo (es. `A`) sulla pila.
+    *   Quando legge `c`, non fa nulla sulla pila ma cambia stato.
+    *   Mentre legge `y`, per ogni `b` estrae un simbolo `A` dalla pila.
+    *   Se alla fine della stringa la pila è vuota, significa che i conteggi corrispondevano e la stringa viene accettata.
+*   Poiché il marcatore `c` rende il processo privo di ambiguità (non c'è da "indovinare" dove finisce `x`), un **automa a pila deterministico (DPDA)** è sufficiente.
+*   **Conclusione:** Il formalismo a potenza minima cambia da **Regolare (MFO/FSA)** a **Deterministico Libero dal Contesto (DPDA)**.
 
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
@@ -2043,9 +2128,9 @@ Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evide
 
 La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI3NzYwODk0MywtMTkzMzY3MzI3MywtNz
-A5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3
-LDE2NzU4MDM3NjMsLTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMT
-Q0NDEwMjAxMSw0Nzg5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4
-LDM5OTg2NDM1MiwtNTg0MDMxOTgzXX0=
+eyJoaXN0b3J5IjpbLTE0NjEyMzE4MjksMTI3NzYwODk0MywtMT
+kzMzY3MzI3MywtNzA5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2
+MTQsNTgzODM4MTE3LDE2NzU4MDM3NjMsLTE0ODkzOTUxOTksLT
+U5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nzg5NDE3NCw5NzIxMjIy
+OSwtMjQzODI4NjU4LDM5OTg2NDM1MiwtNTg0MDMxOTgzXX0=
 -->
