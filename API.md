@@ -1709,6 +1709,74 @@ Anche qui la dimostrazione è per assurdo, ma usa un argomento leggermente più 
     Se la nostra ipotesi al punto 3 fosse vera (`h` è computabile), allora anche `h'` sarebbe computabile. Ma questo significa che abbiamo trovato una "estensione totale e computabile" di `h_barra`, il che **contraddice il teorema** menzionato al punto 2.
 
 6.  **Conclusione:** L'assunzione che `h` sia computabile ci ha portato a una contraddizione. Pertanto, **`h` non è computabile**.
+
+## ES 6
+Si considerino le seguenti funzioni e si dica se sono calcolabili, motivando esaurientemente la risposta:
+
+1.  $h(x) = \begin{cases} 1 & \text{se } f_x(x) > x \\ 0 & \text{altrimenti} \end{cases}$
+2.  $i(x,y,z) = f_y(x) + f_z(x)$
+
+*(Nota: $f_k(n)$ è la funzione calcolata dalla k-esima Macchina di Turing con input n)*
+
+---
+
+### **1. Funzione `h(x)`: È Calcolabile?**
+
+**Risposta:** No, la funzione `h` **non è calcolabile**.
+
+**Motivazione (Spiegazione dettagliata della diagonalizzazione):**
+
+Questo è un classico esempio di problema che si risolve con una **dimostrazione per assurdo tramite diagonalizzazione**, una tecnica potente e controintuitiva simile a quella usata per dimostrare l'indecidibilità del Problema dell'Arresto.
+
+1.  **L'ipotesi di partenza (per assurdo):** Supponiamo che `h` **sia** calcolabile. Se fosse così, esisterebbe una Macchina di Turing in grado di calcolarla per qualsiasi input `x`.
+
+2.  **Costruiamo una funzione "nemesi" `g(x)`:** Basandoci sulla nostra ipotetica capacità di calcolare `h`, costruiamo una nuova funzione `g(x)` progettata specificamente per creare una contraddizione. La definiamo come segue:
+    $g(x) = \begin{cases} x+1 & \text{se } h(x) = 0 \\ \perp & \text{se } h(x) = 1 \end{cases}$
+    *(dove `⊥` significa "non terminare")*
+
+3.  **`g(x)` sarebbe calcolabile:** Se la nostra ipotesi è vera (cioè `h` è calcolabile), allora anche `g` deve essere calcolabile. Un algoritmo per `g(x)` sarebbe:
+    *   Calcola `h(x)`. (Questo termina sempre, per ipotesi).
+    *   Se il risultato è 0, calcola `x+1` e restituiscilo.
+    *   Se il risultato è 1, entra in un loop infinito.
+    Tutti questi passaggi sono eseguibili, quindi `g` è una funzione calcolabile.
+
+4.  **Il paradosso della diagonalizzazione:** Poiché `g` è calcolabile, deve esistere nell'enumerazione di tutte le Macchine di Turing. Ciò significa che deve esistere un indice `i` tale che la i-esima Macchina di Turing calcola proprio la funzione `g`. In simboli: **`fᵢ(x) = g(x)` per ogni `x`**.
+    Ora poniamoci la domanda cruciale: **Cosa succede quando eseguiamo questa macchina sul suo stesso indice `i`? Qual è il valore di `fᵢ(i)` (che è uguale a `g(i)`)?**
+
+5.  **Analizziamo i due (unici) casi possibili:**
+    *   **Caso A: `h(i) = 0`**.
+        *   Dalla definizione di `g`, se `h(i)=0` allora `g(i) = i+1`. Quindi la macchina `i` termina e restituisce `i+1`.
+        *   Ma guardiamo la definizione di `h`: `h(i)=0` significa che `fᵢ(i) ≤ i` OPPURE `fᵢ(i)` non termina.
+        *   Abbiamo una **contraddizione**: `g(i)` ci dice che `fᵢ(i) = i+1` (che è ovviamente `> i`), ma la condizione `h(i)=0` che ha generato questo risultato ci dice che `fᵢ(i)` doveva essere `≤ i` (o non terminare). È impossibile.
+
+    *   **Caso B: `h(i) = 1`**.
+        *   Dalla definizione di `g`, se `h(i)=1` allora `g(i) = ⊥`. Quindi la macchina `i` non termina.
+        *   Ma guardiamo la definizione di `h`: `h(i)=1` significa che `fᵢ(i) > i`.
+        *   Abbiamo un'altra **contraddizione**: la condizione `h(i)=1` richiede che `fᵢ(i)` termini e produca un valore maggiore di `i`, ma il risultato di `g(i)` che ne deriva ci dice che `fᵢ(i)` non termina affatto. Una computazione che non termina non può avere un valore.
+
+6.  **Conclusione:** Entrambi i possibili esiti portano a un'assurdità logica. L'unica cosa che può essere sbagliata è la nostra ipotesi iniziale. Pertanto, **`h` non può essere calcolabile**.
+
+---
+
+### **2. Funzione `i(x,y,z)`: È Calcolabile?**
+
+**Risposta:** Sì, la funzione `i` **è calcolabile**.
+
+**Motivazione:**
+
+La differenza fondamentale rispetto al primo caso è che `i` è una **funzione parziale**. Un algoritmo per calcolarla non deve terminare sempre, ma deve terminare *se e solo se* la funzione stessa è definita.
+
+1.  **Quando è definita `i(x,y,z)`?** La funzione è definita solo se **entrambe** le computazioni `fᵧ(x)` e `f₂(x)` terminano. Se anche solo una delle due non termina, la somma non è definita, e quindi anche `i(x,y,z)` non è definita (cioè, il suo valore è `⊥`).
+
+2.  **Costruzione dell'algoritmo:** Possiamo descrivere un algoritmo (una Macchina di Turing) che calcola `i`:
+    *   **Input:** `x`, `y`, `z`.
+    *   **Passo 1:** Usando una Macchina di Turing Universale, simula l'esecuzione della macchina `y` sull'input `x`.
+    *   **Passo 2:** Se la simulazione del passo 1 termina, salva il risultato (chiamiamolo `risultato_y`). Altrimenti, se non termina, anche il nostro algoritmo per `i` non terminerà, il che è corretto.
+    *   **Passo 3:** Ora, simula l'esecuzione della macchina `z` sull'input `x`.
+    *   **Passo 4:** Se la simulazione del passo 3 termina, salva il risultato (chiamiamolo `risultato_z`). Altrimenti, il nostro algoritmo si bloccherà qui, il che è di nuovo corretto.
+    *   **Passo 5:** Se siamo arrivati fin qui, significa che entrambe le computazioni sono terminate. Calcola la somma `risultato_y + risultato_z` e restituiscila come output.
+
+Questo algoritmo si comporta esattamente come la funzione `i`: termina e restituisce la somma corretta se e solo se entrambe le computazioni `fᵧ(x)` e `f₂(x)` terminano. Poiché esiste un algoritmo che la calcola, **la funzione `i` è calcolabile**.
 # DATA FORMULA DESCRIVO LINGUAGGIO
 
 
@@ -1902,9 +1970,9 @@ Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evide
 
 La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTcwOTI2NDExMCwtNjk1NTMyMDcsLTMzMT
-U1NjE0LDU4MzgzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5
-LC01OTAwODExNzUsLTE0NDQxMDIwMTEsNDc4OTQxNzQsOTcyMT
-IyMjksLTI0MzgyODY1OCwzOTk4NjQzNTIsLTU4NDAzMTk4M119
-
+eyJoaXN0b3J5IjpbLTE5MzM2NzMyNzMsLTcwOTI2NDExMCwtNj
+k1NTMyMDcsLTMzMTU1NjE0LDU4MzgzODExNywxNjc1ODAzNzYz
+LC0xNDg5Mzk1MTk5LC01OTAwODExNzUsLTE0NDQxMDIwMTEsND
+c4OTQxNzQsOTcyMTIyMjksLTI0MzgyODY1OCwzOTk4NjQzNTIs
+LTU4NDAzMTk4M119
 -->
