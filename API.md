@@ -1398,7 +1398,105 @@ Usiamo la tecnica della riduzione. Mostriamo che se potessimo decidere questo pr
     *   La risposta è "no" **se e solo se** la macchina `j` non termina sull'input `j`.
 
 5.  **Conclusione:** Un algoritmo che decide il nostro problema (anche nel caso semplificato con `i=0`) sarebbe un algoritmo che decide il **Problema dell'Arresto nella sua forma diagonale** ("`f_j(j)` termina?"). Poiché il Problema dell'Arresto è notoriamente **indecidibile**, anche il nostro problema originale deve essere **indecidibile**.
+## Es 5
+Si considerino le funzioni `g` e `h`:
 
+$g(x) = \begin{cases} f_x(x) + 2 & \text{se } f_x(x) \neq \perp \\ 1 & \text{altrimenti (cioè, se } f_x(x) = \perp) \end{cases}$
+
+$h(x) = \begin{cases} f_x(x) & \text{se } f_x(x) \neq \perp \\ 1 & \text{altrimenti (cioè, se } f_x(x) = \perp) \end{cases}$
+
+*(Dove $f_x(x) \neq \perp$ significa "la x-esima Macchina di Turing, con input x, termina" e $f_x(x) = \perp$ significa "non termina")*
+
+**Domande:**
+a) `g` e `h` sono totali?
+b) `g` è computabile?
+c) `h` è computabile?
+
+---
+
+### **Spiegazione e Analisi della Soluzione**
+
+#### **a) `g` e `h` sono totali?**
+
+**Risposta:** Sì, entrambe le funzioni sono totali.
+
+**Motivazione:**
+Una funzione è **totale** se ha un valore di output ben definito per ogni possibile input `x` dall'insieme dei numeri naturali.
+Analizziamo le definizioni:
+*   Per ogni `x`, la computazione `f_x(x)` può avere solo due esiti: o termina o non termina.
+*   **Funzione g:**
+    *   Se `f_x(x)` termina, `g(x)` ha un valore (`f_x(x) + 2`).
+    *   Se `f_x(x)` non termina, `g(x)` ha comunque un valore (`1`).
+*   **Funzione h:**
+    *   Se `f_x(x)` termina, `h(x)` ha un valore (il risultato di `f_x(x)`).
+    *   Se `f_x(x)` non termina, `h(x)` ha comunque un valore (`1`).
+
+Poiché in entrambi i casi la clausola "altrimenti" copre l'unico altro esito possibile (la non terminazione), le funzioni `g` e `h` sono definite per ogni `x`. Quindi, sono totali.
+
+---
+
+#### **b) `g` è computabile?**
+
+**Risposta:** No, `g` non è computabile.
+
+**Motivazione (Spiegazione della Riduzione):**
+Per dimostrarlo, la soluzione usa una tecnica fondamentale chiamata **riduzione**. L'idea è: "Se potessimo calcolare `g`, allora potremmo risolvere un altro problema che sappiamo già essere impossibile da risolvere. Poiché ciò porta a una contraddizione, la nostra ipotesi iniziale (che `g` sia computabile) deve essere falsa."
+
+1.  **Il Problema Impossibile:** Consideriamo la funzione `g'` che decide il **complemento del Problema dell'Arresto** (sulla diagonale):
+    $g'(x) = \begin{cases} 1 & \text{se } f_x(x) \text{ non termina} \\ 0 & \text{se } f_x(x) \text{ termina} \end{cases}$
+    Questa funzione `g'` è notoriamente **non computabile**. Non esiste un algoritmo che possa decidere per ogni `x` se la macchina `x` si ferma su `x`.
+
+2.  **L'Ipotesi:** Supponiamo per assurdo che `g` **sia** computabile. Questo significa che esiste un algoritmo `Calcola_g(x)` che termina sempre e restituisce il valore di `g(x)`.
+
+3.  **La Riduzione:** Mostriamo come usare `Calcola_g` per costruire un algoritmo per `g'`:
+    ```
+    Algoritmo Calcola_g_primo(x):
+      // Per ipotesi, questo passo termina sempre
+      risultato_g = Calcola_g(x)
+
+      // Ora analizziamo il risultato di g(x)
+      if (risultato_g == 1):
+        // Dalla definizione di g, g(x) vale 1 solo se f_x(x) non termina.
+        // In questo caso, g'(x) dovrebbe valere 1.
+        return 1
+      else: // Se risultato_g non è 1, allora f_x(x) deve essere terminato.
+        // Dalla definizione di g, g(x) vale f_x(x)+2.
+        // In questo caso, g'(x) dovrebbe valere 0.
+        return 0
+    ```
+4.  **La Contraddizione:** Abbiamo appena costruito un algoritmo (`Calcola_g_primo`) che calcola perfettamente la funzione `g'`. Ma al punto 1 abbiamo detto che `g'` è non computabile. Questa è una contraddizione.
+
+5.  **Conclusione:** L'unica assunzione fatta è stata che `g` fosse computabile. Poiché questa assunzione porta a una contraddizione, deve essere falsa. Pertanto, **`g` non è computabile**.
+
+---
+
+#### **c) `h` è computabile?**
+
+**Risposta:** No, `h` non è computabile.
+
+**Motivazione (Spiegazione dell'Estensione di Funzione):**
+Anche qui la dimostrazione è per assurdo, ma usa un argomento leggermente più sottile basato sul concetto di "estensione di una funzione".
+
+1.  **Una Funzione Parziale Nota:** Consideriamo la funzione `h_barra`:
+    $\bar{h}(x) = \begin{cases} f_x(x) + 1 & \text{se } f_x(x) \text{ termina} \\ \perp & \text{altrimenti} \end{cases}$
+    Questa è una funzione **parziale** (non è definita dove `f_x(x)` non termina) ma è **computabile** (basta simulare `f_x(x)` e, se termina, aggiungere 1).
+
+2.  **Un Teorema Chiave:** Esiste un teorema in teoria della computabilità che afferma che la funzione `h_barra` (e altre simili) **non ammette alcuna estensione che sia sia totale sia computabile**.
+    *   *Cos'è un'estensione?* Una funzione `F` è un'estensione di `f` se `F(x) = f(x)` per tutti gli `x` per cui `f` è definita. Una *estensione totale* è un'estensione che è definita per tutti gli `x`.
+
+3.  **L'Ipotesi:** Supponiamo per assurdo che `h` **sia** computabile.
+
+4.  **La Riduzione:** Se `h` fosse computabile, allora anche la funzione `h'(x) = h(x) + 1` sarebbe computabile (l'operazione di aggiungere 1 è banale). Vediamo com'è fatta `h'`:
+    *   Se `f_x(x)` termina e restituisce `v`: `h(x) = v`, quindi `h'(x) = v + 1`.
+    *   Se `f_x(x)` non termina: `h(x) = 1`, quindi `h'(x) = 1 + 1 = 2`.
+
+5.  **La Contraddizione:** Analizziamo questa nuova funzione `h'`:
+    *   È **totale**: è definita per ogni `x` (restituisce `v+1` o `2`).
+    *   È un'**estensione** di `h_barra`: per ogni `x` in cui `h_barra` è definita (cioè dove `f_x(x)` termina), entrambe le funzioni valgono `f_x(x) + 1`.
+    Abbiamo quindi trovato che `h'` è una **estensione totale di `h_barra`**.
+    Se la nostra ipotesi al punto 3 fosse vera (`h` è computabile), allora anche `h'` sarebbe computabile. Ma questo significa che abbiamo trovato una "estensione totale e computabile" di `h_barra`, il che **contraddice il teorema** menzionato al punto 2.
+
+6.  **Conclusione:** L'assunzione che `h` sia computabile ci ha portato a una contraddizione. Pertanto, **`h` non è computabile**.
 # DATA FORMULA DESCRIVO LINGUAGGIO
 
 
@@ -1496,7 +1594,8 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/Cattura.JPG)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNT
-kwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5
-LC0yNDM4Mjg2NTgsMzk5ODY0MzUyLC01ODQwMzE5ODNdfQ==
+eyJoaXN0b3J5IjpbNTgzODM4MTE3LDE2NzU4MDM3NjMsLTE0OD
+kzOTUxOTksLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nzg5NDE3
+NCw5NzIxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1MiwtNTg0MD
+MxOTgzXX0=
 -->
