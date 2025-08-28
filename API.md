@@ -1048,6 +1048,129 @@ Questo percorso è regolare, quindi la pila non viene usata attivamente.
 
 Ricorda di disegnare `q₉` come **stato finale**, perché dopo ogni `abc` completo la stringa è valida.
 
+## Es 3
+
+### **Passo 1: Analisi e Classificazione del Linguaggio**
+
+*   **Linguaggio:** `L = {aˣbʸcᶻb*aʷ | x+2y = z+w; x,y,z,w > 0}`
+*   **Struttura:** Una sequenza di `a`, seguita da una di `b`, poi `c`, poi un blocco opzionale di `b`, e infine un'altra sequenza di `a`.
+*   **Vincolo Aritmetico:** `x + 2y = z + w`. Questo è un vincolo di conteggio.
+*   **Vincoli di Esistenza:** `x, y, z, w > 0` significa che ogni blocco di lettere (`aˣ`, `bʸ`, `cᶻ`, `aʷ`) deve essere presente e contenere almeno un carattere. Il blocco `b*` nel mezzo può essere vuoto.
+
+**Classificazione:**
+Il linguaggio non è regolare perché richiede una memoria illimitata per verificare il vincolo `x+2y = z+w`. Un automa a stati finiti non può farlo.
+Il linguaggio è **Libero dal Contesto (Context-Free)** perché il vincolo può essere gestito con una singola pila. La strategia è:
+1.  **Leggere `aˣbʸ`**: Usare la pila per "sommare" il lato sinistro dell'equazione (`x + 2y`).
+2.  **Leggere `cᶻb*aʷ`**: Usare la pila per "sottrarre" il lato destro (`z + w`).
+3.  **Accettare se il risultato è zero (pila vuota)**.
+
+Il modello a potenza minima è quindi un **Automa a Pila (Pushdown Automaton)**.
+
+---
+
+### **Passo 2: Guida Dettagliata al Disegno dell'Automa**
+
+Ecco come disegnare il grafo, freccia per freccia, con le etichette corrette.
+
+#### **Elementi di Base**
+
+1.  **Stati:** Disegna 7 cerchi. Etichettali `q₀`, `q₁`, `q₂`, `q₃`, `q₄`, `q₅`, e `q_f`.
+2.  **Stato Iniziale:** Disegna una freccia che punta a `q₀`.
+3.  **Stato Finale:** Disegna un doppio cerchio attorno a `q_f`.
+4.  **Simboli Pila:** Useremo `A` come contatore per le `a` (valore 1) e `B` come contatore per le `b` (valore 2). `Z₀` è il simbolo iniziale della pila.
+
+#### **Disegno delle Transizioni (Frecce ed Etichette)**
+
+La nostra strategia è "PUSH `x+2y`" e poi "POP `z+w`".
+
+---
+
+##### **FASE 1: Lettura di `aˣ` (Push di `x`)**
+
+Questa fase gestisce il blocco `aˣ`, con `x > 0`.
+
+*   **Freccia da `q₀` a `q₁`:**
+    *   **Etichetta:** `a, Z₀ / AZ₀`
+    *   **Significato:** "Leggi la **prima a** (soddisfa `x>0`). Se in cima alla pila c'è `Z₀`, estrailo, spingi un contatore `A` e poi rimetti `Z₀`. Ora sulla pila c'è il conteggio di una `a`."
+
+*   **Freccia da `q₁` che torna su se stesso (loop):**
+    *   **Etichetta:** `a, A / AA`
+    *   **Significato:** "Per ogni **a successiva**, se in cima c'è un contatore `A`, estrailo e spingi due `A` (quello appena tolto e quello nuovo). Continua a contare le `a`."
+
+---
+
+##### **FASE 2: Lettura di `bʸ` (Push di `2y`)**
+
+Questa fase gestisce il blocco `bʸ`, con `y > 0`.
+
+*   **Freccia da `q₁` a `q₂`:**
+    *   **Etichetta:** `b, A / BBA`
+    *   **Significato:** "Leggi la **prima b** (soddisfa `y>0`). Estrai il contatore `A` in cima e spingi **due contatori B** (per il `2y`) e poi rimetti `A`. Ogni `b` vale due simboli sulla pila."
+
+*   **Freccia da `q₂` che torna su se stesso (loop):**
+    *   **Etichetta:** `b, B / BBB`
+    *   **Significato:** "Per ogni **b successiva**, estrai il `B` in cima e spingi tre `B` (quello tolto e i due nuovi). Continua a contare `2y`."
+
+---
+
+##### **FASE 3: Lettura di `cᶻ` (Pop di `z`)**
+
+Ora iniziamo a svuotare la pila. Questa fase gestisce `cᶻ`, con `z > 0`.
+
+*   **Freccia da `q₂` a `q₃`:**
+    *   **Etichetta:** `c, B / ε`
+    *   **Significato:** "Leggi la **prima c** (soddisfa `z>0`). Se in cima alla pila c'è un `B`, estrailo (pop) e non spingere nulla (indicato da `ε`). Abbiamo iniziato a 'sottrarre' dal totale."
+
+*   **Freccia da `q₃` che torna su se stesso (loop):**
+    *   **Etichetta:** Metti due etichette separate per questa freccia:
+        1.  `c, B / ε` (se in cima c'è un B)
+        2.  `c, A / ε` (se in cima c'è un A)
+    *   **Significato:** "Per ogni **c successiva**, estrai un simbolo dalla pila, non importa quale sia."
+
+---
+
+##### **FASE 4: Lettura del `b*` intermedio**
+
+Questa fase salta i `b` intermedi senza alterare il conteggio.
+
+*   **Freccia da `q₃` a `q₄`:**
+    *   **Etichetta:** `b, X / X` (shorthand per `b,A/A` e `b,B/B`)
+    *   **Significato:** "Leggi un `b` e lascia la pila inalterata."
+    *   *Nota: La transizione da `q₃` a `q₄` può anche essere su `a` per iniziare l'ultima fase. Spostiamo il `b*` su `q₄`.*
+    *   **Rettifica per un disegno più pulito:** Creiamo uno stato apposito.
+    *   **Freccia da `q₃` a `q₄`:** `ε, X / X` (passaggio di stato senza leggere input)
+    *   **Freccia da `q₄` che torna su se stesso (loop):**
+        *   **Etichetta:** `b, X / X`
+        *   **Significato:** "Leggi tutti i `b` di questo blocco senza toccare la pila."
+
+---
+
+##### **FASE 5: Lettura di `aʷ` (Pop di `w`)**
+
+Questa è l'ultima fase di conteggio. Gestisce `aʷ`, con `w > 0`.
+
+*   **Freccia da `q₄` a `q₅`:**
+    *   **Etichetta:** Metti due etichette separate:
+        1. `a, B / ε`
+        2. `a, A / ε`
+    *   **Significato:** "Leggi la **prima a** dell'ultimo blocco (soddisfa `w>0`). Estrai un simbolo dalla pila."
+
+*   **Freccia da `q₅` che torna su se stesso (loop):**
+    *   **Etichetta:** Metti due etichette separate:
+        1.  `a, B / ε`
+        2.  `a, A / ε`
+    *   **Significato:** "Per ogni **a successiva**, continua a estrarre simboli dalla pila."
+
+---
+
+##### **FASE 6: Accettazione**
+
+*   **Freccia da `q₅` allo stato finale `q_f`:**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "Dopo aver letto tutto l'input (transizione `ε`), se in cima alla pila c'è solo `Z₀`, significa che `x+2y` era uguale a `z+w`. La stringa è valida. Accetta."
+
+
+
 
 
 # FUNZIONI CALCOLABILI(DECIDIBILI)
@@ -1594,8 +1717,8 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/Cattura.JPG)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTgzODM4MTE3LDE2NzU4MDM3NjMsLTE0OD
-kzOTUxOTksLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nzg5NDE3
-NCw5NzIxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1MiwtNTg0MD
-MxOTgzXX0=
+eyJoaXN0b3J5IjpbLTMzMTU1NjE0LDU4MzgzODExNywxNjc1OD
+AzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODExNzUsLTE0NDQxMDIw
+MTEsNDc4OTQxNzQsOTcyMTIyMjksLTI0MzgyODY1OCwzOTk4Nj
+QzNTIsLTU4NDAzMTk4M119
 -->
