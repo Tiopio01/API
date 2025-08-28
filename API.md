@@ -404,7 +404,85 @@ Analizziamola:
 
 Sommando tutti i percorsi, la grammatica genera correttamente il linguaggio $a^*b^*$, ed è una grammatica regolare.
 
+## Es 3
+### Traccia dell'Esercizio
 
+1.  Si definisca una grammatica a potenza minima che generi il linguaggio `L1` su `{a,b}` delle stringhe in cui il numero di `a` sia pari al numero di `b` più 2 (cioè, `∀x(x ∈ L1 ↔ #a(x) = #b(x) + 2)`).
+2.  Cambierebbe il tipo di grammatiche a potenza minima per generare il linguaggio `L2` delle stringhe in cui il numero di `a` è doppio rispetto al numero di `b` (cioè, `∀x(x ∈ L2 ↔ #a(x) = 2 * #b(x))`)? Giustificare la risposta. Non serve specificare la grammatica che genera il linguaggio, ma solo il suo tipo.
+
+---
+
+### Spiegazione e Svolgimento del Punto 1 (L1)
+
+#### **Passo 1: Determinare il tipo di linguaggio**
+
+Il linguaggio `L1` richiede di contare il numero di `a` e `b` e di mantenere una relazione specifica tra di loro (`#a = #b + 2`).
+*   **Non è Regolare:** Un automa a stati finiti (FSA) ha memoria finita (i suoi stati). Non può tenere traccia di un conteggio illimitato di simboli per garantire che la relazione sia sempre soddisfatta per stringhe arbitrariamente lunghe.
+*   **È Libero dal Contesto (Context-Free):** Questo tipo di problema di "bilanciamento" o "conteggio" è il classico esempio di un linguaggio che può essere gestito da un **automa a pila (Pushdown Automaton)**, che ha una memoria infinita (la pila). I linguaggi riconosciuti dagli automi a pila sono generati da **grammatiche libere dal contesto (Context-Free Grammars)**.
+
+Quindi, la "potenza minima" richiesta è quella di una **Grammatica Libera dal Contesto (CFG)**.
+
+#### **Passo 2: Analizzare la strategia della grammatica fornita**
+
+La soluzione proposta è:
+`S → TaTaT`
+`T → aTbT | bTaT | ε`
+
+Questa grammatica è molto elegante e si basa su un principio di "divide et impera".
+
+*   **Il ruolo del non-terminale `T`:**
+    Analizziamo le regole di `T`. Notiamo che per ogni `a` che viene aggiunto, viene aggiunto anche un `b` (`aTbT` e `bTaT`). La regola `T → ε` è il caso base. Questo significa che qualsiasi stringa derivata da `T` avrà sempre un numero uguale di `a` e di `b`.
+    **`T` genera il linguaggio di tutte le stringhe con un numero uguale di `a` e `b`**. Ad esempio:
+    *   `T → ε`
+    *   `T → aTbT → a(ε)b(ε) → ab`
+    *   `T → bTaT → b(ε)a(ε) → ba`
+    *   `T → aTbT → a(ba)b(ε) → abab`
+
+*   **Il ruolo del non-terminale `S`:**
+    La regola di partenza `S → TaTaT` sfrutta la proprietà di `T`.
+    1.  Prende tre stringhe bilanciate generate da `T`. Chiamiamole `t₁`, `t₂`, `t₃`.
+    2.  Inserisce **due `a`** in mezzo a queste stringhe.
+    La stringa finale avrà la forma `t₁ a t₂ a t₃`.
+    Calcoliamo il numero di `a` e `b` nella stringa finale:
+    *   `#a(finale) = #a(t₁) + 1 + #a(t₂) + 1 + #a(t₃) = #a(t₁) + #a(t₂) + #a(t₃) + 2`
+    *   `#b(finale) = #b(t₁) + #b(t₂) + #b(t₃)`
+    Poiché sappiamo che ogni `tᵢ` è bilanciata (`#a(tᵢ) = #b(tᵢ)`), possiamo sostituire:
+    *   `#a(finale) = #b(t₁) + #b(t₂) + #b(t₃) + 2`
+    Questo significa che `#a(finale) = #b(finale) + 2`, che è esattamente la definizione di `L1`.
+
+Questa grammatica genera tutte le stringhe richieste, perché le due `a` in eccesso possono apparire in qualsiasi posizione, separate e circondate da stringhe con un numero bilanciato di `a` e `b`.
+
+---
+
+### Spiegazione e Svolgimento del Punto 2 (L2)
+
+#### **Passo 1: Analizzare la natura del linguaggio L2**
+
+Il linguaggio `L2` richiede che il numero di `a` sia il doppio del numero di `b` (`#a = 2 * #b`). Anche questo è un problema di conteggio.
+
+#### **Passo 2: Confrontare L2 con L1 e determinare il tipo di grammatica**
+
+La risposta è che il tipo di grammatica **non cambierebbe**. Rimane una **Grammatica Libera dal Contesto (CFG)**.
+
+**Giustificazione:**
+La ragione fondamentale è che la classe dei linguaggi generati dalle CFG è la stessa classe dei linguaggi riconosciuti dagli **Automi a Pila (PDA)**. Se possiamo dimostrare che `L2` è riconoscibile da un PDA, allora deve essere un linguaggio context-free.
+
+Possiamo facilmente immaginare un PDA che riconosca `L2`. La pila può essere usata come un contatore per mantenere la relazione `2:1`.
+
+Ecco come funzionerebbe un PDA (non deterministico):
+*   Ogni volta che legge una **`b`** dall'input, **spinge due simboli** (es. `X`, `X`) sulla pila.
+*   Ogni volta che legge una **`a`** dall'input, **estrae un simbolo** (`X`) dalla pila.
+
+Una stringa viene accettata se, dopo aver letto l'intera stringa, la pila è vuota.
+*   **Esempio 1: `aab`**
+    1.  Leggi `a`: la pila è vuota, quindi il PDA deve "prendere in prestito". Un PDA non deterministico può spingere una `A` per ricordare un debito di `b`. (Una macchina più semplice gestisce questo in modo diverso, ma il concetto è valido).
+    2.  Una strategia migliore: Leggi `b`: spingi `XX`. Leggi `a`: pop `X`. Leggi `a`: pop `X`. Fine input, pila vuota. **Accetta**.
+*   **Esempio 2: `ab`**
+    1.  Leggi `a`: ...
+    2.  Leggi `b`: ...
+    Alla fine la pila non sarà vuota. **Rifiuta**.
+
+Poiché esiste un automa a pila in grado di riconoscere `L2` (mantenendo un contatore che viene incrementato di 1 per ogni `a` e decrementato di 2 per ogni `b`, o viceversa), il linguaggio `L2` è **libero dal contesto**. Di conseguenza, la grammatica a potenza minima richiesta per generarlo è ancora una **Grammatica Libera dal Contesto**, la stessa classe di quella per `L1`.
 
 # DECIDIBILITA'
 
@@ -1187,6 +1265,7 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDc4OTQxNzQsOTcyMTIyMjksLTI0MzgyOD
-Y1OCwzOTk4NjQzNTIsLTU4NDAzMTk4M119
+eyJoaXN0b3J5IjpbLTE0NDQxMDIwMTEsNDc4OTQxNzQsOTcyMT
+IyMjksLTI0MzgyODY1OCwzOTk4NjQzNTIsLTU4NDAzMTk4M119
+
 -->
