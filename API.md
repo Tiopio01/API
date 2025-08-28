@@ -895,7 +895,6 @@ La regola di partenza `S` compie una scelta non deterministica: può iniziare un
 La grammatica, tramite la scelta non deterministica iniziale, genera l'unione dei due linguaggi: quello delle stringhe di lunghezza pari e quello delle stringhe di lunghezza multipla di 3. Pertanto, genera correttamente il linguaggio `L`.
 
 ## Es 2
-Certamente! Analizziamo questo esercizio passo dopo passo per determinare la classe del linguaggio e costruire l'automa appropriato.
 
 ### 1. Analisi del Linguaggio e Classificazione
 
@@ -943,7 +942,6 @@ La strategia di costruzione si basa sul non determinismo:
 2.  Transita quindi in una "sezione" dell'automa dedicata a riconoscere specificamente quel sotto-linguaggio.
 
 Di seguito è riportato il diagramma di un NPDA che riconosce `L`. `Z₀` è il simbolo iniziale della pila.
-
 
 
 ### **Guida al Disegno dell'Automa a Pila**
@@ -1498,7 +1496,7 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTcwMjkwOTU0NywtNTkwMDgxMTc1LC0xND
-Q0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mjg2NTgs
-Mzk5ODY0MzUyLC01ODQwMzE5ODNdfQ==
+eyJoaXN0b3J5IjpbLTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMT
+Q0NDEwMjAxMSw0Nzg5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4
+LDM5OTg2NDM1MiwtNTg0MDMxOTgzXX0=
 -->
