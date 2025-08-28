@@ -1494,9 +1494,9 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 # DATO AUTOMA(DISEGNO)
 ## Es1
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
-
+![enter image description here](https://github.com/Tiopio01/API/blob/master/Cattura.JPG)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMT
-Q0NDEwMjAxMSw0Nzg5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4
-LDM5OTg2NDM1MiwtNTg0MDMxOTgzXX0=
+eyJoaXN0b3J5IjpbMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNT
+kwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5
+LC0yNDM4Mjg2NTgsMzk5ODY0MzUyLC01ODQwMzE5ODNdfQ==
 -->
