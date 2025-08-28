@@ -732,6 +732,81 @@ Il compito **è fattibile** (è decidibile). A differenza dei programmi C, l'equ
 *   **Conclusione:**
     *   **Decidibile? NO.** Per il Teorema di Rice.
     *   **Semidecidibile? SÌ.** Tramite una ricerca esaustiva (dovetailing).
+
+## Es 4
+
+Si consideri un sistema, chiamato BeeS, il cui comportamento è descritto dall’automa a stati finiti `A`. Sia `S` un insieme (finito) fissato di sequenze di comandi, e `G` un algoritmo (anch’esso fissato) che, dato in input un automa e un insieme finito di sequenze, restituisce un automa a stati finiti (l'algoritmo termina sempre).
+
+1.  È decidibile il problema di stabilire se, fornendogli in input l’automa `A` e l’insieme `S` di sequenze, l’algoritmo `G` restituisce un automa equivalente ad `A`?
+2.  È decidibile il problema di stabilire se, preso un qualunque automa a stati finiti `A'` e un insieme di sequenze `S'`, se all’algoritmo `G` vengono forniti in input `A'` e `S'`, esso restituisce un automa equivalente ad `A'`?
+3.  È decidibile il problema di stabilire se, preso un qualunque algoritmo `G'`, tale algoritmo, per ogni automa a stati finiti `A'` e insieme di sequenze `S'`, restituisce un automa che è equivalente ad `A'`?
+
+---
+
+### Spiegazione e Svolgimento Passo Passo
+
+#### **Domanda 1: Il caso completamente "Fissato"**
+
+**Problema:** Dati `A`, `S` e `G` (tutti noti e fissati), è decidibile se `G(A, S)` è equivalente ad `A`?
+
+**Analisi:**
+La parola chiave qui è **"fissato"**. Non ci sono variabili. La domanda riguarda un'unica, specifica istanza.
+1.  Abbiamo l'algoritmo `G`. Lo conosciamo.
+2.  Abbiamo l'automa `A`. Lo conosciamo.
+3.  Abbiamo l'insieme `S`. Lo conosciamo.
+
+La domanda è se una certa affermazione è vera o falsa. L'affermazione è "`L(G(A, S)) = L(A)`".
+Poiché `G`, `A` e `S` sono fissati, il risultato di `G(A, S)` è un automa specifico e ben determinato, che chiamiamo `A_output`. L'algoritmo `G` termina sempre, quindi possiamo calcolare `A_output`.
+A questo punto, la domanda si riduce a: "`A_output` è equivalente ad `A`?".
+
+**Conclusione:**
+Il problema è **decidibile**.
+*   **Motivazione 1 (Algoritmica):** Possiamo scrivere un algoritmo che risolve il problema:
+    1.  Esegui `G` con input `A` e `S` per ottenere l'automa `A_output`. Questo passo termina per ipotesi.
+    2.  Confronta `A` e `A_output` per verificare se sono equivalenti. Il problema dell'**equivalenza tra due automi a stati finiti è notoriamente decidibile**. (Ad esempio, minimizzando entrambi e verificando se sono isomorfi).
+    Poiché entrambi i passaggi sono eseguibili e terminano, l'intero problema è decidibile.
+*   **Motivazione 2 (Teorica - "domanda chiusa"):** Poiché non ci sono input variabili, la risposta alla domanda è una costante: o è "Sì" o è "No". Un problema la cui risposta è una costante è sempre decidibile. Se la risposta è "Sì", l'algoritmo `return "Sì"` lo decide. Se la risposta è "No", l'algoritmo `return "No"` lo decide. Poiché un algoritmo decisore esiste, il problema è decidibile.
+
+---
+
+#### **Domanda 2: Il caso con Input "Generici"**
+
+**Problema:** Dato l'algoritmo `G` (fisso), è decidibile se per **qualunque** `A'` e `S'`, `G(A', S')` è equivalente ad `A'`?
+*Nota: La domanda come formulata è "preso un qualunque... se... esso restituisce...", che può essere interpretata in due modi. L'interpretazione più sensata (e quella della soluzione) è: "È decidibile il problema che prende in input `A'` e `S'` e determina se `G(A', S')` è equivalente ad `A'`?".*
+
+**Analisi:**
+Qui `G` è ancora un nostro strumento fisso, ma `A'` e `S'` sono gli input del problema che vogliamo decidere. Dobbiamo creare un algoritmo `Decisore(A', S')` che risponda alla domanda.
+
+**Conclusione:**
+Il problema è **decidibile**. Il ragionamento è quasi identico a quello algoritmico del punto 1, ma ora lo applichiamo a input generici.
+1.  **Input:** un automa generico `A'` e un insieme di sequenze `S'`.
+2.  **Passo 1:** Esegui l'algoritmo (fisso e noto) `G` con gli input `A'` e `S'` per ottenere un nuovo automa, `A'' = G(A', S')`. Questo passo termina sempre.
+3.  **Passo 2:** Utilizza l'algoritmo di decisione per l'equivalenza degli FSA per confrontare `A'` e `A''`. Questo algoritmo termina e restituisce "Sì" o "No".
+4.  **Output:** Restituisci il risultato del passo 2.
+
+Abbiamo appena descritto un algoritmo che prende `A'` e `S'` e decide correttamente e in tempo finito se `G(A', S')` è equivalente ad `A'`. Pertanto, il problema è decidibile.
+
+---
+
+#### **Domanda 3: Il caso con Algoritmo "Generico"**
+
+**Problema:** È decidibile se un **qualunque algoritmo `G'`** ha la proprietà di restituire sempre un automa equivalente a quello in input?
+
+**Analisi:**
+Questo cambia tutto. Ora, l'input del nostro problema di decisione non è più un automa, ma l'**algoritmo `G'` stesso** (ad esempio, il suo codice sorgente o il suo numero di Gödel). Dobbiamo analizzare questo `G'` arbitrario e decidere se ha una certa proprietà comportamentale.
+
+Questo è un problema su una proprietà di una funzione calcolabile. Il candidato perfetto per risolverlo è il **Teorema di Rice**.
+
+1.  **La Proprietà:** La proprietà `P` di un algoritmo `G'` è: "Per ogni input `(A', S')`, l'output `G'(A', S')` è un automa equivalente ad `A'`".
+2.  **La proprietà è sul comportamento (semantica)?** Sì. Non ci interessa come è scritto `G'`, ma solo la relazione tra i suoi input e i suoi output.
+3.  **La proprietà è "non banale"?** Per applicare il Teorema di Rice, dobbiamo dimostrare che la proprietà non è né sempre vera né sempre falsa.
+    *   **Esiste almeno un algoritmo che ha la proprietà?** Sì. L'algoritmo banale `G_buono(A', S') { return A'; }` ha questa proprietà.
+    *   **Esiste almeno un algoritmo che NON ha la proprietà?** Sì. L'algoritmo `G_cattivo(A', S') { return un_automa_che_accetta_il_linguaggio_vuoto; }` non ha questa proprietà (a meno che `A'` non accettasse già il linguaggio vuoto).
+
+Poiché la proprietà è semantica e non banale, il Teorema di Rice si applica.
+
+**Conclusione:**
+Il problema è **indecidibile**. Per il Teorema di Rice, non esiste un algoritmo generale in grado di prendere un programma arbitrario `G'` e decidere se possiede la proprietà descritta. Non possiamo semplicemente "eseguire" `G'` come facevamo prima, perché dovremmo testarlo su un'infinità di input `(A', S')` per essere sicuri del suo comportamento universale.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -1265,7 +1340,7 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0NDQxMDIwMTEsNDc4OTQxNzQsOTcyMT
-IyMjksLTI0MzgyODY1OCwzOTk4NjQzNTIsLTU4NDAzMTk4M119
-
+eyJoaXN0b3J5IjpbLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nz
+g5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1Miwt
+NTg0MDMxOTgzXX0=
 -->
