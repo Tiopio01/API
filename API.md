@@ -817,7 +817,7 @@ Il problema è **indecidibile**. Per il Teorema di Rice, non esiste un algoritmo
     2.  **La proprietà è "non banale":** L'insieme non deve essere né vuoto né l'insieme di *tutti* gli indici. In altre parole, deve esistere almeno una MT che ha la proprietà e almeno una che non ce l'ha.
 
 ---
-
+**Si assuma che le macchine di Turing su alfabeto binario calcolino funzioni da Z a Z, interpretando le stringhe sul nastro come numeri in complemento a 2 codificati con il numero minimo di bit necessari. Si considerino i seguenti insiemi e si dica se essi sono ricorsivi, motivando la risposta:**
 ### **1. S1 = {i | ∃x : fᵢ(x) > 0}**
 
 *   **Definizione in linguaggio naturale:** `S1` è l'insieme degli indici `i` delle Macchine di Turing la cui funzione `fᵢ` produce un risultato **positivo** per almeno un input `x`.
@@ -2499,11 +2499,11 @@ La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conosc
         
     -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTUyMzA5NjE3LDE4NzU0NDg4OTIsMjAzNz
-M5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQz
-LC0xOTMzNjczMjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMz
-E1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5
-OSwtNTkwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3Mj
-EyMjI5LC0yNDM4Mjg2NTgsMzk5ODY0MzUyLC01ODQwMzE5ODNd
-fQ==
+eyJoaXN0b3J5IjpbLTEyOTQ1MTI0NzYsMTg3NTQ0ODg5MiwyMD
+M3MzkzMywtNjk3MDQwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5
+NDMsLTE5MzM2NzMyNzMsLTcwOTI2NDExMCwtNjk1NTMyMDcsLT
+MzMTU1NjE0LDU4MzgzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1
+MTk5LC01OTAwODExNzUsLTE0NDQxMDIwMTEsNDc4OTQxNzQsOT
+cyMTIyMjksLTI0MzgyODY1OCwzOTk4NjQzNTIsLTU4NDAzMTk4
+M119
 -->
