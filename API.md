@@ -1349,7 +1349,100 @@ Per riconoscere `L'`, una macchina deve:
 *   **Conclusione:** Il formalismo a potenza minima cambia da **Regolare (MFO/FSA)** a **Deterministico Libero dal Contesto (DPDA)**.
 
 ## Es 6
+### **1. Linguaggio L1 = {aᵏw | w ∈ A* e w contiene *almeno* k simboli a, con k ≥ 1}**
 
+#### **Passo 1: Analisi e Scelta del Formalismo**
+
+*   **Problema:** Dobbiamo "contare" il numero `k` di `a` all'inizio, memorizzarlo, e poi verificare che nella parte `w` della stringa ci siano *almeno* altrettante `a`.
+*   **Perché non è Regolare:** Un automa a stati finiti non ha memoria illimitata. Non può ricordare un valore `k` arbitrariamente grande.
+*   **Perché è Libero dal Contesto:** Un automa a pila (PDA) ha una pila, che è una memoria illimitata, perfetta per contare.
+*   **Perché è Non Deterministico:** Il punto di divisione tra `aᵏ` e `w` non è segnato. Ad esempio, nella stringa `aaaba`, `k` potrebbe essere 1 (con `w=aaba`), 2 (con `w=aba`) o 3 (con `w=ba`). L'automa deve "indovinare" quale di queste è la scomposizione corretta. Questo richiede non determinismo.
+*   **Conclusione:** Il formalismo a potenza minima è un **Automa a Pila Non Deterministico (NPDA)**.
+
+#### **Passo 2: Guida al Disegno dell'Automa per L1**
+
+La nostra strategia sarà:
+1.  **Fase di Conteggio:** Leggere le `a` iniziali e spingere un "gettone" sulla pila per ciascuna.
+2.  **Scelta Non Deterministica:** Indovinare quando `aᵏ` finisce e `w` inizia.
+3.  **Fase di Riscontro:** Leggere `w` e, per ogni `a` trovata, togliere un gettone dalla pila.
+4.  **Fase di Accettazione:** Appena la pila si svuota (abbiamo trovato `k` 'a' in `w`), entriamo in uno stato finale e accettiamo, ignorando il resto della stringa.
+
+**Elementi di Base:**
+*   **Stati:** Disegna quattro cerchi: `q₀` (iniziale), `q₁` (conteggio prefisso), `q₂` (riscontro in `w`), `q₃` (accettazione finale).
+*   **Stato Finale:** Disegna un doppio cerchio attorno a `q₃`.
+*   **Simboli Pila:** `X` sarà il nostro "gettone" contatore. `Z₀` è il simbolo iniziale.
+
+**Disegno delle Transizioni (Frecce e Loro Etichette):**
+
+*   **Freccia da `q₀` a `q₁`:**
+    *   **Etichetta:** `a, Z₀ / XZ₀`
+    *   **Significato:** "Leggi la **prima a** (soddisfa `k≥1`). Se la pila è vuota (contiene `Z₀`), spingi un gettone `X`."
+
+*   **Freccia da `q₁` che torna su se stesso (loop):**
+    *   **Etichetta:** `a, X / XX`
+    *   **Significato:** "Per ogni **a successiva** nel prefisso, spingi un altro gettone `X`."
+
+*   **Freccia da `q₁` a `q₂` (La Scelta Non Deterministica):**
+    *   **Etichetta:** `ε, X / X`
+    *   **Significato:** "A questo punto, **indovina** che il prefisso `aᵏ` è finito. Senza leggere input (`ε`), passa allo stato di riscontro `q₂`, lasciando la pila com'è."
+
+*   **Frecce da `q₂` che tornano su se stesso (loop):**
+    *   **Etichetta 1:** `b, X / X`
+        *   **Significato:** "Se leggi una `b` in `w`, ignorala e lascia la pila com'è."
+    *   **Etichetta 2:** `a, X / ε`
+        *   **Significato:** "Se leggi una `a` in `w`, usala per 'pagare' un gettone. Estrai (pop) un `X` dalla pila."
+
+*   **Freccia da `q₂` a `q₃`:**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "In qualsiasi momento, se la pila si è svuotata (vedi `Z₀`), significa che abbiamo trovato **almeno k** simboli `a` in `w`. La condizione è soddisfatta. Passa allo stato finale `q₃`."
+
+*   **Frecce da `q₃` che tornano su se stesso (loop):**
+    *   **Etichetta 1:** `a, Z₀ / Z₀`
+    *   **Etichetta 2:** `b, Z₀ / Z₀`
+    *   **Significato:** "Una volta nello stato finale, ignora tutti i caratteri rimanenti fino alla fine della stringa."
+
+---
+
+### **2. Linguaggio L2 = {aᵏw | w ∈ A* e w contiene *esattamente* k simboli a, con k ≥ 1}**
+
+#### **Passo 1: Analisi e Scelta del Formalismo**
+
+*   **Problema:** La logica è la stessa di L1, ma la condizione è più stringente: il numero di `a` in `w` deve essere *esattamente* `k`, né più né meno.
+*   **Formalismo:** Il ragionamento non cambia. Serve ancora un contatore illimitato (pila) e la capacità di indovinare dove finisce `aᵏ` (non determinismo).
+*   **Conclusione:** Il formalismo a potenza minima è ancora un **Automa a Pila Non Deterministico (NPDA)**.
+
+#### **Passo 2: Guida al Disegno dell'Automa per L2**
+
+La strategia è quasi identica, ma la condizione di accettazione cambia radicalmente. Non possiamo più accettare "in anticipo". Dobbiamo arrivare alla fine della stringa e, solo allora, controllare che la pila sia vuota.
+
+**Elementi di Base:**
+*   **Stati:** Bastano tre cerchi: `q₀` (iniziale), `q₁` (conteggio prefisso), `q₂` (riscontro in `w`).
+*   **Stato Finale:** `q₂` stesso sarà lo stato finale. Lo vedremo tra poco. No, è più pulito avere uno stato finale separato. Usiamo `q_f`. Quindi `q₀, q₁, q₂, q_f`.
+*   **Simboli Pila:** `X` e `Z₀`.
+
+**Disegno delle Transizioni (Frecce e Loro Etichette):**
+
+*   **Freccia da `q₀` a `q₁`:**
+    *   **Etichetta:** `a, Z₀ / XZ₀` (Identica a L1)
+
+*   **Freccia da `q₁` che torna su se stesso (loop):**
+    *   **Etichetta:** `a, X / XX` (Identica a L1)
+
+*   **Freccia da `q₁` a `q₂` (La Scelta Non Deterministica):**
+    *   **Etichetta:** `ε, X / X` (Identica a L1)
+
+*   **Frecce da `q₂` che tornano su se stesso (loop):**
+    *   **Etichetta 1:** `b, X / X` (Identica a L1)
+    *   **Etichetta 2:** `a, X / ε` (Identica a L1)
+    *   **NUOVA Etichetta 3:** `b, Z₀ / Z₀`
+        *   **Significato:** "Se hai già esaurito tutti i gettoni (`X`), ma trovi ancora delle `b` in `w`, va bene, ignorale."
+
+*   **Freccia da `q₂` allo stato finale `q_f` (La Condizione Finale):**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "Senza leggere input, se ti trovi nello stato `q₂` e la pila è vuota (contiene solo `Z₀`), puoi passare allo stato finale. La stringa sarà accettata **solo se** l'input è anche terminato."
+
+**La Differenza Chiave:**
+In L1, una volta raggiunto lo stato finale `q₃`, l'automa accetta indipendentemente da cosa viene dopo. In L2, non esiste uno stato del genere. L'automa rimane nello stato di riscontro `q₂` per tutta la durata di `w`. Se durante questo percorso legge una `a` ma la pila è già vuota, la computazione si blocca (fallisce). L'accettazione avviene solo alla fine dell'input, passando da `q₂` a `q_f` se e solo se la pila si è svuotata perfettamente.
 
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
@@ -2131,10 +2224,10 @@ Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evide
 
 La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMj
-c3NjA4OTQzLC0xOTMzNjczMjczLC03MDkyNjQxMTAsLTY5NTUz
-MjA3LC0zMzE1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2MywtMT
-Q4OTM5NTE5OSwtNTkwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0
-MTc0LDk3MjEyMjI5LC0yNDM4Mjg2NTgsMzk5ODY0MzUyLC01OD
-QwMzE5ODNdfQ==
+eyJoaXN0b3J5IjpbMjAzNzM5MzMsLTY5NzA0MDQ4OSwtMTQ2MT
+IzMTgyOSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC03MDkyNjQx
+MTAsLTY5NTUzMjA3LC0zMzE1NTYxNCw1ODM4MzgxMTcsMTY3NT
+gwMzc2MywtMTQ4OTM5NTE5OSwtNTkwMDgxMTc1LC0xNDQ0MTAy
+MDExLDQ3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mjg2NTgsMzk5OD
+Y0MzUyLC01ODQwMzE5ODNdfQ==
 -->
