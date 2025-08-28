@@ -890,6 +890,76 @@ Poiché la proprietà è non banale, per il Teorema di Rice, l'insieme `S4` è *
 
 ## Es 6
 
+Dato un linguaggio `L` definito su un alfabeto `I`, si consideri l’ipotetica macchina di Turing `ML` a k nastri, che ignora la stringa in input e stampa sul nastro di output la sequenza `l₀ ⋄ l₁ ⋄ l₂ ⋄ ...`, dove `lᵢ ∈ L`, `i ∈ N` e `⋄` è un simbolo separatore. Le parole di `L` compaiono una ed una sola volta nell’output di `ML`, in un ordine non noto a priori.
+
+1.  Si dimostri che, se `ML` esiste, allora `L` è **semi-decidibile**.
+2.  Si consideri il caso in cui `ML` esiste e le parole `lᵢ ∈ L` compaiono in **ordine lessicografico** nel nastro di output di `ML`. Si indichi se `L` è decidibile, semi-decidibile o indecidibile e lo si dimostri.
+
+---
+
+### **Concetti Chiave**
+
+*   **Enumeratore:** La macchina `ML` descritta è ciò che in teoria della computabilità si chiama un **enumeratore** per il linguaggio `L`. Un enumeratore è una macchina che "sforna" uno dopo l'altro tutti gli elementi di un insieme, in un qualche ordine.
+*   **Semi-decidibile (o Ricorsivamente Enumerabile):** Un linguaggio `L` è semi-decidibile se esiste un algoritmo che, data una stringa `w`, si ferma e risponde "sì" se `w ∈ L`. Se `w ∉ L`, l'algoritmo può non terminare.
+*   **Decidibile (o Ricorsivo):** Un linguaggio `L` è decidibile se esiste un algoritmo che, data una stringa `w`, si ferma **sempre** e risponde correttamente "sì" (se `w ∈ L`) o "no" (se `w ∉ L`).
+
+Un teorema fondamentale afferma che **un linguaggio è semi-decidibile se e solo se esiste un enumeratore per esso**. Questo esercizio vi chiede, in pratica, di dimostrare le due parti di questo teorema.
+
+---
+
+### **1. Se `ML` esiste, allora `L` è semi-decidibile**
+
+**Obiettivo:** Dobbiamo dimostrare che, avendo a disposizione l'enumeratore `ML`, possiamo costruire un algoritmo (un "semi-decisore") che riconosca le stringhe di `L`.
+
+**Dimostrazione (Costruzione dell'Algoritmo):**
+
+Vogliamo costruire un algoritmo `Semi_Decisore_L(w)` che prende in input una stringa `w` e si comporta così:
+*   Se `w ∈ L`, termina e dice "sì".
+*   Se `w ∉ L`, non termina.
+
+Ecco come possiamo costruirlo usando `ML`:
+
+1.  **Input:** Prendi la stringa `w` da testare.
+2.  **Simulazione:** Avvia una simulazione della macchina `ML`.
+3.  **Monitoraggio:** Man mano che `ML` stampa le parole `l₀, l₁, l₂, ...` sul suo nastro di output, il nostro `Semi_Decisore_L` le esamina una per una.
+4.  **Confronto:** Per ogni parola `lᵢ` stampata da `ML`, confrontala con la nostra stringa di input `w`.
+    *   **Se `lᵢ == w`:** Abbiamo trovato una corrispondenza! La stringa `w` è stata enumerata da `ML`, quindi `w` appartiene a `L`. L'algoritmo `Semi_Decisore_L` si **ferma immediatamente** e restituisce **"sì"**.
+    *   **Se `lᵢ != w`:** Continua la simulazione e passa a esaminare la parola successiva, `lᵢ₊₁`, che `ML` stamperà.
+
+**Analisi del Comportamento dell'Algoritmo:**
+*   **Se `w` è effettivamente in `L`:** Per definizione di `ML`, la parola `w` apparirà sul nastro di output prima o poi. Sarà la k-esima parola, `lₖ`, per qualche `k`. Il nostro algoritmo la troverà, il confronto al passo 4 avrà successo, e la procedura terminerà.
+*   **Se `w` non è in `L`:** Per definizione di `ML`, la parola `w` non apparirà **mai** sul nastro di output. Il nostro algoritmo continuerà a simulare `ML` all'infinito, aspettando una parola che non arriverà mai. Quindi, la procedura non terminerà.
+
+Questo comportamento corrisponde esattamente alla definizione di un linguaggio **semi-decidibile**.
+
+---
+
+### **2. Se `ML` enumera in ordine lessicografico, `L` è decidibile**
+
+**Obiettivo:** L'ordine ora ci dà un'informazione in più. Dobbiamo dimostrare che questa informazione ci permette di costruire un algoritmo che termina **sempre**, sia per le risposte "sì" che per quelle "no".
+
+**Dimostrazione (Costruzione dell'Algoritmo):**
+
+Vogliamo costruire un algoritmo `Decisore_L(w)` che, data una stringa `w`, si ferma sempre e risponde correttamente.
+
+Ecco come possiamo costruirlo:
+
+1.  **Input:** Prendi la stringa `w` da testare.
+2.  **Simulazione:** Avvia una simulazione della macchina `ML`.
+3.  **Monitoraggio e Confronto:** Man mano che `ML` stampa le parole `l₀, l₁, l₂, ...` (che ora sono in ordine lessicografico), confronta ogni `lᵢ` con `w`.
+    *   **Caso A: Troviamo la stringa (`lᵢ == w`)**
+        *   Abbiamo la prova che `w` appartiene a `L`. L'algoritmo si **ferma** e restituisce **"sì"**.
+
+    *   **Caso B: Troviamo una stringa più grande (`lᵢ > w` in ordine lessicografico)**
+        *   Poiché `ML` sta stampando le parole in ordine, se ha stampato una parola `lᵢ` che viene *dopo* `w` nell'ordinamento, significa che `w` **non può più comparire**. Se `w` fosse in `L`, sarebbe dovuta apparire prima di `lᵢ`.
+        *   Abbiamo la prova che `w` **non** appartiene a `L`. L'algoritmo si **ferma** e restituisce **"no"**.
+
+**Analisi del Comportamento dell'Algoritmo:**
+Questo algoritmo **termina sempre**. Perché?
+*   **Se `w ∈ L`:** Prima o poi `ML` stamperà `w`, e l'algoritmo terminerà (Caso A).
+*   **Se `w ∉ L`:** O `L` è finito (e `ML` si fermerà, permettendoci di concludere), oppure `L` è infinito. Se `L` è infinito, `ML` continuerà a stampare parole sempre più grandi. Prima o poi, stamperà una parola `lᵢ` che è lessicograficamente più grande di `w`. A quel punto, l'algoritmo terminerà (Caso B).
+
+Poiché abbiamo costruito un algoritmo che termina sempre e dà la risposta corretta, il linguaggio `L` è **decidibile**.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -2502,11 +2572,11 @@ La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conosc
         
     -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYxOTM5OTM1MCwxODc1NDQ4ODkyLDIwMz
-czOTMzLC02OTcwNDA0ODksLTE0NjEyMzE4MjksMTI3NzYwODk0
-MywtMTkzMzY3MzI3MywtNzA5MjY0MTEwLC02OTU1MzIwNywtMz
-MxNTU2MTQsNTgzODM4MTE3LDE2NzU4MDM3NjMsLTE0ODkzOTUx
-OTksLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nzg5NDE3NCw5Nz
-IxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1MiwtNTg0MDMxOTgz
-XX0=
+eyJoaXN0b3J5IjpbOTc1MDM2NjA0LDE4NzU0NDg4OTIsMjAzNz
+M5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQz
+LC0xOTMzNjczMjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMz
+E1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5
+OSwtNTkwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3Mj
+EyMjI5LC0yNDM4Mjg2NTgsMzk5ODY0MzUyLC01ODQwMzE5ODNd
+fQ==
 -->
