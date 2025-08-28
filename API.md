@@ -1031,10 +1031,9 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 *   La grammatica fornita nella soluzione `S → ε | bS | b | aA | a`, `A→bS |b|aB |a`, `B →bS|b` è una formalizzazione di questa logica ed è corretta.
 
 # DATO AUTOMA(DISEGNO)
-!(https://github.com/Tiopio01/API/blob/master/image.png)
-
+![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMjI5NTA0NSwzOTk4NjQzNTIsLTU4ND
+eyJoaXN0b3J5IjpbLTI0MzgyODY1OCwzOTk4NjQzNTIsLTU4ND
 AzMTk4M119
 -->
