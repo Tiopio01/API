@@ -1170,7 +1170,96 @@ Questa è l'ultima fase di conteggio. Gestisce `aʷ`, con `w > 0`.
     *   **Significato:** "Dopo aver letto tutto l'input (transizione `ε`), se in cima alla pila c'è solo `Z₀`, significa che `x+2y` era uguale a `z+w`. La stringa è valida. Accetta."
 
 
+## Es 4
 
+Si consideri il linguaggio `L = {uwwRv | u,v,w ∈ {a,b}+}`.
+
+1.  Utilizzare un formalismo a potenza minima (tra tutti quelli visti a lezione) che caratterizzi il linguaggio `L`.
+2.  Cambierebbe il formalismo a potenza minima se il linguaggio fosse `L' = {wwRv | v,w ∈ {a,b}+}`?
+
+---
+
+### **Spiegazione e Analisi del Punto 1 (Linguaggio L)**
+
+#### **Passo 1: Comprendere la Struttura di L**
+
+Il linguaggio `L` è composto da stringhe formate da quattro parti:
+*   `u`: una stringa non vuota all'inizio.
+*   `w`: una stringa non vuota.
+*   `wR`: la stringa `w` letta al contrario (la sua "immagine speculare").
+*   `v`: una stringa non vuota alla fine.
+
+A prima vista, la presenza di `wwR` fa subito pensare a un linguaggio libero dal contesto (context-free), poiché riconoscere `wwR` è un compito classico per un automa a pila. Tuttavia, dobbiamo analizzare la struttura più attentamente.
+
+#### **Passo 2: L'Intuizione Fondamentale della Soluzione**
+
+La soluzione fa un'osservazione cruciale: **ogni stringa che si può generare con un `w` di lunghezza maggiore di 1, si può anche generare con un `w` di lunghezza 1.**
+
+Verifichiamo questa affermazione.
+*   Sia `w` una stringa con `|w| > 1`. Ad esempio, `w = "aba"`. Allora `wR = "aba"`. Il pezzo centrale della stringa sarebbe `wwR = "abaaba"`.
+*   Una stringa completa in `L` potrebbe essere `u(abaaba)v`, ad esempio con `u="b"` e `v="a"`, ottenendo `babaabaa`.
+*   La soluzione afferma che questa stessa stringa `babaabaa` può essere ottenuta con un `w'` di lunghezza 1. Come?
+    *   Notiamo che `wwR` contiene sempre una coppia di lettere uguali al centro: se `w = c₁c₂...cₖ`, allora `wwR = c₁...cₖcₖ...c₁`. La parte `cₖcₖ` è sempre `aa` o `bb`.
+    *   Nella nostra stringa `babaabaa`, la sottostringa `wwR = "abaaba"` contiene "aa" al centro.
+    *   Possiamo "ridefinire" le parti della stringa:
+        *   Scegliamo il `w'` di lunghezza 1: `w' = "a"`. Quindi `w'w'R = "aa"`.
+        *   La parte prima di `"aa"` diventa il nuovo `u'`: `u' = "babaab"`.
+        *   La parte dopo `"aa"` diventa il nuovo `v'`: `v' = "a"`.
+    *   Poiché sia `u'` che `v'` sono non vuoti, questa è una scomposizione valida. La stringa `babaabaa` appartiene anche al sotto-linguaggio generato con `w` di lunghezza 1.
+
+Questo "collasso" funziona sempre. Poiché `u` e `v` devono esistere e possono "assorbire" qualsiasi carattere, la vera condizione per l'appartenenza a `L` si riduce a trovare una sottostringa `aa` o `bb` che non sia né all'inizio né alla fine della stringa.
+
+#### **Passo 3: Semplificazione e Formalismo**
+
+Il linguaggio `L` è quindi equivalente a:
+`L = {u(aa)v | u,v ∈ {a,b}+} ∪ {u(bb)v | u,v ∈ {a,b}+}`
+
+Questo è il linguaggio di tutte le stringhe che contengono `aa` o `bb` come sottostringa, precedute e seguite da almeno un carattere. Questo linguaggio è **regolare**.
+
+*   **Espressione Regolare:** `(a|b)+(aa|bb)(a|b)+`
+*   **Formalismo a Potenza Minima:** Poiché il linguaggio è regolare, il formalismo a potenza minima è uno qualsiasi tra:
+    *   Automa a Stati Finiti (FSA)
+    *   Grammatica Regolare (Tipo 3)
+    *   Espressione Regolare
+    *   **Logica Monadica del Primo Ordine (MFO)**, che è un formalismo equivalente ai precedenti.
+
+La soluzione sceglie la **MFO**. La formula fornita descrive perfettamente il linguaggio:
+`∃x(x > 0 ∧ (a(x)∧a(x+1) ∨ b(x)∧b(x+1)) ∧ ¬last(x+1))`
+*   `∃x`: "Esiste una posizione x..."
+*   `x > 0`: "...che non è l'inizio della stringa" (garantisce che `u` non sia vuoto).
+*   `(a(x)∧a(x+1) ∨ b(x)∧b(x+1))`: "...tale che in posizione x e x+1 ci sia 'aa' oppure 'bb'".
+*   `¬last(x+1)`: "...e la posizione x+1 non è la fine della stringa" (garantisce che `v` non sia vuoto).
+
+---
+
+### **Spiegazione e Analisi del Punto 2 (Linguaggio L')**
+
+#### **Passo 1: Comprendere la Struttura di L'**
+
+Il linguaggio `L'` è ` {wwRv | v,w ∈ {a,b}+}`.
+L'unica differenza è la **rimozione del prefisso `u`**. La stringa deve iniziare direttamente con `wwR`.
+
+#### **Passo 2: Il "Collasso" Funziona Ancora?**
+
+La risposta è **no**. Vediamo perché.
+*   Consideriamo la stringa `abbaa` che è in `L'` con `w="ab"` e `v="a"`.
+*   Se provassimo a re-interpretarla con un `w'` di lunghezza 1, diciamo `w'="a"`, allora la stringa dovrebbe iniziare con `w'w'R = "aa"`. Ma `abbaa` inizia con `a`, non con `aa`.
+*   Se provassimo con `w'="b"`, la stringa dovrebbe iniziare con `w'w'R = "bb"`. Ma `abbaa` non inizia con `bb`.
+
+La rimozione del prefisso `u` ha bloccato la nostra capacità di "ridefinire" le parti della stringa. La struttura `wwR` all'inizio deve essere rispettata per il `w` originale.
+
+#### **Passo 3: Requisiti e Formalismo**
+
+Per riconoscere `L'`, un automa deve:
+1.  Leggere una porzione iniziale della stringa, `w`.
+2.  Memorizzare `w` in qualche modo.
+3.  Indovinare (non deterministicamente) il punto esatto in cui `w` finisce e `wR` inizia.
+4.  Leggere la porzione successiva, `wR`, e verificare che sia l'immagine speculare di `w` usando la memoria.
+5.  Verificare che ci sia una parte finale `v` non vuota.
+
+Questo processo richiede una memoria illimitata (la pila) e non determinismo.
+
+*   **Formalismo a Potenza Minima:** Il modello necessario è un **Automa a Pila Non Deterministico (NPDA)**. Il linguaggio `L'` è **libero dal contesto e non regolare**. La grammatica a potenza minima sarebbe una **Grammatica Libera dal Contesto (Context-Free Grammar)**.
 
 
 # FUNZIONI CALCOLABILI(DECIDIBILI)
@@ -1813,8 +1902,9 @@ Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evide
 
 La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY5NTUzMjA3LC0zMzE1NTYxNCw1ODM4Mz
-gxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNTkwMDgxMTc1
-LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mj
-g2NTgsMzk5ODY0MzUyLC01ODQwMzE5ODNdfQ==
+eyJoaXN0b3J5IjpbLTcwOTI2NDExMCwtNjk1NTMyMDcsLTMzMT
+U1NjE0LDU4MzgzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5
+LC01OTAwODExNzUsLTE0NDQxMDIwMTEsNDc4OTQxNzQsOTcyMT
+IyMjksLTI0MzgyODY1OCwzOTk4NjQzNTIsLTU4NDAzMTk4M119
+
 -->
