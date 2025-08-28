@@ -2571,8 +2571,68 @@ La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conosc
     -   **Il problema si riduce a: "L'insieme vuoto è decidibile?"** La risposta è **sì**. L'algoritmo per deciderlo è banale: "Dato un qualsiasi indice i, rispondi sempre 'no'". Questo algoritmo termina sempre ed è sempre corretto.
         
     -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
+  
+  ## Es 3
+
+
+
+Si consideri il linguaggio L = {0ⁿ | n ∈ N e 0ⁿ appare nell’espansione decimale di π}.
+Il linguaggio L è regolare? Si motivi esaurientemente la risposta.
+
+---
+
+
+
+Il linguaggio `L` è un insieme di stringhe. Le uniche stringhe che possono appartenere a `L` sono quelle composte solo da zeri (es. "0", "00", "00000", e anche la stringa vuota ε, che corrisponde a n=0, cioè una sequenza di zero zeri).
+
+La condizione per cui una di queste stringhe appartiene a `L` è che quella sequenza di zeri deve apparire da qualche parte nei decimali di π (3.14159...).
+
+*   **Esempio 1:** La stringa "0" appartiene a L? Dobbiamo cercare se c'è almeno uno "0" nei decimali di π. Sì, c'è (la 32ª cifra decimale è uno 0). Quindi "0" ∈ L.
+*   **Esempio 2:** La stringa "000000" appartiene a L? Sì, è famoso il "punto di Feynman", una sequenza di sei 9 consecutivi che inizia alla 762ª cifra decimale. Allo stesso modo, si sa che esistono sequenze di zeri.
+*   **Esempio 3:** La stringa "0000000000" (dieci zeri) appartiene a L? E una stringa con un miliardo di zeri?
+
+Qui sta il punto cruciale: **la matematica non sa ancora con certezza se π sia un "numero normale"**, cioè un numero la cui espansione decimale contiene ogni possibile sequenza finita di cifre. Si sospetta di sì, ma non è stato dimostrato.
+
+---
+
+### **Spiegazione della Soluzione: Il Ragionamento per Casi**
+
+Poiché non conosciamo la risposta definitiva sulla natura di π, l'unico modo per risolvere il problema è considerare **tutte le possibilità logiche**. Per la sequenza di zeri in π, ci sono solo due scenari possibili nell'universo:
+
+#### **Caso 1: Esiste una sequenza "massima" di zeri.**
+
+*   **Cosa significa:** Immaginiamo che un giorno un matematico scopra che la più lunga sequenza di zeri consecutivi che appare in π abbia, ad esempio, lunghezza 15 (`k=15`). Questo significherebbe che la stringa `0¹⁵` si trova in π, ma la stringa `0¹⁶` non si troverà mai, per quanto si continui a calcolare le cifre.
+*   **Come sarebbe fatto `L` in questo caso?** Se esistesse un tale limite `k`, il nostro linguaggio `L` sarebbe composto da un numero **finito** di stringhe:
+    `L = {ε, "0", "00", "000", ..., "0ᵏ"}`
+*   **Questo linguaggio è regolare? SÌ.** Un teorema fondamentale della teoria dei linguaggi formali afferma che **tutti i linguaggi finiti sono regolari**. Un linguaggio finito può sempre essere descritto da un'espressione regolare semplicemente elencando tutte le sue stringhe, separate dal simbolo di unione `|`. Come dice la soluzione:
+    `Espressione Regolare: ε | 0 | 00 | ... | 0ᵏ`
+    Poiché in questo scenario `L` è un linguaggio finito, `L` sarebbe regolare.
+
+#### **Caso 2: Non esiste una sequenza "massima" di zeri.**
+
+*   **Cosa significa:** Questo scenario corrisponde alla credenza (non provata) che π sia un numero normale. Significherebbe che per qualsiasi lunghezza `n` tu possa immaginare (un milione, un miliardo, un trilione), prima o poi, se calcoli abbastanza cifre di π, troverai una sequenza di `n` zeri consecutivi.
+*   **Come sarebbe fatto `L` in questo caso?** Il nostro linguaggio `L` conterrebbe tutte le possibili stringhe di zeri, di qualsiasi lunghezza:
+    `L = {ε, "0", "00", "000", "0000", ...}` (un insieme infinito)
+*   **Questo linguaggio è regolare? SÌ.** Questo insieme è esattamente il linguaggio descritto dalla famosissima espressione regolare:
+    `Espressione Regolare: 0*`
+    (che significa "zero o più occorrenze del simbolo 0").
+    Poiché in questo scenario `L` può essere descritto da un'espressione regolare, `L` sarebbe regolare.
+
+---
+
+### **Conclusione Finale**
+
+Abbiamo analizzato i due unici scenari logicamente possibili per la natura del linguaggio `L`:
+1.  O `L` è un linguaggio finito (se c'è un limite agli zeri in π).
+2.  O `L` è il linguaggio `0*` (se non c'è un limite).
+
+In **entrambi i casi**, il linguaggio risultante è **regolare**.
+
+Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è destinato a essere regolare, possiamo concludere con certezza che **SÌ, il linguaggio L è regolare**.
+
+La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTc1MDM2NjA0LDE4NzU0NDg4OTIsMjAzNz
+eyJoaXN0b3J5IjpbODEyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNz
 M5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQz
 LC0xOTMzNjczMjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMz
 E1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5
