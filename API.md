@@ -1716,9 +1716,12 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ## Es1
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/Cattura.JPG)
+
+## INDEFINITO
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMzMTU1NjE0LDU4MzgzODExNywxNjc1OD
-AzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODExNzUsLTE0NDQxMDIw
-MTEsNDc4OTQxNzQsOTcyMTIyMjksLTI0MzgyODY1OCwzOTk4Nj
-QzNTIsLTU4NDAzMTk4M119
+eyJoaXN0b3J5IjpbNzMyMTQwNDg1LC0zMzE1NTYxNCw1ODM4Mz
+gxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNTkwMDgxMTc1
+LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mj
+g2NTgsMzk5ODY0MzUyLC01ODQwMzE5ODNdfQ==
 -->
