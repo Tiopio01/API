@@ -894,6 +894,164 @@ La regola di partenza `S` compie una scelta non deterministica: può iniziare un
 **Conclusione Finale:**
 La grammatica, tramite la scelta non deterministica iniziale, genera l'unione dei due linguaggi: quello delle stringhe di lunghezza pari e quello delle stringhe di lunghezza multipla di 3. Pertanto, genera correttamente il linguaggio `L`.
 
+## Es 2
+Certamente! Analizziamo questo esercizio passo dopo passo per determinare la classe del linguaggio e costruire l'automa appropriato.
+
+### 1. Analisi del Linguaggio e Classificazione
+
+Il linguaggio `L` è definito come l'unione di tre linguaggi separati:
+*   `L1 = {aⁿ(bc)ⁿ | n ≥ 2}`
+*   `L2 = {bⁿ(ca)ⁿ | n ≥ 1}`
+*   `L3 = (abc)⁺`
+
+Per classificare `L`, dobbiamo prima classificare ciascuno dei suoi componenti e poi considerare le proprietà di chiusura della classe di linguaggi risultante.
+
+#### Analisi dei Sotto-Linguaggi
+
+*   **L1 = {aⁿ(bc)ⁿ | n ≥ 2}**:
+    Questo linguaggio richiede di "contare" il numero di `a` iniziali e assicurarsi che corrisponda esattamente al numero di blocchi `bc` successivi. Ad esempio, `aabcbc` (n=2) e `aaabcbcbc` (n=3) sono in L1. Un automa a stati finiti (FSA) non può riconoscere questo linguaggio perché ha una memoria finita e non può tenere traccia di un conteggio `n` arbitrariamente grande. Tuttavia, un **automa a pila (PDA)** può riconoscerlo (spingendo un simbolo sulla pila per ogni `a` e estraendone uno per ogni blocco `bc`). Pertanto, **L1 è un linguaggio libero dal contesto (Context-Free) ma non regolare**.
+
+*   **L2 = {bⁿ(ca)ⁿ | n ≥ 1}**:
+    Il ragionamento è identico a quello per L1. Anche qui è necessario un conteggio che va oltre le capacità di un FSA. Ad esempio, `bca` (n=1) e `bbcaca` (n=2) sono in L2. Anche questo linguaggio è **libero dal contesto (Context-Free) ma non regolare**.
+
+*   **L3 = (abc)⁺**:
+    Questo linguaggio è descritto da un'**espressione regolare**. Tutti i linguaggi che possono essere descritti da un'espressione regolare sono, per definizione, **regolari**. Un semplice FSA a 3 stati può riconoscerlo. Poiché tutti i linguaggi regolari sono anche liberi dal contesto, L3 è sia regolare che context-free.
+
+#### Classificazione del Linguaggio L
+
+Il linguaggio `L` è l'unione di L1, L2 e L3. Le classi di linguaggi hanno le seguenti proprietà di chiusura:
+*   I linguaggi regolari sono chiusi rispetto all'unione.
+*   I linguaggi liberi dal contesto sono chiusi rispetto all'unione.
+
+Poiché `L` è l'unione di due linguaggi context-free (L1, L2) e un linguaggio regolare (L3, che è anche context-free), il linguaggio risultante `L` è garantito essere **libero dal contesto (Context-Free)**.
+
+**L non è regolare**. Possiamo dimostrarlo facilmente. Se `L` fosse regolare, allora la sua intersezione con un altro linguaggio regolare dovrebbe essere anch'essa regolare. Consideriamo l'intersezione di `L` con il linguaggio regolare `a*(bc)*`:
+`L ∩ a*(bc)* = L1`
+Abbiamo già stabilito che L1 non è regolare. Poiché l'intersezione ha prodotto un linguaggio non regolare, il linguaggio originale `L` non può essere regolare.
+
+**Motivazione e Conclusione:**
+Il linguaggio L appartiene alla classe dei **linguaggi liberi dal contesto (Context-Free Languages)**. Questo perché è l'unione di tre linguaggi (L1, L2, L3) che sono tutti context-free, e questa classe è chiusa rispetto all'unione. Tuttavia, poiché almeno uno dei suoi componenti (L1) non è regolare, L non è un linguaggio regolare.
+
+---
+
+### 2. Costruzione dell'Automa a Potenza Minima
+
+Poiché `L` è un linguaggio libero dal contesto ma non regolare, il modello formale a potenza minima in grado di riconoscerlo è un **Automa a Pila non deterministico (NPDA)**.
+
+La strategia di costruzione si basa sul non determinismo:
+1.  Dallo stato iniziale, l'automa "indovina" non deterministicamente a quale dei tre sotto-linguaggi (L1, L2 o L3) la stringa di input potrebbe appartenere.
+2.  Transita quindi in una "sezione" dell'automa dedicata a riconoscere specificamente quel sotto-linguaggio.
+
+Di seguito è riportato il diagramma di un NPDA che riconosce `L`. `Z₀` è il simbolo iniziale della pila.
+
+
+
+### **Guida al Disegno dell'Automa a Pila**
+
+#### **Elementi di Base**
+
+1.  **Stati:** Disegna 12 cerchi. Etichettali da `q₀` a `q₁₁`.
+2.  **Stato Iniziale:** Disegna una freccia che punta verso `q₀` senza partire da nessun altro stato.
+3.  **Stati Finali:** Disegna un secondo cerchio concentrico attorno a `q₉` e `q_f`. Questi sono gli stati di accettazione.
+4.  **Simbolo Iniziale Pila:** Assumiamo che all'inizio la pila contenga solo il simbolo `Z₀`.
+
+---
+
+### **Disegno delle Transizioni (Frecce e Loro Etichette)**
+
+#### **PARTE 1: La Scelta Non Deterministica Iniziale**
+
+Dal tuo stato iniziale `q₀`, devi "indovinare" quale tipo di stringa stai per leggere. Questo si fa con transizioni `ε` (che non consumano input).
+
+*   **Freccia da `q₀` a `q₁` (Percorso per L1):**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "Senza leggere nulla dall'input, se in cima alla pila c'è `Z₀`, lascialo lì e passa allo stato `q₁` per provare a riconoscere una stringa di tipo `aⁿ(bc)ⁿ`."
+
+*   **Freccia da `q₀` a `q₅` (Percorso per L2):**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "Scegli il percorso per riconoscere una stringa di tipo `bⁿ(ca)ⁿ`."
+
+*   **Freccia da `q₀` a `q₇` (Percorso per L3):**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "Scegli il percorso per riconoscere una stringa di tipo `(abc)⁺`."
+
+---
+
+#### **PARTE 2: Disegno del Percorso per L1 = {aⁿ(bc)ⁿ | n ≥ 2}**
+
+Questo percorso deve contare almeno due `a` e poi abbinarle a coppie `bc`.
+
+*   **Freccia da `q₁` a `q₂`:**
+    *   **Etichetta:** `a, Z₀ / AZ₀`
+    *   **Significato:** "Leggi la prima `a`. Estrai `Z₀` e spingi `A` (il nostro contatore) e poi `Z₀`."
+
+*   **Freccia da `q₂` a `q₃`:**
+    *   **Etichetta:** `a, A / AA`
+    *   **Significato:** "Leggi la seconda `a`. Estrai un `A` e spingi due `A`. Ora la condizione `n≥2` è soddisfatta."
+
+*   **Freccia da `q₃` che torna su se stesso (loop):**
+    *   **Etichetta:** `a, A / AA`
+    *   **Significato:** "Per ogni `a` successiva, continua a spingere contatori `A` sulla pila."
+
+*   **Freccia da `q₃` a `q₄`:**
+    *   **Etichetta:** `b, A / ε`
+    *   **Significato:** "Inizia la fase di confronto. Leggi una `b` ed estrai (pop) un contatore `A` dalla pila."
+
+*   **Freccia da `q₄` a `q₃`:**
+    *   **Etichetta:** `c, X / X` (shorthand per `c, A/A` e `c, Z₀/Z₀`)
+    *   **Significato:** "Leggi la `c` corrispondente alla `b` precedente. Lascia la pila com'è. Torna in `q₃` per cercare la prossima coppia `bc`."
+    *   *Nota: Ho usato `X/X` per semplicità, significa "non modificare la pila". Nello standard rigoroso, dovresti disegnare due frecce separate: una con `c, A / A` e una con `c, Z₀ / Z₀`.*
+
+*   **Freccia da `q₃` allo stato finale `q_f`:**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "Se l'input è finito e in cima alla pila c'è solo `Z₀` (tutti gli `A` sono stati consumati), allora la stringa è valida. Accetta."
+
+---
+
+#### **PARTE 3: Disegno del Percorso per L2 = {bⁿ(ca)ⁿ | n ≥ 1}**
+
+La logica è simmetrica a quella di L1.
+
+*   **Freccia da `q₅` che torna su se stesso (loop):**
+    *   **Etichetta:** Metti due etichette su questa freccia:
+        1.  `b, Z₀ / BZ₀` (per la prima `b`, `n=1`)
+        2.  `b, B / BB` (per le `b` successive)
+    *   **Significato:** "Leggi una o più `b` e spingi un contatore `B` per ciascuna."
+
+*   **Freccia da `q₅` a `q₆`:**
+    *   **Etichetta:** `c, B / ε`
+    *   **Significato:** "Leggi una `c` ed estrai (pop) un contatore `B` dalla pila."
+
+*   **Freccia da `q₆` a `q₅`:**
+    *   **Etichetta:** `a, X / X`
+    *   **Significato:** "Leggi la `a` corrispondente alla `c`. Lascia la pila com'è. Torna in `q₅` per cercare la prossima coppia `ca`."
+
+*   **Freccia da `q₅` allo stato finale `q_f`:**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "Se l'input è finito e la pila è vuota, la stringa è valida. Accetta."
+
+---
+
+#### **PARTE 4: Disegno del Percorso per L3 = (abc)⁺**
+
+Questo percorso è regolare, quindi la pila non viene usata attivamente.
+
+*   **Freccia da `q₇` a `q₈`:**
+    *   **Etichetta:** `a, X / X`
+    *   **Significato:** "Leggi una `a`, non toccare la pila."
+
+*   **Freccia da `q₈` a `q₉`:**
+    *   **Etichetta:** `b, X / X`
+    *   **Significato:** "Leggi una `b`, non toccare la pila."
+
+*   **Freccia da `q₉` a `q₇`:**
+    *   **Etichetta:** `c, X / X`
+    *   **Significato:** "Leggi una `c`, non toccare la pila, e torna all'inizio del ciclo per cercare un altro `abc`."
+
+Ricorda di disegnare `q₉` come **stato finale**, perché dopo ogni `abc` completo la stringa è valida.
+
+
+
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
 ## Es1
@@ -1340,7 +1498,7 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nz
-g5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1Miwt
-NTg0MDMxOTgzXX0=
+eyJoaXN0b3J5IjpbLTcwMjkwOTU0NywtNTkwMDgxMTc1LC0xND
+Q0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mjg2NTgs
+Mzk5ODY0MzUyLC01ODQwMzE5ODNdfQ==
 -->
