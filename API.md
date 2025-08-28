@@ -807,6 +807,86 @@ Poiché la proprietà è semantica e non banale, il Teorema di Rice si applica.
 
 **Conclusione:**
 Il problema è **indecidibile**. Per il Teorema di Rice, non esiste un algoritmo generale in grado di prendere un programma arbitrario `G'` e decidere se possiede la proprietà descritta. Non possiamo semplicemente "eseguire" `G'` come facevamo prima, perché dovremmo testarlo su un'infinità di input `(A', S')` per essere sicuri del suo comportamento universale.
+
+## ES 5
+### **Concetti Fondamentali**
+
+*   **Insieme Ricorsivo (o Decidibile):** Un insieme `S` è ricorsivo se esiste un algoritmo (una Macchina di Turing) che, per qualsiasi input `i`, termina **sempre** e risponde correttamente "Sì" (se `i ∈ S`) o "No" (se `i ∉ S`).
+*   **Teorema di Rice:** Afferma che qualsiasi proprietà **non banale** del **comportamento** (la funzione calcolata) di una Macchina di Turing è indecidibile. Per applicare il teorema, dobbiamo verificare due condizioni:
+    1.  **La proprietà è "semantica":** Riguarda la funzione che la macchina calcola (`fᵢ`), non le caratteristiche interne della macchina (es. numero di stati, simboli sul nastro). Tutti i problemi in questo esercizio soddisfano questa condizione.
+    2.  **La proprietà è "non banale":** L'insieme non deve essere né vuoto né l'insieme di *tutti* gli indici. In altre parole, deve esistere almeno una MT che ha la proprietà e almeno una che non ce l'ha.
+
+---
+
+### **1. S1 = {i | ∃x : fᵢ(x) > 0}**
+
+*   **Definizione in linguaggio naturale:** `S1` è l'insieme degli indici `i` delle Macchine di Turing la cui funzione `fᵢ` produce un risultato **positivo** per almeno un input `x`.
+*   **Risposta:** L'insieme **non è ricorsivo**.
+
+**Motivazione (Applicazione del Teorema di Rice):**
+Dobbiamo solo verificare che la proprietà "produrre almeno un output positivo" sia non banale.
+
+1.  **Esiste una MT che HA questa proprietà?**
+    *   Sì. Consideriamo la funzione costante `f(x) = 1`. Questa funzione è banalmente calcolabile. Il suo output è sempre `1`, che è un numero positivo. L'indice della MT che calcola questa funzione appartiene a `S1`.
+
+2.  **Esiste una MT che NON HA questa proprietà?**
+    *   Sì. Consideriamo la funzione costante `g(x) = 0`. Anche questa è calcolabile. Il suo output è sempre `0`, che non è un numero positivo. L'indice della MT che calcola `g(x)` **non** appartiene a `S1`.
+
+Poiché la proprietà è non banale (e semantica), per il Teorema di Rice, l'insieme `S1` è **non ricorsivo**.
+
+---
+
+### **2. S2 = {i | ∃x : fᵢ(x) ≤ 0}**
+
+*   **Definizione in linguaggio naturale:** `S2` è l'insieme degli indici `i` delle Macchine di Turing la cui funzione `fᵢ` produce un risultato **non positivo** (nullo o negativo) per almeno un input `x`.
+*   **Risposta:** L'insieme **non è ricorsivo**.
+
+**Motivazione (Applicazione del Teorema di Rice):**
+Il ragionamento è identico al precedente. Verifichiamo la non banalità.
+
+1.  **Esiste una MT che HA questa proprietà?**
+    *   Sì. La funzione costante `g(x) = 0` è calcolabile e il suo output `0` soddisfa la condizione `≤ 0`. L'indice della MT che la calcola appartiene a `S2`.
+
+2.  **Esiste una MT che NON HA questa proprietà?**
+    *   Sì. La funzione costante `f(x) = 1` è calcolabile e il suo output `1` non soddisfa mai la condizione `≤ 0`. L'indice della MT che la calcola **non** appartiene a `S2`.
+
+Poiché la proprietà è non banale, per il Teorema di Rice, l'insieme `S2` è **non ricorsivo**.
+
+---
+
+### **3. S3 = S1 ∪ S2**
+
+*   **Definizione in linguaggio naturale:** `S3` è l'insieme degli indici `i` tali che `i` è in `S1` OPPURE `i` è in `S2`. Questo significa che la funzione `fᵢ` produce un output positivo OPPURE produce un output non positivo. In parole povere, `fᵢ` **deve terminare e produrre un risultato per almeno un input**.
+*   **Risposta:** L'insieme **non è ricorsivo**.
+
+**Motivazione (Applicazione del Teorema di Rice):**
+La proprietà è "avere un dominio non vuoto" (cioè, terminare per almeno un input). Verifichiamo la non banalità.
+
+1.  **Esiste una MT che HA questa proprietà?**
+    *   Sì. Qualsiasi MT che calcola una funzione che termina (come `f(x)=1` o `g(x)=0`) ha questa proprietà. I loro indici sono in `S3`.
+
+2.  **Esiste una MT che NON HA questa proprietà?**
+    *   Sì. Consideriamo una MT che, per qualsiasi input, entra in un loop infinito. Questa macchina calcola la **funzione ovunque non definita**, `h(x) = ⊥`. Questa funzione non produce mai un output, quindi non può produrre né un output positivo né uno non positivo. L'indice della MT che calcola `h(x)` **non** appartiene a `S3`.
+
+Poiché la proprietà è non banale, per il Teorema di Rice, l'insieme `S3` è **non ricorsivo**.
+
+---
+
+### **4. S4 = S1 ∩ S2**
+
+*   **Definizione in linguaggio naturale:** `S4` è l'insieme degli indici `i` tali che `i` è in `S1` AND `i` è in `S2`. Questo significa che la funzione `fᵢ` produce almeno un output positivo **E** almeno un output non positivo. In altre parole, il codominio (l'insieme dei valori di output) della funzione contiene sia valori `> 0` sia valori `≤ 0`.
+*   **Risposta:** L'insieme **non è ricorsivo**.
+
+**Motivazione (Applicazione del Teorema di Rice):**
+Verifichiamo la non banalità.
+
+1.  **Esiste una MT che HA questa proprietà?**
+    *   Sì. Consideriamo la funzione `segno(x)`, che restituisce `1` se `x>0`, `0` se `x=0` e `-1` se `x<0`. Questa funzione è calcolabile. Produce sia output positivi (es. `segno(5)=1`) sia output non positivi (es. `segno(-2)=-1`). L'indice della MT che la calcola appartiene a `S4`.
+
+2.  **Esiste una MT che NON HA questa proprietà?**
+    *   Sì. La funzione costante `f(x) = 1` produce solo output positivi, quindi non appartiene a `S4`. La funzione `g(x)=0` produce solo output non positivi, quindi non appartiene a `S4`.
+
+Poiché la proprietà è non banale, per il Teorema di Rice, l'insieme `S4` è **non ricorsivo**.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -2419,11 +2499,11 @@ La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conosc
         
     -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY4MTU4Mzc3OCwxODc1NDQ4ODkyLDIwMz
-czOTMzLC02OTcwNDA0ODksLTE0NjEyMzE4MjksMTI3NzYwODk0
-MywtMTkzMzY3MzI3MywtNzA5MjY0MTEwLC02OTU1MzIwNywtMz
-MxNTU2MTQsNTgzODM4MTE3LDE2NzU4MDM3NjMsLTE0ODkzOTUx
-OTksLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nzg5NDE3NCw5Nz
-IxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1MiwtNTg0MDMxOTgz
-XX0=
+eyJoaXN0b3J5IjpbOTUyMzA5NjE3LDE4NzU0NDg4OTIsMjAzNz
+M5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQz
+LC0xOTMzNjczMjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMz
+E1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5
+OSwtNTkwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3Mj
+EyMjI5LC0yNDM4Mjg2NTgsMzk5ODY0MzUyLC01ODQwMzE5ODNd
+fQ==
 -->
