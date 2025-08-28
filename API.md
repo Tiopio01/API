@@ -1777,6 +1777,78 @@ La differenza fondamentale rispetto al primo caso è che `i` è una **funzione p
     *   **Passo 5:** Se siamo arrivati fin qui, significa che entrambe le computazioni sono terminate. Calcola la somma `risultato_y + risultato_z` e restituiscila come output.
 
 Questo algoritmo si comporta esattamente come la funzione `i`: termina e restituisce la somma corretta se e solo se entrambe le computazioni `fᵧ(x)` e `f₂(x)` terminano. Poiché esiste un algoritmo che la calcola, **la funzione `i` è calcolabile**.
+
+## Es 7
+
+Si considerino le seguenti funzioni e si dica se sono calcolabili, motivando esaurientemente la risposta:
+
+1.  $f(x) = f_y(x) - 2$, con $y = x+2$
+    *(Nota: se $f_y(x) = \perp$, chiaramente anche $f(x) = \perp$)*
+
+2.  $g(x,y) = \begin{cases} f_{x+y}(y) + 1 & \text{se } M_{x+y} \text{ calcola una funzione totale} \\ 0 & \text{altrimenti} \end{cases}$
+
+*(Nota: $M_k$ è la k-esima Macchina di Turing, e $f_k$ è la funzione da essa calcolata)*
+
+---
+
+### **1. Funzione `f(x)`: È Calcolabile?**
+
+**Risposta:** Sì, la funzione `f(x)` **è calcolabile**.
+
+**Motivazione:**
+
+Questa è una funzione **parziale**: è definita solo se la computazione interna $f_{x+2}(x)$ termina. Un algoritmo che la calcola non deve terminare sempre, ma solo quando la funzione è definita.
+
+Possiamo descrivere un algoritmo (una Macchina di Turing) che calcola `f(x)` nel modo seguente:
+
+1.  **Input:** Prendi in input il numero `x`.
+2.  **Calcola l'indice:** Calcola l'indice della macchina da simulare: `y = x + 2`. Questa è un'operazione aritmetica banale.
+3.  **Trova la macchina:** Accedi all'enumerazione standard `E` di tutte le Macchine di Turing per ottenere la descrizione della macchina `M_y` (cioè `M_{x+2}`).
+4.  **Simula:** Usa una Macchina di Turing Universale per simulare l'esecuzione di `M_{x+2}` sull'input `x`.
+5.  **Gestisci i risultati:**
+    *   **Se la simulazione termina** e produce un risultato `v`, l'algoritmo calcola `v - 2` e restituisce questo valore. Questo corrisponde esattamente alla definizione di `f(x)` nel caso in cui sia definita.
+    *   **Se la simulazione non termina** (cioè $f_{x+2}(x) = \perp$), l'algoritmo che sta eseguendo la simulazione non terminerà a sua volta. Questo corrisponde esattamente alla definizione di `f(x)` nel caso in cui non sia definita (`f(x) = \perp`).
+
+Poiché abbiamo descritto un algoritmo che si comporta esattamente come la funzione `f` in tutti i casi (sia di terminazione che di non terminazione), la funzione `f` è, per definizione, calcolabile.
+
+---
+
+### **2. Funzione `g(x,y)`: È Calcolabile?**
+
+**Risposta:** No, la funzione `g(x,y)` **non è calcolabile**.
+
+**Motivazione (Dimostrazione per Riduzione):**
+
+Questa funzione è **totale** per definizione (restituisce sempre un valore), ma la sua definizione dipende da una proprietà **indecidibile**: stabilire se una generica Macchina di Turing calcola una funzione totale (il **Problema della Totalità**).
+
+Dimostriamo che `g` non è calcolabile usando la tecnica della **riduzione**. Mostreremo che se `g` fosse calcolabile, potremmo usarla per risolvere il Problema della Totalità, il che è impossibile.
+
+1.  **Il Problema Indecidibile Noto:** Il Problema della Totalità chiede: "Data una macchina di Turing `M_k`, la funzione `f_k` è totale (cioè termina per ogni input)?". Questo problema è notoriamente indecidibile.
+
+2.  **Ipotesi per Assurdo:** Supponiamo che `g(x,y)` **sia** calcolabile. Ciò significa che esiste un algoritmo `Calcola_g(x,y)` che termina sempre e restituisce il valore corretto.
+
+3.  **La Riduzione:** Vediamo come usare il nostro ipotetico `Calcola_g` per risolvere il Problema della Totalità.
+    *   Supponiamo che ci venga dato un indice `k` e ci venga chiesto di decidere se la funzione `f_k` è totale.
+    *   Dobbiamo scegliere `x` e `y` in modo intelligente affinché `x+y = k`. La scelta più semplice, come suggerito dalla soluzione, è:
+        *   `y = 1`
+        *   `x = k - 1`
+        *(Questo funziona per ogni `k ≥ 1`. Il caso `k=0` può essere gestito separatamente, non inficia la dimostrazione generale).*
+    *   Ora usiamo il nostro algoritmo `Calcola_g` con questi valori: `Calcola_g(k-1, 1)`.
+
+4.  **Analisi del Risultato:**
+    *   **Caso A:** Se `Calcola_g(k-1, 1)` restituisce `0`.
+        *   Guardando la definizione di `g`, questo accade se e solo se la macchina `M_{(k-1)+1}` (cioè `M_k`) **non** calcola una funzione totale.
+        *   Quindi, possiamo rispondere con certezza: "No, `f_k` non è totale".
+    *   **Caso B:** Se `Calcola_g(k-1, 1)` restituisce un valore diverso da `0` (quindi un valore positivo).
+        *   Guardando la definizione di `g`, questo accade se e solo se la macchina `M_k` **sì** calcola una funzione totale.
+        *   Quindi, possiamo rispondere con certezza: "Sì, `f_k` è totale".
+
+5.  **La Contraddizione:**
+    Abbiamo appena descritto un metodo che, dato un qualsiasi `k`, decide in un tempo finito se `f_k` è totale, sfruttando l'ipotetico algoritmo `Calcola_g`. Questo metodo è un algoritmo che risolve il Problema della Totalità.
+    Ma il Problema della Totalità è indecidibile. Questa è una contraddizione.
+
+6.  **Conclusione:**
+    L'unica assunzione che abbiamo fatto è stata che `g` fosse calcolabile. Poiché questa assunzione porta a una contraddizione, deve essere falsa. Pertanto, **`g(x,y)` non è calcolabile**.
 # DATA FORMULA DESCRIVO LINGUAGGIO
 
 
@@ -1970,9 +2042,9 @@ Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evide
 
 La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MzM2NzMyNzMsLTcwOTI2NDExMCwtNj
-k1NTMyMDcsLTMzMTU1NjE0LDU4MzgzODExNywxNjc1ODAzNzYz
-LC0xNDg5Mzk1MTk5LC01OTAwODExNzUsLTE0NDQxMDIwMTEsND
-c4OTQxNzQsOTcyMTIyMjksLTI0MzgyODY1OCwzOTk4NjQzNTIs
-LTU4NDAzMTk4M119
+eyJoaXN0b3J5IjpbMTM4NTE4NzkyNiwtMTkzMzY3MzI3MywtNz
+A5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3
+LDE2NzU4MDM3NjMsLTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMT
+Q0NDEwMjAxMSw0Nzg5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4
+LDM5OTg2NDM1MiwtNTg0MDMxOTgzXX0=
 -->
