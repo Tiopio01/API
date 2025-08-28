@@ -1713,14 +1713,107 @@ In modo ancora più semplice, una stringa rende vera la formula `F` se e solo se
 *   La grammatica fornita nella soluzione `S → ε | bS | b | aA | a`, `A→bS |b|aB |a`, `B →bS|b` è una formalizzazione di questa logica ed è corretta.
 
 # DATO AUTOMA(DISEGNO)
-## Es1
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/image.png)
 ![enter image description here](https://github.com/Tiopio01/API/blob/master/Cattura.JPG)
 
 ## INDEFINITO
 
+### Traccia dell'Esercizio (formattata per chiarezza)
+
+Sia `L` un linguaggio **decidibile** definito sull’alfabeto `A` e `L̄` il suo complemento. Barrare le caselle opportune e motivare la propria risposta con esempi o dimostrazioni che la supportino.
+
+**a) `L` è infinito.**
+Necessariamente □ Possibilmente □ Mai □
+
+**b) `L̄` è infinito.**
+Necessariamente □ Possibilmente □ Mai □
+
+**c) Se `L` è fissato, il problema di stabilire se `L` è infinito è deciso.**
+Vero □ Falso □ Dipende da L □
+
+---
+
+### Spiegazione e Analisi della Soluzione
+
+#### **a) `L` è infinito.**
+
+**Risposta Corretta:** Possibilmente.
+
+**Motivazione:**
+Un linguaggio è **decidibile** se esiste un algoritmo che, per qualsiasi stringa, termina sempre e dice correttamente se la stringa appartiene o meno al linguaggio. La domanda è: un linguaggio con questa proprietà deve essere per forza infinito? O non può mai esserlo? O a volte sì e a volte no?
+
+Per dimostrare che la risposta è "Possibilmente", dobbiamo fornire due esempi di linguaggi decidibili: uno che sia infinito e uno che sia finito.
+
+1.  **Esempio di linguaggio decidibile e infinito:**
+    *   Consideriamo il linguaggio `L₁ = A*`, cioè l'insieme di **tutte** le stringhe possibili sull'alfabeto `A`.
+    *   Questo linguaggio è chiaramente **infinito** (se `A` non è vuoto).
+    *   È **decidibile**? Sì. L'algoritmo per deciderlo è banale: "Data una stringa `w`, rispondi sempre 'Sì'". Questo algoritmo termina sempre ed è sempre corretto.
+
+2.  **Esempio di linguaggio decidibile e finito:**
+    *   Consideriamo il linguaggio `L₂ = ∅`, cioè il **linguaggio vuoto**, che non contiene alcuna stringa.
+    *   Questo linguaggio è chiaramente **finito** (contiene 0 stringhe).
+    *   È **decidibile**? Sì. L'algoritmo per deciderlo è altrettanto banale: "Data una stringa `w`, rispondi sempre 'No'".
+
+Poiché abbiamo trovato esempi validi per entrambi i casi (finito e infinito), la proprietà non è né necessaria né impossibile. Quindi, è **possibile**.
+
+---
+
+#### **b) `L̄` è infinito.**
+
+**Risposta Corretta:** Possibilmente.
+
+**Motivazione:**
+Qui la domanda è la stessa, ma applicata al complemento `L̄`. Un teorema fondamentale della teoria della computabilità afferma che **se un linguaggio `L` è decidibile, anche il suo complemento `L̄` è decidibile**. (L'algoritmo per `L̄` è: esegui l'algoritmo per `L` e inverti la risposta).
+
+Quindi, possiamo usare i complementi degli esempi precedenti:
+
+1.  **Esempio in cui il complemento è finito:**
+    *   Prendiamo `L = A*`. Abbiamo visto che è decidibile.
+    *   Il suo complemento `L̄` è l'insieme di tutte le stringhe che non sono in `A*`, cioè `∅` (il linguaggio vuoto).
+    *   `L̄ = ∅` è **finito**.
+
+2.  **Esempio in cui il complemento è infinito:**
+    *   Prendiamo `L = ∅`. Abbiamo visto che è decidibile.
+    *   Il suo complemento `L̄` è l'insieme di tutte le stringhe che non sono nel linguaggio vuoto, cioè `A*`.
+    *   `L̄ = A*` è **infinito**.
+
+Ancora una volta, abbiamo trovato esempi validi per entrambi i casi, quindi la risposta è **possibile**.
+
+---
+
+#### **c) Se `L` è fissato, il problema di stabilire se `L` è infinito è deciso.**
+
+**Risposta Corretta:** Dipende da L.
+
+**Motivazione:**
+Questa è la domanda più sottile e interessante. Analizziamola attentamente.
+*   "**`L` è fissato**": Non stiamo parlando di un linguaggio generico, ma di uno specifico, ad esempio "il linguaggio di tutte le stringhe con un numero pari di 'a'".
+*   "**Il problema è deciso**": Un problema è "deciso" se la sua risposta è una costante booleana ("Sì" o "No"), anche se noi non sappiamo quale sia. Un problema con una risposta costante è, per definizione, decidibile (l'algoritmo è semplicemente `return true` o `return false`).
+
+Per un qualsiasi `L` specifico, la proprietà "essere infinito" è una caratteristica intrinseca di `L`. O `L` è infinito (la risposta è "Sì"), o è finito (la risposta è "No"). Non può essere entrambe le cose. Quindi, tecnicamente, per ogni `L` fissato, la risposta è una costante, e il problema è deciso.
+
+Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evidenziano un punto cruciale: **potremmo non essere in grado di determinare quale sia la risposta**.
+
+**Spiegazione dell'esempio dei numeri primi gemelli:**
+1.  **Definizione:** Una coppia di primi gemelli è una coppia di numeri primi `(p, p+2)`, come (11, 13).
+2.  **La Congettura:** La Congettura dei Primi Gemelli afferma che esistono infinite coppie di primi gemelli. Questa è una delle domande più famose e **irrisolte** della matematica.
+3.  **Costruiamo il linguaggio `L`:**
+    `L = {n | esiste una coppia di primi gemelli (p, p+2) con p > n}`.
+    Cioè, `L` contiene un numero `n` se da qualche parte dopo `n` c'è un'altra coppia di primi gemelli.
+
+4.  **`L` è decidibile? SÌ.** Sembra strano, ma lo è. Ci sono solo due possibilità per come è fatto l'universo:
+    *   **Caso A: La congettura è vera.** Esistono infinite coppie di primi gemelli. In questo caso, per *qualsiasi* `n`, troveremo sempre una coppia più grande. Quindi `L` contiene tutti i numeri naturali (`L = ℕ`). Il linguaggio `ℕ` è decidibile.
+    *   **Caso B: La congettura è falsa.** Esiste una coppia di primi gemelli più grande di tutte, `(p_max, p_max+2)`. In questo caso, `L` contiene tutti i numeri `n < p_max`. Per qualsiasi `n ≥ p_max`, non ci sono coppie più grandi. Quindi `L` è un insieme **finito**. Ogni linguaggio finito è decidibile.
+
+    Poiché in entrambi gli scenari possibili `L` risulta essere un linguaggio decidibile, possiamo concludere che `L` **è decidibile**, anche se non sappiamo quale dei due scenari sia quello vero.
+
+5.  **Il problema "L è infinito?" è deciso?**
+    *   Se il Caso A è vero, `L` è infinito. La risposta è "Sì".
+    *   Se il Caso B è vero, `L` è finito. La risposta è "No".
+
+La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzMyMTQwNDg1LC0zMzE1NTYxNCw1ODM4Mz
+eyJoaXN0b3J5IjpbLTY5NTUzMjA3LC0zMzE1NTYxNCw1ODM4Mz
 gxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNTkwMDgxMTc1
 LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mj
 g2NTgsMzk5ODY0MzUyLC01ODQwMzE5ODNdfQ==
