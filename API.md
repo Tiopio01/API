@@ -484,10 +484,6 @@ Una stringa viene accettata se, dopo aver letto l'intera stringa, la pila è vuo
 
 Poiché esiste un automa a pila in grado di riconoscere `L2` (mantenendo un contatore che viene incrementato di 1 per ogni `a` e decrementato di 2 per ogni `b`, o viceversa), il linguaggio `L2` è **libero dal contesto**. Di conseguenza, la grammatica a potenza minima richiesta per generarlo è ancora una **Grammatica Libera dal Contesto**, la stessa classe di quella per `L1`.
 ## Es4
-Certamente! Questo è un ottimo esercizio che combina diverse classi di linguaggi. La chiave è scomporre il problema in parti più semplici, analizzare ciascuna parte, e poi rimettere tutto insieme.
-
-Ecco un'analisi e una soluzione passo dopo passo.
-
 ### Passo 1: Analisi e Scomposizione del Linguaggio
 
 Il linguaggio `L` è definito da un insieme di regole che creano una partizione naturale. Una stringa in `L` può contenere:
@@ -1031,6 +1027,9 @@ Questo algoritmo **termina sempre**. Perché?
 *   **Se `w ∉ L`:** O `L` è finito (e `ML` si fermerà, permettendoci di concludere), oppure `L` è infinito. Se `L` è infinito, `ML` continuerà a stampare parole sempre più grandi. Prima o poi, stamperà una parola `lᵢ` che è lessicograficamente più grande di `w`. A quel punto, l'algoritmo terminerà (Caso B).
 
 Poiché abbiamo costruito un algoritmo che termina sempre e dà la risposta corretta, il linguaggio `L` è **decidibile**.
+
+## ES 7
+
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -2703,11 +2702,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg1MzUzNTYyNyw4MTI3MDA0MjYsMTg3NT
-Q0ODg5MiwyMDM3MzkzMywtNjk3MDQwNDg5LC0xNDYxMjMxODI5
-LDEyNzc2MDg5NDMsLTE5MzM2NzMyNzMsLTcwOTI2NDExMCwtNj
-k1NTMyMDcsLTMzMTU1NjE0LDU4MzgzODExNywxNjc1ODAzNzYz
-LC0xNDg5Mzk1MTk5LC01OTAwODExNzUsLTE0NDQxMDIwMTEsND
-c4OTQxNzQsOTcyMTIyMjksLTI0MzgyODY1OCwzOTk4NjQzNTJd
-fQ==
+eyJoaXN0b3J5IjpbODU2NzQxOTAxLDgxMjcwMDQyNiwxODc1ND
+Q4ODkyLDIwMzczOTMzLC02OTcwNDA0ODksLTE0NjEyMzE4Mjks
+MTI3NzYwODk0MywtMTkzMzY3MzI3MywtNzA5MjY0MTEwLC02OT
+U1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3LDE2NzU4MDM3NjMs
+LTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nz
+g5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1Ml19
+
 -->
