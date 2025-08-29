@@ -551,6 +551,8 @@ Ecco la grammatica completa:
 *   `R → aR | bR | ε`
 *   `E → aEbE | bEaE | ε`
 *   `T → aTaTbT | aTbTaT | bTaTaT | ε`
+
+
 # DECIDIBILITA'
 
 
@@ -2763,11 +2765,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyMTc0ODk0MTYsODEyNzAwNDI2LDE4Nz
-U0NDg4OTIsMjAzNzM5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgy
-OSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC03MDkyNjQxMTAsLT
-Y5NTUzMjA3LC0zMzE1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2
-MywtMTQ4OTM5NTE5OSwtNTkwMDgxMTc1LC0xNDQ0MTAyMDExLD
-Q3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mjg2NTgsMzk5ODY0MzUy
-XX0=
+eyJoaXN0b3J5IjpbMTc1Mjc0NzAzNiwtMTIxNzQ4OTQxNiw4MT
+I3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MDQwNDg5
+LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMyNzMsLT
+cwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4MzgzODEx
+NywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODExNzUsLT
+E0NDQxMDIwMTEsNDc4OTQxNzQsOTcyMTIyMjksLTI0MzgyODY1
+OF19
 -->
