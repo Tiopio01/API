@@ -1029,7 +1029,68 @@ Questo algoritmo **termina sempre**. Perché?
 Poiché abbiamo costruito un algoritmo che termina sempre e dà la risposta corretta, il linguaggio `L` è **decidibile**.
 
 ## ES 7
+Uno stato `q` di una macchina di Turing `M` viene detto **utile** se esiste una stringa `w` tale per cui `q` viene raggiunto durante l'esecuzione di `M` quando `w` si trova in ingresso.
 
+1.  È **decidibile** stabilire, data una macchina di Turing `M` e un suo stato `q`, se `q` sia utile?
+2.  È **semidecidibile** il problema di cui sopra?
+
+---
+
+### **Spiegazione e Analisi della Soluzione**
+
+#### **1. Il problema è decidibile? NO, è indecidibile.**
+
+**Motivazione (Dimostrazione per Riduzione):**
+La soluzione dimostra che il problema è indecidibile usando una tecnica fondamentale chiamata **riduzione**. L'idea è questa: se potessimo risolvere il problema della "utilità di uno stato", potremmo usarlo come "strumento" per risolvere un altro problema che sappiamo già essere impossibile da risolvere. Poiché ciò è assurdo, il nostro strumento non può esistere.
+
+1.  **Il Problema Noto e Impossibile:** Consideriamo il **Problema della Vuotezza (Emptiness Problem)** per le Macchine di Turing. Questo problema chiede: "Dato una MT `M`, il linguaggio che essa accetta, `L(M)`, è vuoto?". Questo problema è notoriamente **indecidibile**. Si può dimostrare con il Teorema di Rice, perché "avere un linguaggio vuoto" è una proprietà non banale del comportamento della macchina.
+
+2.  **L'Ipotesi (per assurdo):** Supponiamo che esista un algoritmo `Is_State_Useful(M, q)` che decide se lo stato `q` di `M` è utile. Questo algoritmo deve terminare sempre e dare la risposta corretta.
+
+3.  **La Riduzione (come usare il nostro strumento):** Vediamo come possiamo usare `Is_State_Useful` per costruire un algoritmo che risolva l'Emptiness Problem.
+    *   Dato una MT `M`, vogliamo sapere se `L(M)` è vuoto.
+    *   Prendiamo lo **stato finale (o di accettazione)** di `M`, chiamiamolo `q_accept`. Se ci sono più stati finali, ne scegliamo uno qualsiasi (o tutti).
+    *   Ora usiamo il nostro ipotetico algoritmo per chiedere: `Is_State_Useful(M, q_accept)`?
+
+4.  **Analisi del Risultato:**
+    *   **Se `Is_State_Useful` risponde "Sì"**: Questo significa che lo stato di accettazione `q_accept` è utile. Per definizione, ciò implica che **esiste almeno una stringa `w`** che, data in input a `M`, porta la macchina a raggiungere lo stato `q_accept`. Raggiungere lo stato di accettazione significa che la stringa `w` viene accettata. Quindi, `L(M)` contiene almeno `w`, e pertanto **`L(M)` non è vuoto**.
+    *   **Se `Is_State_Useful` risponde "No"**: Questo significa che lo stato di accettazione `q_accept` non è utile. Per definizione, ciò implica che **non esiste nessuna stringa `w`** che possa portare la macchina a raggiungere lo stato `q_accept`. Se lo stato di accettazione non è mai raggiungibile, nessuna stringa può essere accettata. Quindi, **`L(M)` è vuoto**.
+
+5.  **La Contraddizione:**
+    Abbiamo appena creato un algoritmo infallibile per decidere l'Emptiness Problem. Ma sappiamo che tale algoritmo non può esistere. La nostra unica assunzione è stata l'esistenza di `Is_State_Useful`. Poiché questa assunzione porta a una contraddizione, essa deve essere falsa.
+
+**Conclusione:** Il problema di stabilire se uno stato è utile **non è decidibile**.
+
+---
+
+#### **2. Il problema è semidecidibile? SÌ.**
+
+**Motivazione (Ricerca Esaustiva tramite Dovetailing):**
+Un problema è **semidecidibile** se possiamo scrivere un algoritmo che si ferma e dice "Sì" per tutte le istanze positive (in questo caso, quando lo stato `q` è effettivamente utile). Se l'istanza è negativa (lo stato non è utile), l'algoritmo può non terminare.
+
+La definizione di "stato utile" ha una struttura esistenziale: "**esiste** una stringa `w`...". Questo è un forte indizio per la semidecidibilità. Dobbiamo solo trovare quella `w`.
+
+1.  **La Sfida:** Non possiamo semplicemente provare tutte le stringhe `w` una dopo l'altra (`a`, `b`, `aa`, `ab`, ...). Se proviamo una stringa `w_i` su cui la macchina `M` va in loop, la nostra ricerca si bloccherebbe per sempre, senza mai provare le stringhe successive.
+
+2.  **La Soluzione (Dovetailing / Enumerazione Diagonale):** Dobbiamo esplorare lo spazio di ricerca infinito (tutte le stringhe e tutti i possibili tempi di esecuzione) in modo da non rimanere mai bloccati. Lo facciamo simulando tutte le computazioni "in parallelo".
+
+**Ecco l'algoritmo di semidecisione:**
+
+1.  **Input:** una MT `M` e uno stato `q`.
+2.  Avvia un processo di ricerca che esplora tutte le coppie `(w, i)`, dove `w` è una stringa di input e `i` è un numero di passi di computazione. La ricerca procede a "ondate":
+    *   **Ondata 1:** Simula `M` sulla 1ª stringa per 1 passo.
+    *   **Ondata 2:** Simula `M` sulla 1ª stringa per 2 passi E sulla 2ª stringa per 1 passo.
+    *   **Ondata 3:** Simula `M` sulla 1ª stringa per 3 passi, sulla 2ª per 2 passi, E sulla 3ª per 1 passo.
+    *   ...e così via.
+
+3.  **Controllo:** Dopo ogni singolo passo di ogni simulazione, controlla lo stato corrente della macchina emulata.
+    *   **Se lo stato corrente è `q`**: Congratulazioni! Hai trovato una stringa `w` e un numero di passi `i` che portano la macchina allo stato `q`. Lo stato è utile. **L'algoritmo si ferma e restituisce "Sì"**.
+
+**Analisi del Comportamento:**
+*   **Se lo stato `q` è utile:** Per definizione, esiste una stringa `w` che raggiunge `q` in un certo numero di passi `k`. La nostra procedura di dovetailing è garantita per raggiungere ed eseguire prima o poi la simulazione di `M` su `w` per `k` passi. A quel punto, troverà lo stato `q` e terminerà.
+*   **Se lo stato `q` non è utile:** Nessuna stringa `w` e nessun numero di passi `i` porterà mai la macchina a raggiungere `q`. La nostra procedura di ricerca non troverà mai una corrispondenza e continuerà a girare all'infinito.
+
+Questo comportamento corrisponde esattamente alla definizione di un problema **semidecidibile**.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -2702,11 +2763,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODU2NzQxOTAxLDgxMjcwMDQyNiwxODc1ND
-Q4ODkyLDIwMzczOTMzLC02OTcwNDA0ODksLTE0NjEyMzE4Mjks
-MTI3NzYwODk0MywtMTkzMzY3MzI3MywtNzA5MjY0MTEwLC02OT
-U1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3LDE2NzU4MDM3NjMs
-LTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMTQ0NDEwMjAxMSw0Nz
-g5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4LDM5OTg2NDM1Ml19
-
+eyJoaXN0b3J5IjpbLTEyMTc0ODk0MTYsODEyNzAwNDI2LDE4Nz
+U0NDg4OTIsMjAzNzM5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgy
+OSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC03MDkyNjQxMTAsLT
+Y5NTUzMjA3LC0zMzE1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2
+MywtMTQ4OTM5NTE5OSwtNTkwMDgxMTc1LC0xNDQ0MTAyMDExLD
+Q3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mjg2NTgsMzk5ODY0MzUy
+XX0=
 -->
