@@ -553,13 +553,6 @@ Ecco la grammatica completa:
 *   `T → aTaTbT | aTbTaT | bTaTaT | ε`
 
 ## ES5
-Certamente! Ecco una soluzione completa e dettagliata dell'esercizio, che include la traccia originale e una guida passo passo per disegnare l'automa finale.
-
----
-
-### **Traccia dell'Esercizio**
-
-**Esercizio 1 (8 punti).**
 Si consideri la seguente grammatica:
 
 $G = \begin{cases} S \to CBS | CS | BS | a \\ CB \to BC \\ CC \to c \\ BB \to b \end{cases}$
@@ -2849,11 +2842,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjMxNjM2OTU3LC0xMjE3NDg5NDE2LDgxMj
-cwMDQyNiwxODc1NDQ4ODkyLDIwMzczOTMzLC02OTcwNDA0ODks
-LTE0NjEyMzE4MjksMTI3NzYwODk0MywtMTkzMzY3MzI3MywtNz
-A5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3
-LDE2NzU4MDM3NjMsLTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMT
-Q0NDEwMjAxMSw0Nzg5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4
-XX0=
+eyJoaXN0b3J5IjpbLTM1MTg0Mjg5MywtMTIxNzQ4OTQxNiw4MT
+I3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MDQwNDg5
+LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMyNzMsLT
+cwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4MzgzODEx
+NywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODExNzUsLT
+E0NDQxMDIwMTEsNDc4OTQxNzQsOTcyMTIyMjksLTI0MzgyODY1
+OF19
 -->
