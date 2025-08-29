@@ -483,6 +483,7 @@ Una stringa viene accettata se, dopo aver letto l'intera stringa, la pila è vuo
     Alla fine la pila non sarà vuota. **Rifiuta**.
 
 Poiché esiste un automa a pila in grado di riconoscere `L2` (mantenendo un contatore che viene incrementato di 1 per ogni `a` e decrementato di 2 per ogni `b`, o viceversa), il linguaggio `L2` è **libero dal contesto**. Di conseguenza, la grammatica a potenza minima richiesta per generarlo è ancora una **Grammatica Libera dal Contesto**, la stessa classe di quella per `L1`.
+## Es4
 
 # DECIDIBILITA'
 
@@ -2632,11 +2633,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODEyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNz
-M5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQz
-LC0xOTMzNjczMjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMz
-E1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5
-OSwtNTkwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3Mj
-EyMjI5LC0yNDM4Mjg2NTgsMzk5ODY0MzUyLC01ODQwMzE5ODNd
+eyJoaXN0b3J5IjpbMTExNDc4NzcxNCw4MTI3MDA0MjYsMTg3NT
+Q0ODg5MiwyMDM3MzkzMywtNjk3MDQwNDg5LC0xNDYxMjMxODI5
+LDEyNzc2MDg5NDMsLTE5MzM2NzMyNzMsLTcwOTI2NDExMCwtNj
+k1NTMyMDcsLTMzMTU1NjE0LDU4MzgzODExNywxNjc1ODAzNzYz
+LC0xNDg5Mzk1MTk5LC01OTAwODExNzUsLTE0NDQxMDIwMTEsND
+c4OTQxNzQsOTcyMTIyMjksLTI0MzgyODY1OCwzOTk4NjQzNTJd
 fQ==
 -->
