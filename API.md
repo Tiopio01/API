@@ -2476,6 +2476,63 @@ Dimostriamo che `g` non è calcolabile usando la tecnica della **riduzione**. Mo
 
 6.  **Conclusione:**
     L'unica assunzione che abbiamo fatto è stata che `g` fosse calcolabile. Poiché questa assunzione porta a una contraddizione, deve essere falsa. Pertanto, **`g(x,y)` non è calcolabile**.
+
+## Es 8
+
+Si consideri una macchina di Turing universale `M` fissata, a nastro singolo. Sia `Σ` l'alfabeto del nastro di `M`.
+
+a) È calcolabile la funzione `f` che riceve in ingresso una qualunque stringa `s` appartenente a `⋃_{i=0}^{100} Σⁱ`?
+$f(s) = \begin{cases} 1 & \text{se } M(s) \neq \perp \\ 0 & \text{se } M(s) = \perp \end{cases}$
+
+b) È calcolabile la funzione `g` che riceve in ingresso una qualunque stringa `s` appartenente a `⋃_{i=2k, k∈N} Σⁱ`?
+$g(s) = \begin{cases} 1 & \text{se } M(s) \neq \perp \\ \perp & \text{se } M(s) = \perp \end{cases}$
+
+*(Nota: `M(s) ≠ ⊥` significa che la macchina M si arresta sull'input s, mentre `M(s) = ⊥` significa che non si arresta).*
+
+---
+
+### Soluzione e Spiegazione Dettagliata
+
+#### **a) La funzione `f` è calcolabile? SÌ.**
+
+**Analisi:**
+*   **Cosa fa la funzione `f`?** Questa funzione decide il Problema dell'Arresto. Deve restituire `1` se `M` termina e `0` se `M` non termina. È una funzione **totale**: deve sempre fornire una risposta.
+*   **Qual è il suo dominio?** Il dominio di `f` è l'insieme di tutte le stringhe `s` sull'alfabeto `Σ` la cui lunghezza va da 0 a 100.
+*   **Il punto cruciale:** Questo dominio è **FINITO**. Anche se il numero di stringhe può essere molto grande, è un numero fisso e limitato.
+
+**Motivazione:**
+Il Problema dell'Arresto è indecidibile su un dominio *infinito* di input. Su un dominio **finito**, il problema diventa sempre decidibile.
+
+Il motivo è che per ogni singola stringa `s` in questo insieme finito, la risposta alla domanda "M si ferma su s?" è una costante: è o "Sì" o "No". Poiché ci sono un numero finito di stringhe, possiamo immaginare di pre-calcolare (o semplicemente di postulare l'esistenza di) una gigantesca **tabella di ricerca (lookup table)**.
+
+Un algoritmo per calcolare `f` potrebbe essere implementato così:
+1.  Prendi in input la stringa `s`.
+2.  Cerca `s` in una tabella predefinita che contiene tutte le stringhe di lunghezza da 0 a 100.
+3.  Per ogni stringa, la tabella ha associato il valore corretto (1 o 0).
+4.  Restituisci il valore trovato.
+
+Questo algoritmo è garantito per terminare (la ricerca in una tabella finita è un'operazione finita) e per dare la risposta corretta. Poiché un tale algoritmo esiste, la funzione `f` è, per definizione, **calcolabile**.
+
+---
+
+#### **b) La funzione `g` è calcolabile? SÌ.**
+
+**Analisi:**
+*   **Cosa fa la funzione `g`?** Questa funzione restituisce `1` se `M` termina, ma **non termina** (`⊥`) se `M` non termina. È una funzione **parziale**.
+*   **Qual è il suo dominio?** Il dominio di `g` è l'insieme di tutte le stringhe `s` di lunghezza pari (0, 2, 4, ...). Questo è un dominio **INFINITO**.
+
+**Motivazione:**
+A differenza del caso precedente, non possiamo più usare l'argomento della tabella di ricerca finita. Tuttavia, la natura *parziale* della funzione `g` è ciò che la rende calcolabile.
+
+Un algoritmo per calcolare `g` è sorprendentemente semplice:
+1.  Prendi in input la stringa `s`.
+2.  **Simula l'esecuzione** della macchina universale `M` con l'input `s`.
+
+Analizziamo il comportamento di questo algoritmo di simulazione:
+*   **Se `M(s)` si arresta:** La nostra simulazione, dopo un numero finito di passi, si arresterà anch'essa. A quel punto, il nostro algoritmo può restituire `1`. Questo comportamento corrisponde esattamente alla definizione `g(s) = 1`.
+*   **Se `M(s)` non si arresta (va in loop):** La nostra simulazione continuerà a girare all'infinito, senza mai fermarsi. Questo significa che il nostro algoritmo non termina. Questo comportamento corrisponde esattamente alla definizione `g(s) = ⊥`.
+
+Poiché abbiamo descritto un algoritmo il cui comportamento specchia perfettamente quello della funzione `g` su tutti gli input del suo dominio (infinito), la funzione `g` è, per definizione, **calcolabile**.
 # DATA FORMULA DESCRIVO LINGUAGGIO
 
 
@@ -2842,11 +2899,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM1MTg0Mjg5MywtMTIxNzQ4OTQxNiw4MT
-I3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MDQwNDg5
-LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMyNzMsLT
-cwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4MzgzODEx
-NywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODExNzUsLT
-E0NDQxMDIwMTEsNDc4OTQxNzQsOTcyMTIyMjksLTI0MzgyODY1
-OF19
+eyJoaXN0b3J5IjpbNTU2OTIzMjkxLC0zNTE4NDI4OTMsLTEyMT
+c0ODk0MTYsODEyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNzM5MzMs
+LTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQzLC0xOT
+MzNjczMjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMzE1NTYx
+NCw1ODM4MzgxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNT
+kwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5
+XX0=
 -->
