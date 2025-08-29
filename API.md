@@ -553,6 +553,89 @@ Ecco la grammatica completa:
 *   `T → aTaTbT | aTbTaT | bTaTaT | ε`
 
 ## ES5
+Certamente! Ecco una soluzione completa e dettagliata dell'esercizio, che include la traccia originale e una guida passo passo per disegnare l'automa finale.
+
+---
+
+### **Traccia dell'Esercizio**
+
+**Esercizio 1 (8 punti).**
+Si consideri la seguente grammatica:
+
+$G = \begin{cases} S \to CBS | CS | BS | a \\ CB \to BC \\ CC \to c \\ BB \to b \end{cases}$
+
+a) Che tipo di grammatica è G?
+b) Che linguaggio genera G?
+c) Si scriva un automa a potenza minima che accetti il linguaggio generato da G.
+
+---
+
+### **a) Che tipo di grammatica è G?**
+
+Per classificare la grammatica, la analizziamo secondo la gerarchia di Chomsky, partendo dal tipo più restrittivo.
+
+1.  **Tipo 3 (Regolare):** No. Le regole regolari devono avere la forma `A → aB` o `A → a`. Regole come `S → CBS` (con più di un non-terminale) violano questa forma.
+2.  **Tipo 2 (Libera dal contesto / Context-Free):** No. Le regole libere dal contesto devono avere un singolo simbolo non-terminale sulla sinistra. Le regole `CB → BC`, `CC → c` e `BB → b` hanno più di un simbolo a sinistra, quindi violano questa condizione.
+3.  **Tipo 1 (Sensibile al contesto / Context-Sensitive):** No. Le regole sensibili al contesto devono essere "monotone", cioè la lunghezza della parte destra deve essere maggiore o uguale alla lunghezza della parte sinistra (`|destra| ≥ |sinistra|`). Le regole `CC → c` e `BB → b` **non sono monotone** (`1 < 2`), in quanto sono regole "contraenti". Questa violazione significa che la grammatica non è di Tipo 1.
+4.  **Tipo 0 (Generale / Ricorsivamente Enumerabile):** Sì. Poiché la grammatica non rientra in nessuna delle classi più restrittive, appartiene alla classe più generale, che non ha restrizioni sulla forma delle regole (a parte il fatto che il lato sinistro non può essere vuoto).
+
+**Risposta:** La grammatica G è di **Tipo 0 (generale)**.
+
+---
+
+### **b) Che linguaggio genera G?**
+
+Analizziamo l'interazione tra le regole per capire quali stringhe terminali (`a`, `b`, `c`) possono essere generate.
+
+*   **Regole di generazione (`S → CBS|CS|BS`):** Queste regole introducono i non-terminali `C` e `B`.
+*   **Regola di scambio (`CB → BC`):** Questa regola è fondamentale. Permette di scambiare di posto una `C` e una `B` adiacenti. Ciò significa che l'ordine in cui `C` e `B` vengono generati è irrilevante; possiamo sempre riordinarli per raggruppare tutte le `B` e tutte le `C`.
+*   **Regole di consumo (`CC → c`, `BB → b`):** Queste sono le uniche regole che producono i terminali `b` e `c`. È cruciale notare che consumano i non-terminali **in coppia**. Questo implica che, per eliminare tutti i non-terminali `C` e `B` da una derivazione, il numero totale di `C` generati deve essere **pari**, e il numero totale di `B` generati deve essere **pari**.
+*   **Regola terminale (`S → a`):** Questa è l'unica regola che produce il terminale `a` e che ferma la ricorsione (eliminando `S`).
+
+Mettendo insieme queste osservazioni, una derivazione valida deve generare un numero pari di `B` e un numero pari di `C`, che possono essere trasformati in un qualsiasi numero di `b` e `c`. Infine, la derivazione deve terminare con la regola `S → a`. La struttura delle regole di `S` fa sì che questo `a` appaia alla fine. Pertanto, il linguaggio è composto da qualsiasi sequenza di `b` e `c`, seguita da un'unica `a`.
+
+**Risposta:** Il linguaggio generato da G può essere descritto dall'espressione regolare **`(b|c)*a`**.
+
+---
+
+### **c) Si scriva un automa a potenza minima che accetti il linguaggio generato da G.**
+
+Poiché il linguaggio è `(b|c)*a`, si tratta di un **linguaggio regolare**. Il modello a potenza minima per un linguaggio regolare è un **Automa a Stati Finiti (FSA)**, in particolare un Automa a Stati Finiti Deterministico (DFA).
+
+#### **Guida al Disegno dell'Automa**
+
+Segui questi passaggi per disegnare il DFA che riconosce `(b|c)*a`.
+
+**1. Disegnare gli Stati**
+Avrai bisogno di tre stati in totale:
+*   Disegna un cerchio e etichettalo **`q₀`**. Aggiungi una freccia che punta verso di esso per indicare che è lo **stato iniziale**. In questo stato, non abbiamo ancora visto la `a` finale.
+*   Disegna un secondo cerchio e etichettalo **`q₁`**. Disegna un **doppio cerchio** attorno ad esso per indicare che è uno **stato finale (di accettazione)**. Raggiungeremo questo stato subito dopo aver letto la `a` finale.
+*   Disegna un terzo cerchio e etichettalo **`q_dead`**. Questo sarà uno stato "trappola" non finale. Se la stringa continua dopo la `a`, finiremo qui.
+
+**2. Disegnare le Transizioni (le frecce tra gli stati)**
+
+*   **Freccia 1 (Loop su `b` e `c`):**
+    *   **Da dove a dove:** Disegna una freccia che parte da `q₀` e torna su se stesso.
+    *   **Etichetta:** Scrivi **`b, c`** sopra la freccia.
+    *   **Significato:** Finché l'automa legge i caratteri `b` o `c`, rimane nello stato iniziale, in attesa della `a` finale. Questo gestisce la parte `(b|c)*`.
+
+*   **Freccia 2 (Transizione su `a`):**
+    *   **Da dove a dove:** Disegna una freccia che parte da `q₀` e punta a `q₁`.
+    *   **Etichetta:** Scrivi **`a`** sopra la freccia.
+    *   **Significato:** Quando l'automa legge una `a`, passa allo stato finale. Questa è la fine prevista per una stringa valida.
+
+*   **Freccia 3 (Transizioni dallo stato finale):**
+    *   **Da dove a dove:** Disegna una freccia che parte da `q₁` e punta allo stato trappola `q_dead`.
+    *   **Etichetta:** Scrivi **`a, b, c`** sopra la freccia.
+    *   **Significato:** Se, dopo aver raggiunto lo stato finale, l'automa legge qualsiasi altro carattere, la stringa non è valida (la `a` non era l'ultima). L'automa passa a uno stato non finale da cui non può più uscire.
+
+*   **Freccia 4 (Loop nello stato trappola):**
+    *   **Da dove a dove:** Disegna una freccia che parte da `q_dead` e torna su se stesso.
+    *   **Etichetta:** Scrivi **`a, b, c`** sopra la freccia.
+    *   **Significato:** Una volta che una stringa è stata invalidata, rimane non valida indipendentemente dai caratteri successivi.
+
+**Ecco una rappresentazione grafica del risultato finale:**
+
 
 # DECIDIBILITA'
 
@@ -2766,11 +2849,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4MTgxNjgzMzEsLTEyMTc0ODk0MTYsOD
-EyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNzM5MzMsLTY5NzA0MDQ4
-OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC
-03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMzE1NTYxNCw1ODM4Mzgx
-MTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNTkwMDgxMTc1LC
-0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5LC0yNDM4Mjg2
-NThdfQ==
+eyJoaXN0b3J5IjpbMjMxNjM2OTU3LC0xMjE3NDg5NDE2LDgxMj
+cwMDQyNiwxODc1NDQ4ODkyLDIwMzczOTMzLC02OTcwNDA0ODks
+LTE0NjEyMzE4MjksMTI3NzYwODk0MywtMTkzMzY3MzI3MywtNz
+A5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3
+LDE2NzU4MDM3NjMsLTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMT
+Q0NDEwMjAxMSw0Nzg5NDE3NCw5NzIxMjIyOSwtMjQzODI4NjU4
+XX0=
 -->
