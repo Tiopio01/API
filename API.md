@@ -3745,12 +3745,102 @@ Ora, per ogni punto, la domanda si riduce a: "Cosa succede quando intersechiamo 
 *   **Conclusione:** Poiché il RAG può riconoscere `{aⁿbⁿcⁿ}`, che nessun singolo NPDA può riconoscere, il potere del RAG è superiore a quello di un singolo NPDA.
 
 **Risposta:** Il potere riconoscitore è **MAGGIORE** di quello di un automa a pila non deterministico.
+## ES 5
+Sia `L1` un linguaggio ricorsivamente enumerabile, `L2` un linguaggio regolare e `L = L1 ∩ L2` la loro intersezione.
+Per ciascuna delle seguenti classi di linguaggi, si argomenti se `L` **può farne parte**, **deve necessariamente farne parte** o **non può farne parte**:
+
+a) linguaggi regolari;
+b) linguaggi ricorsivi;
+c) linguaggi ricorsivamente enumerabili.
+
+Motivare opportunamente e fornire esempi laddove appropriato.
+
+---
+
+### **Concetti Preliminari Fondamentali**
+
+Prima di iniziare, è cruciale ricordare la gerarchia dei linguaggi e le loro proprietà:
+
+*   **Linguaggi Regolari:** La classe più semplice. Riconosciuti da automi a stati finiti (FSA). Sono sempre **decidibili** (ricorsivi).
+*   **Linguaggi Ricorsivi (o Decidibili):** Riconosciuti da Macchine di Turing che **terminano sempre**, per ogni input.
+*   **Linguaggi Ricorsivamente Enumerabili (RE) (o Semi-decidibili):** Riconosciuti da Macchine di Turing che sono garantite per terminare e accettare se la stringa appartiene al linguaggio, ma possono non terminare se la stringa non vi appartiene.
+
+La gerarchia è: **Regolari ⊂ Ricorsivi ⊂ Ricorsivamente Enumerabili**.
+
+Questo significa che se un linguaggio `L2` è regolare, allora è automaticamente anche ricorsivo e ricorsivamente enumerabile.
+
+---
+
+### **a) L può farne parte? (Linguaggi Regolari)**
+
+**Risposta Corretta:** Può farne parte.
+
+**Motivazione:**
+Il linguaggio risultante `L = L1 ∩ L2` può essere regolare, ma non è obbligato ad esserlo. Il risultato dipende interamente dalla natura di `L1`.
+
+*   **Caso in cui `L` È Regolare:**
+    Se `L1` è un linguaggio regolare, allora l'intersezione `L = L1 ∩ L2` è l'intersezione di due linguaggi regolari. La classe dei linguaggi regolari è **chiusa rispetto all'intersezione**, quindi il risultato `L` è garantito essere regolare.
+    *   **Esempio:** Sia l'alfabeto `A = {a,b}`.
+        *   `L1 = a*` (tutte le stringhe di 'a'). Questo è regolare (e quindi RE).
+        *   `L2 = b*` (tutte le stringhe di 'b'). Questo è regolare.
+        *   `L = L1 ∩ L2 = a* ∩ b* = {ε}` (solo la stringa vuota). Il linguaggio `{ε}` è finito e quindi **regolare**.
+
+*   **Caso in cui `L` NON È Regolare:**
+    Basta scegliere un `L1` che non sia regolare e un `L2` che non "elimini" la sua non-regolarità. L'esempio più semplice è usare `L2` come l'insieme di tutte le stringhe.
+    *   **Esempio:** Sia l'alfabeto `A = {a,b}`.
+        *   `L1 = {aⁿbⁿ | n ≥ 0}`. Questo linguaggio è libero dal contesto, non regolare, ma è ricorsivo (e quindi RE).
+        *   `L2 = A* = (a|b)*` (tutte le stringhe). Questo è regolare.
+        *   `L = L1 ∩ L2 = {aⁿbⁿ | n ≥ 0} ∩ A* = {aⁿbⁿ | n ≥ 0}`. Il risultato è `L1` stesso, che **non è regolare**.
+
+Poiché esistono scenari in cui `L` è regolare e altri in cui non lo è, la risposta corretta è "Può farne parte".
+
+---
+
+### **b) L può farne parte? (Linguaggi Ricorsivi)**
+
+**Risposta Corretta:** Può farne parte.
+
+**Motivazione:**
+Il ragionamento è identico al punto precedente, ma applicato alla classe dei linguaggi ricorsivi.
+
+*   **Caso in cui `L` È Ricorsivo:**
+    Sappiamo che `L2`, essendo regolare, è anche ricorsivo. La classe dei linguaggi ricorsivi è **chiusa rispetto all'intersezione**. Quindi, se scegliamo un `L1` che è ricorsivo, il risultato `L = L1 ∩ L2` sarà garantito essere ricorsivo.
+    *   **Esempio:**
+        *   `L1 = {aⁿbⁿ | n ≥ 0}` (è ricorsivo).
+        *   `L2 = (a|b)*` (è regolare e quindi ricorsivo).
+        *   `L = L1 ∩ L2 = {aⁿbⁿ | n ≥ 0}`. Il risultato è **ricorsivo**.
+
+*   **Caso in cui `L` NON È Ricorsivo:**
+    Dobbiamo scegliere un `L1` che sia ricorsivamente enumerabile ma non ricorsivo. L'esempio canonico è il linguaggio del Problema dell'Arresto (`L_H`).
+    *   **Esempio:**
+        *   `L1 = L_H` (il linguaggio di tutte le coppie `⟨M, w⟩` tali che la macchina `M` termina sull'input `w`). `L_H` è RE ma non ricorsivo.
+        *   `L2 = A*` (tutte le stringhe). È regolare.
+        *   `L = L1 ∩ L2 = L_H ∩ A* = L_H`. Il risultato è `L_H`, che **non è ricorsivo**.
+
+Poiché `L` può essere ricorsivo o non esserlo, la risposta corretta è "Può farne parte".
+
+---
+
+### **c) L può farne parte? (Linguaggi Ricorsivamente Enumerabili)**
+
+**Risposta Corretta:** Deve necessariamente farne parte.
+
+**Motivazione:**
+Qui la situazione è diversa, perché siamo nella classe di `L1` stesso e questa classe ha la proprietà di chiusura che ci serve.
+
+1.  Per ipotesi, `L1` è un linguaggio **ricorsivamente enumerabile**.
+2.  Sappiamo che `L2` è un linguaggio regolare. Dalla gerarchia dei linguaggi, sappiamo che ogni linguaggio regolare è anche ricorsivo, e ogni linguaggio ricorsivo è anche **ricorsivamente enumerabile**. Quindi, `L2` è RE.
+3.  La classe dei linguaggi ricorsivamente enumerabili è **chiusa rispetto all'intersezione**.
+
+**Dimostrazione Intuitiva:** Se hai un semi-decisore per `L1` (una TM `M1` che si ferma sulle stringhe di `L1`) e un semi-decisore per `L2` (una TM `M2` che si ferma sulle stringhe di `L2`), puoi costruire un semi-decisore per `L = L1 ∩ L2` eseguendo `M1` e `M2` sulla stessa stringa "in parallelo" (alternando un passo di `M1` e un passo di `M2`). La nuova macchina si fermerà e accetterà solo se **entrambe** le simulazioni si fermano e accettano. Questo è esattamente un semi-decisore per l'intersezione.
+
+Poiché `L` è l'intersezione di due linguaggi RE (`L1` e `L2`), il risultato è **necessariamente** ancora un linguaggio ricorsivamente enumerabile.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNz
-EwNjU0NDU3LC05NzgzODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3
-MzgsMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMz
-UxODQyODkzLC0xMjE3NDg5NDE2LDgxMjcwMDQyNiwxODc1NDQ4
-ODkyLDIwMzczOTMzLC02OTcwNDA0ODksLTE0NjEyMzE4MjksMT
-I3NzYwODk0MywtMTkzMzY3MzI3MywtNzA5MjY0MTEwLC02OTU1
-MzIwN119
+eyJoaXN0b3J5IjpbMTk4NjcwNTQzLC0xNTk2MTU3NTIsMTU2ND
+kyMDc4MiwtMTcxMDY1NDQ1NywtOTc4MzgwMjcxLDE1NzA0OTc5
+OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNzMsMTY5MDA1OTAwMSw1NT
+Y5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQxNiw4MTI3MDA0
+MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MDQwNDg5LC0xND
+YxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMyNzMsLTcwOTI2
+NDExMF19
 -->
