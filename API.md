@@ -627,13 +627,7 @@ Avrai bisogno di tre stati in totale:
     *   **Etichetta:** Scrivi **`a, b, c`** sopra la freccia.
     *   **Significato:** Una volta che una stringa è stata invalidata, rimane non valida indipendentemente dai caratteri successivi.
 
-**Ecco una rappresentazione grafica del risultato finale:**
 ## ES 6
-Certamente! Analizziamo questo esercizio passo dopo passo. La traccia e la soluzione fornite nell'immagine sono un po' confuse e contengono delle imprecisioni, quindi le chiariremo e costruiremo le grammatiche corrette e pulite.
-
-### **Traccia dell'Esercizio (interpretata e formattata)**
-
-**Esercizio 1 (8 punti)**
 
 a) Scrivere una grammatica a potenza minima che generi il linguaggio seguente:
 `L1 = {(bc)ᵐ | m ≥ 2}`
@@ -3845,11 +3839,11 @@ Prima di iniziare, è cruciale ricordare la gerarchia dei linguaggi e le loro pr
 *   **Linguaggi Ricorsivi (o Decidibili):** Riconosciuti da Macchine di Turing che **terminano sempre**, per ogni input.
 *   **Linguaggi Ricorsivamente Enumerabili (RE) (o Semi-decidibili):** Riconosciuti da Macchine di Turing che sono garantite per terminare e accettare se la stringa appar
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwNTEwMjc2MTcsMTk4NjcwNTQzLC0xNT
-k2MTU3NTIsMTU2NDkyMDc4MiwtMTcxMDY1NDQ1NywtOTc4Mzgw
-MjcxLDE1NzA0OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNzMsMT
-Y5MDA1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4
-OTQxNiw4MTI3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNj
-k3MDQwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2
-NzMyNzNdfQ==
+eyJoaXN0b3J5IjpbLTI0NDY4NjQzNCwxOTg2NzA1NDMsLTE1OT
+YxNTc1MiwxNTY0OTIwNzgyLC0xNzEwNjU0NDU3LC05NzgzODAy
+NzEsMTU3MDQ5Nzk5MSwzMTIxNDU3MzgsMTc2NDA5NTA3MywxNj
+kwMDU5MDAxLDU1NjkyMzI5MSwtMzUxODQyODkzLC0xMjE3NDg5
+NDE2LDgxMjcwMDQyNiwxODc1NDQ4ODkyLDIwMzczOTMzLC02OT
+cwNDA0ODksLTE0NjEyMzE4MjksMTI3NzYwODk0MywtMTkzMzY3
+MzI3M119
 -->
