@@ -703,7 +703,66 @@ La strategia è usare una grammatica per generare più `b` all'inizio che alla f
 *   `S₁ → bcB` *(Usiamo una versione leggermente compattata di G1)*
 *   `B → bcC`
 *   `C → bcC | ε`
+## ES 7
 
+
+Si consideri il seguente linguaggio `L` definito sull'alfabeto `Σ = {a, b, c, d}`:
+
+`L = {aⁿbⁱcʲdᵏ | n ≥ 0, i ≥ 0, j ≥ 0, k ≥ 0, n = i + j + k}`
+
+Si descriva la grammatica a potenza minima che lo genera.
+
+---
+
+### **Analisi e Classificazione del Linguaggio**
+
+1.  **Struttura della stringa:** Le stringhe hanno una forma molto rigida e ordinata: prima tutte le `a`, poi tutte le `b`, poi tutte le `c`, e infine tutte le `d`.
+2.  **Vincolo di Conteggio:** Il numero di `a` iniziali (`n`) deve essere esattamente uguale alla somma del numero di `b`, `c` e `d` (`i + j + k`).
+3.  **Classificazione:**
+    *   Questo vincolo di conteggio non può essere gestito da un automa a stati finiti (FSA), che ha una memoria finita. Pertanto, il linguaggio **non è regolare**.
+    *   Il vincolo può essere gestito da un **automa a pila (Pushdown Automaton)**. La strategia sarebbe:
+        1.  Leggere tutte le `n` `a` e spingere `n` simboli sulla pila.
+        2.  Leggere tutte le `b`, `c` e `d` e, per ogni simbolo letto, estrarre (pop) un simbolo dalla pila.
+        3.  Se, alla fine della stringa, la pila è vuota, significa che il conteggio `n = i + j + k` era corretto.
+    *   Poiché il linguaggio è riconoscibile da un automa a pila, è un **linguaggio libero dal contesto (Context-Free)**.
+
+**Conclusione:** La grammatica a potenza minima che lo genera è una **Grammatica Libera dal Contesto (Context-Free Grammar)**.
+
+---
+
+### **Spiegazione della Grammatica Fornita**
+
+La soluzione fornisce la seguente grammatica:
+
+$G = \begin{cases} S \to aSd \mid A \\ A \to aAc \mid B \\ B \to aBb \mid \varepsilon \end{cases}$
+
+Questa grammatica è molto elegante e funziona generando "dall'esterno verso l'interno". La strategia è quella di generare una `a` all'inizio della stringa per ogni `b`, `c` o `d` generato alla fine.
+
+Analizziamo il funzionamento delle regole:
+
+*   **Regola `B → aBb | ε` (Gestisce le `b`):**
+    *   Questa regola è il cuore del conteggio. Ogni volta che viene applicata ricorsivamente (`aBb`), genera una `a` a sinistra e una `b` a destra, mantenendo il bilanciamento `1 a : 1 b`.
+    *   La regola `B → ε` (epsilon) termina la generazione di `a` e `b`, lasciando una stringa della forma `aⁱBbⁱ`. Sostituendo `B` con `ε`, si ottiene `aⁱbⁱ`.
+
+*   **Regola `A → aAc | B` (Aggiunge le `c`):**
+    *   Questa regola si basa sulla precedente. Ogni volta che viene applicata (`aAc`), genera una `a` a sinistra e una `c` a destra.
+    *   Quando si decide di smettere di generare `c`, si passa a `B` (`A → B`).
+    *   Una derivazione tipica che parte da `A` sarebbe: `A → aAc → aaAcc → aaBcc`. Ora, espandendo `B` (ad esempio con `B → aBb → ab`), si ottiene `aa(ab)cc = a³b¹c²`. Notiamo che il numero di `a` (3) è uguale alla somma del numero di `b` (1) e `c` (2). `A` genera quindi stringhe della forma `aʲ⁺ⁱ bⁱ cʲ`.
+
+*   **Regola `S → aSd | A` (Aggiunge le `d`):**
+    *   Questa è la regola di livello più alto e segue la stessa logica. Ogni applicazione di `aSd` genera una `a` all'inizio e una `d` alla fine.
+    *   Quando si smette di generare `d`, si passa ad `A` (`S → A`).
+    *   Una derivazione completa potrebbe essere:
+        `S → aSd` (genera `a...d`, `k=1`)
+        `→ a(aSd)d = aaSdd` (genera `a...d`, `k=2`)
+        `→ aa(A)dd` (smette di generare `d`, passa ad A)
+        `→ aa(aAc)dd` (genera `a...c`, `j=1`)
+        `→ aa(a(B)c)dd = aaaBcdd` (smette di generare `c`, passa a B)
+        `→ aaa(aBb)cdd` (genera `a...b`, `i=1`)
+        `→ aaa(a(ε)b)cdd = a⁴εb¹c¹d² = a⁴b¹c¹d²`
+    *   Controlliamo il risultato: `n=4`, `i=1`, `j=1`, `k=2`. La condizione `n = i+j+k` è soddisfatta (`4 = 1+1+2`). La stringa generata `aaaabcdd` ha la forma corretta.
+
+Questa grammatica genera correttamente tutte e sole le stringhe del linguaggio `L`, ed è una grammatica libera dal contesto.
 # DECIDIBILITA'
 
 
@@ -3784,60 +3843,13 @@ Il linguaggio `L` è un insieme di stringhe. Le uniche stringhe che possono appa
 
 La condizione per cui una di queste stringhe appartiene a `L` è che quella sequenza di zeri deve apparire da qualche parte nei decimali di π (3.14159...).
 
-*   **Esempio 1:** La stringa "0" appartiene a L? Dobbiamo cercare se c'è almeno uno "0" nei decimali di π. Sì, c'è (la 32ª cifra decimale è uno 0). Quindi "0" ∈ L.
-*   **Esempio 2:** La stringa "000000" appartiene a L? Sì, è famoso il "punto di Feynman", una sequenza di sei 9 consecutivi che inizia alla 762ª cifra decimale. Allo stesso modo, si sa che esistono sequenze di zeri.
-*   **Esempio 3:** La stringa "0000000000" (dieci zeri) appartiene a L? E una stringa con un miliardo di zeri?
-
-Qui sta il punto cruciale: **la matematica non sa ancora con certezza se π sia un "numero normale"**, cioè un numero la cui espansione decimale contiene ogni possibile sequenza finita di cifre. Si sospetta di sì, ma non è stato dimostrato.
-
----
-
-### **Spiegazione della Soluzione: Il Ragionamento per Casi**
-
-Poiché non conosciamo la risposta definitiva sulla natura di π, l'unico modo per risolvere il problema è considerare **tutte le possibilità logiche**. Per la sequenza di zeri in π, ci sono solo due scenari possibili nell'universo:
-
-#### **Caso 1: Esiste una sequenza "massima" di zeri.**
-
-*   **Cosa significa:** Immaginiamo che un giorno un matematico scopra che la più lunga sequenza di zeri consecutivi che appare in π abbia, ad esempio, lunghezza 15 (`k=15`). Questo significherebbe che la stringa `0¹⁵` si trova in π, ma la stringa `0¹⁶` non si troverà mai, per quanto si continui a calcolare le cifre.
-*   **Come sarebbe fatto `L` in questo caso?** Se esistesse un tale limite `k`, il nostro linguaggio `L` sarebbe composto da un numero **finito** di stringhe:
-    `L = {ε, "0", "00", "000", ..., "0ᵏ"}`
-*   **Questo linguaggio è regolare? SÌ.** Un teorema fondamentale della teoria dei linguaggi formali afferma che **tutti i linguaggi finiti sono regolari**. Un linguaggio finito può sempre essere descritto da un'espressione regolare semplicemente elencando tutte le sue stringhe, separate dal simbolo di unione `|`. Come dice la soluzione:
-    `Espressione Regolare: ε | 0 | 00 | ... | 0ᵏ`
-    Poiché in questo scenario `L` è un linguaggio finito, `L` sarebbe regolare.
-
-#### **Caso 2: Non esiste una sequenza "massima" di zeri.**
-
-*   **Cosa significa:** Questo scenario corrisponde alla credenza (non provata) che π sia un numero normale. Significherebbe che per qualsiasi lunghezza `n` tu possa immaginare (un milione, un miliardo, un trilione), prima o poi, se calcoli abbastanza cifre di π, troverai una sequenza di `n` zeri consecutivi.
-*   **Come sarebbe fatto `L` in questo caso?** Il nostro linguaggio `L` conterrebbe tutte le possibili stringhe di zeri, di qualsiasi lunghezza:
-    `L = {ε, "0", "00", "000", "0000", ...}` (un insieme infinito)
-*   **Questo linguaggio è regolare? SÌ.** Questo insieme è esattamente il linguaggio descritto dalla famosissima espressione regolare:
-    `Espressione Regolare: 0*`
-    (che significa "zero o più occorrenze del simbolo 0").
-    Poiché in questo scenario `L` può essere descritto da un'espressione regolare, `L` sarebbe regolare.
-
----
-
-### **Conclusione Finale**
-
-Abbiamo analizzato i due unici scenari logicamente possibili per la natura del linguaggio `L`:
-1.  O `L` è un linguaggio finito (se c'è un limite agli zeri in π).
-2.  O `L` è il linguaggio `0*` (se non c'è un limite).
-
-In **entrambi i casi**, il linguaggio risultante è **regolare**.
-
-Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è destinato a essere regolare, possiamo concludere con certezza che **SÌ, il linguaggio L è regolare**.
-
-La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
-## Es 4
-Certamente! Questo è un esercizio molto interessante che esplora il potere computazionale che si ottiene combinando diversi tipi di automi. La chiave per risolverlo è capire che la condizione di accettazione del "Riconoscitore ad Automi Gemelli" (RAG) corrisponde all'**intersezione** dei linguaggi riconosciuti dai suoi componenti.
-
-Analizziamo la soluzione punto per pu
+*   **Esempio 1:** La stringa "0" appartiene a L? Dobbiamo cercare se c'è almeno uno "0" nei decima
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ3MzMyNTQwNywtMTUyOTE4Njg0NSwxNT
-U1NDc0ODc1LC0xOTU1ODA4NTc1LDQyMjIzMDQ5NCwtMjQ0Njg2
-NDM0LDE5ODY3MDU0MywtMTU5NjE1NzUyLDE1NjQ5MjA3ODIsLT
-E3MTA2NTQ0NTcsLTk3ODM4MDI3MSwxNTcwNDk3OTkxLDMxMjE0
-NTczOCwxNzY0MDk1MDczLDE2OTAwNTkwMDEsNTU2OTIzMjkxLC
-0zNTE4NDI4OTMsLTEyMTc0ODk0MTYsODEyNzAwNDI2LDE4NzU0
-NDg4OTJdfQ==
+eyJoaXN0b3J5IjpbMTc2OTk2NTY2NCwxNDczMzI1NDA3LC0xNT
+I5MTg2ODQ1LDE1NTU0NzQ4NzUsLTE5NTU4MDg1NzUsNDIyMjMw
+NDk0LC0yNDQ2ODY0MzQsMTk4NjcwNTQzLC0xNTk2MTU3NTIsMT
+U2NDkyMDc4MiwtMTcxMDY1NDQ1NywtOTc4MzgwMjcxLDE1NzA0
+OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNzMsMTY5MDA1OTAwMS
+w1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQxNiw4MTI3
+MDA0MjZdfQ==
 -->
