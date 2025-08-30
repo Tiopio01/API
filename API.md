@@ -3831,20 +3831,20 @@ La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che 
 ## Es 4
 
 ## ES 5
+
 Certamente! Questo è un esercizio molto interessante che esplora la relazione tra linguaggi regolari, logica monadica del primo ordine (MFO) e la classe dei linguaggi "star-free". Analizziamolo in dettaglio.
 
 ### **Traccia dell'Esercizio (formattata e chiarita)**
 
 Si consideri il linguaggio `L1` tale che `L1ᶜ = L2`, dove `L2 = (ab)⁺`.
 L'alfabeto è `{a, b}`.
-
-a
+C
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1MjkxODY4NDUsMTQ3MzMyNTQwNywtMT
-Y0NzU0OTcxMSwxNzY5OTY1NjY0LC0xNTI5MTg2ODQ1LDE1NTU0
-NzQ4NzUsLTE5NTU4MDg1NzUsNDIyMjMwNDk0LC0yNDQ2ODY0Mz
-QsMTk4NjcwNTQzLC0xNTk2MTU3NTIsMTU2NDkyMDc4MiwtMTcx
-MDY1NDQ1NywtOTc4MzgwMjcxLDE1NzA0OTc5OTEsMzEyMTQ1Nz
-M4LDE3NjQwOTUwNzMsMTY5MDA1OTAwMSw1NTY5MjMyOTEsLTM1
-MTg0Mjg5M119
+eyJoaXN0b3J5IjpbMTIxMTgwMTk4NSwtMTUyOTE4Njg0NSwxND
+czMzI1NDA3LC0xNjQ3NTQ5NzExLDE3Njk5NjU2NjQsMTU1NTQ3
+NDg3NSwtMTk1NTgwODU3NSw0MjIyMzA0OTQsLTI0NDY4NjQzNC
+wxOTg2NzA1NDMsLTE1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNzEw
+NjU0NDU3LC05NzgzODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3Mz
+gsMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMzUx
+ODQyODkzXX0=
 -->
