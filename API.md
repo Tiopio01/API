@@ -1954,6 +1954,9 @@ Abbiamo ridotto il problema a trovare il formalismo a potenza minima per `L2`.
     *   `(a(0) ∨ b(0) ∨ c(0))`: Questa parte aggiunge una condizione: "il carattere in posizione 0 (cioè il primo carattere) deve essere 'a' o 'b' o 'c'". Questo è un modo formale per dire "la stringa non deve essere vuota".
     *   Mettendo insieme le due parti con `∧` (AND), la formula dice: "la stringa non è vuota E è composta solo da `a`, `b`, `c`". Questo è esattamente il linguaggio `{a,b,c}+`, che è la nostra versione semplificata di `L2`.
 
+## Es 8
+
+
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
 ## Es1
@@ -2964,11 +2967,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY5MDA1OTAwMSw1NTY5MjMyOTEsLTM1MT
-g0Mjg5MywtMTIxNzQ4OTQxNiw4MTI3MDA0MjYsMTg3NTQ0ODg5
-MiwyMDM3MzkzMywtNjk3MDQwNDg5LC0xNDYxMjMxODI5LDEyNz
-c2MDg5NDMsLTE5MzM2NzMyNzMsLTcwOTI2NDExMCwtNjk1NTMy
-MDcsLTMzMTU1NjE0LDU4MzgzODExNywxNjc1ODAzNzYzLC0xND
-g5Mzk1MTk5LC01OTAwODExNzUsLTE0NDQxMDIwMTEsNDc4OTQx
-NzRdfQ==
+eyJoaXN0b3J5IjpbMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1Nj
+kyMzI5MSwtMzUxODQyODkzLC0xMjE3NDg5NDE2LDgxMjcwMDQy
+NiwxODc1NDQ4ODkyLDIwMzczOTMzLC02OTcwNDA0ODksLTE0Nj
+EyMzE4MjksMTI3NzYwODk0MywtMTkzMzY3MzI3MywtNzA5MjY0
+MTEwLC02OTU1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3LDE2Nz
+U4MDM3NjMsLTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMTQ0NDEw
+MjAxMV19
 -->
