@@ -4150,12 +4150,4 @@ Ora, per ogni punto, la domanda si riduce a: "Cosa succede quando intersechiamo 
 *   **Conclusione:** Poiché il RAG può riconoscere `{aⁿbⁿcⁿ}`, che nessun singolo NPDA può riconoscere, il potere del RAG è superiore a quello di un singolo NPDA.
 
 **Risposta:** Il potere riconoscitore è **MAGGIORE** di quello di un automa a pila non deterministico.
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ3MzMyNTQwNywtMTUyOTE4Njg0NSwxND
-czMzI1NDA3LC0xNjQ3NTQ5NzExLDE3Njk5NjU2NjQsMTU1NTQ3
-NDg3NSwtMTk1NTgwODU3NSw0MjIyMzA0OTQsLTI0NDY4NjQzNC
-wxOTg2NzA1NDMsLTE1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNzEw
-NjU0NDU3LC05NzgzODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3Mz
-gsMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMzUx
-ODQyODkzXX0=
--->
+
