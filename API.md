@@ -1235,6 +1235,8 @@ Questa domanda è, in essenza, il **Problema dell'Arresto** sotto mentite spogli
 4.  **La Contraddizione:** Abbiamo appena descritto un metodo infallibile per risolvere il Problema dell'Arresto per qualsiasi macchina e qualsiasi input, usando `A` come "subroutine". Ma sappiamo che un tale metodo non può esistere. La nostra unica assunzione era l'esistenza dell'algoritmo `A`.
 
 **Conclusione:** L'assunzione deve essere falsa. Pertanto, il problema di decidere se una MTU si arresta su un input generico è **indecidibile**.
+
+##
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -3058,11 +3060,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzc3NTI0ODg4LDE3NjQwOTUwNzMsMTY5MD
-A1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQx
-Niw4MTI3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MD
-QwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMy
-NzMsLTcwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4Mz
-gzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODEx
-NzVdfQ==
+eyJoaXN0b3J5IjpbMjA1MzI3NzkxNiwxNzY0MDk1MDczLDE2OT
+AwNTkwMDEsNTU2OTIzMjkxLC0zNTE4NDI4OTMsLTEyMTc0ODk0
+MTYsODEyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNzM5MzMsLTY5Nz
+A0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQzLC0xOTMzNjcz
+MjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMzE1NTYxNCw1OD
+M4MzgxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNTkwMDgx
+MTc1XX0=
 -->
