@@ -628,7 +628,87 @@ Avrai bisogno di tre stati in totale:
     *   **Significato:** Una volta che una stringa è stata invalidata, rimane non valida indipendentemente dai caratteri successivi.
 
 **Ecco una rappresentazione grafica del risultato finale:**
+## ES 6
+Certamente! Analizziamo questo esercizio passo dopo passo. La traccia e la soluzione fornite nell'immagine sono un po' confuse e contengono delle imprecisioni, quindi le chiariremo e costruiremo le grammatiche corrette e pulite.
 
+### **Traccia dell'Esercizio (interpretata e formattata)**
+
+**Esercizio 1 (8 punti)**
+
+a) Scrivere una grammatica a potenza minima che generi il linguaggio seguente:
+`L1 = {(bc)ᵐ | m ≥ 2}`
+
+b) Sfruttando la risposta al punto precedente, scrivere una grammatica a potenza minima che generi il linguaggio seguente:
+`L2 = {bᵏ a (bc)ᵐ aⁿ bᵖ | k > p, n = m, m ≥ 2}`
+
+---
+
+### **a) Grammatica per L1 = {(bc)ᵐ | m ≥ 2}**
+
+#### **1. Analisi e Classificazione del Linguaggio**
+
+*   **Linguaggio:** L1 è l'insieme delle stringhe che consistono nella ripetizione del blocco "bc" per almeno due volte. Esempi: `bcbc`, `bcbcbc`, `bcbcbcbc`, etc.
+*   **Classe:** Questo linguaggio ha una struttura ripetitiva molto semplice. Non richiede una memoria illimitata per essere riconosciuto. È un **linguaggio regolare**.
+*   **Formalismo a Potenza Minima:** Poiché il linguaggio è regolare, il formalismo a potenza minima è una **Grammatica Regolare (Tipo 3)** o, equivalentemente, un Automa a Stati Finiti.
+
+#### **2. Costruzione della Grammatica Regolare**
+
+La strategia è generare i primi due blocchi `bc` obbligatoriamente, e poi permettere la generazione di altri blocchi `bc` opzionali.
+
+*   **Simbolo di Inizio:** `S`
+*   **Regole:**
+    1.  `S → bcA`: Questa regola genera il primo blocco `bc` e ci sposta in uno stato `A` per generare il secondo.
+    2.  `A → bcB`: Questa regola genera il secondo blocco `bc`, soddisfacendo il vincolo `m ≥ 2`, e ci sposta in uno stato `B` per le ripetizioni opzionali.
+    3.  `B → bcB | ε`: Dallo stato `B`, possiamo generare un altro blocco `bc` e rimanere in `B`, oppure possiamo terminare la derivazione con la stringa vuota (`ε`).
+
+**Grammatica Regolare per L1:**
+*   `S → bcA`
+*   `A → bcB`
+*   `B → bcB | ε`
+
+*(Nota: La grammatica nella soluzione fornita è confusa e probabilmente errata o mal trascritta. Quella qui sopra è una grammatica regolare standard e corretta per L1).*
+
+---
+
+### **b) Grammatica per L2 = {bᵏ a (bc)ᵐ aⁿ bᵖ | k > p, n = m, m ≥ 2}**
+
+#### **1. Analisi e Classificazione del Linguaggio**
+
+*   **Linguaggio:** La struttura è `b...b` (prefisso), `a`, `(bc)...(bc)`, `a...a`, `b...b` (suffisso).
+*   **Vincoli:** Ci sono due vincoli di conteggio indipendenti:
+    1.  `k > p`: Il numero di `b` all'inizio deve essere maggiore del numero di `b` alla fine. Questo è un problema di conteggio classico per i linguaggi liberi dal contesto.
+    2.  `n = m`: Il numero di `(bc)` al centro deve essere uguale al numero di `a` che li seguono. Anche questo è un problema di conteggio context-free.
+*   **Problema:** Un singolo automa a pila ha una sola pila (memoria). Non può gestire contemporaneamente due compiti di conteggio indipendenti e non annidati come questi (`bᵏ...bᵖ` all'esterno e `(bc)ᵐ...aᵐ` all'interno). Questo linguaggio è un classico esempio di linguaggio che **non è libero dal contesto**. Richiede una memoria più potente.
+*   **Classe:** Il linguaggio è **sensibile al contesto (Context-Sensitive)**.
+*   **Formalismo a Potenza Minima:** Poiché il linguaggio non è libero dal contesto, la grammatica a potenza minima **non è una grammatica context-free** come suggerito nella soluzione dell'immagine. Sarebbe una **Grammatica Sensibile al Contesto (Tipo 1)**.
+
+#### **2. Costruzione di una Grammatica (per una versione semplificata e Context-Free)**
+
+La soluzione fornita nell'immagine è errata nell'affermare che il linguaggio sia context-free. Tuttavia, il suggerimento "sfruttando la risposta al punto precedente" è un indizio importante. È molto probabile che il linguaggio inteso fosse più semplice, in modo da essere effettivamente context-free e poter riutilizzare la grammatica di L1.
+
+Consideriamo una versione del linguaggio che mantiene solo **uno** dei vincoli di conteggio, ad esempio `k > p`, e tratta la parte centrale come un blocco unico.
+
+**Linguaggio Semplificato (e probabilmente inteso):** `L2' = {bᵏ a w a bᵖ | k > p, w ∈ L1}`
+Dove `w` è una qualsiasi stringa generata dalla grammatica per L1.
+
+Per questo linguaggio `L2'`, che **è libero dal contesto**, possiamo costruire una grammatica.
+
+**Grammatica per L2' (Context-Free):**
+La strategia è usare una grammatica per generare più `b` all'inizio che alla fine, e nel mezzo inserire una chiamata al simbolo di inizio della grammatica per L1.
+
+*   **Simbolo di Inizio:** `S₂`
+*   **Simbolo di Inizio di L1:** `S₁` (rinominiamo `S` da parte (a) per evitare confusione)
+*   **Regole:**
+    1.  `S₂ → bS₂b`: Questa regola genera una `b` all'inizio e una alla fine, mantenendo il bilanciamento.
+    2.  `S₂ → bA`: Questa regola genera una `b` extra all'inizio, rompendo il bilanciamento e garantendo che `k > p`. Ci sposta in uno stato `A` per generare la parte centrale.
+    3.  `A → a S₁ a`: Questa regola genera la `a` prima di `w`, poi genera `w` (chiamando la grammatica di L1 tramite il suo simbolo di inizio `S₁`), e infine genera la `a` finale.
+
+**Grammatica Completa (unendo le parti):**
+*   `S₂ → bS₂b | bA`
+*   `A → a S₁ a`
+*   `S₁ → bcB` *(Usiamo una versione leggermente compattata di G1)*
+*   `B → bcC`
+*   `C → bcC | ε`
 
 # DECIDIBILITA'
 
@@ -3763,84 +3843,13 @@ Prima di iniziare, è cruciale ricordare la gerarchia dei linguaggi e le loro pr
 
 *   **Linguaggi Regolari:** La classe più semplice. Riconosciuti da automi a stati finiti (FSA). Sono sempre **decidibili** (ricorsivi).
 *   **Linguaggi Ricorsivi (o Decidibili):** Riconosciuti da Macchine di Turing che **terminano sempre**, per ogni input.
-*   **Linguaggi Ricorsivamente Enumerabili (RE) (o Semi-decidibili):** Riconosciuti da Macchine di Turing che sono garantite per terminare e accettare se la stringa appartiene al linguaggio, ma possono non terminare se la stringa non vi appartiene.
-
-La gerarchia è: **Regolari ⊂ Ricorsivi ⊂ Ricorsivamente Enumerabili**.
-
-Questo significa che se un linguaggio `L2` è regolare, allora è automaticamente anche ricorsivo e ricorsivamente enumerabile.
-
----
-
-### **a) L può farne parte? (Linguaggi Regolari)**
-
-**Risposta Corretta:** Può farne parte.
-
-**Motivazione:**
-Il linguaggio risultante `L = L1 ∩ L2` può essere regolare, ma non è obbligato ad esserlo. Il risultato dipende interamente dalla natura di `L1`.
-
-*   **Caso in cui `L` È Regolare:**
-    Se `L1` è un linguaggio regolare, allora l'intersezione `L = L1 ∩ L2` è l'intersezione di due linguaggi regolari. La classe dei linguaggi regolari è **chiusa rispetto all'intersezione**, quindi il risultato `L` è garantito essere regolare.
-    *   **Esempio:** Sia l'alfabeto `A = {a,b}`.
-        *   `L1 = a*` (tutte le stringhe di 'a'). Questo è regolare (e quindi RE).
-        *   `L2 = b*` (tutte le stringhe di 'b'). Questo è regolare.
-        *   `L = L1 ∩ L2 = a* ∩ b* = {ε}` (solo la stringa vuota). Il linguaggio `{ε}` è finito e quindi **regolare**.
-
-*   **Caso in cui `L` NON È Regolare:**
-    Basta scegliere un `L1` che non sia regolare e un `L2` che non "elimini" la sua non-regolarità. L'esempio più semplice è usare `L2` come l'insieme di tutte le stringhe.
-    *   **Esempio:** Sia l'alfabeto `A = {a,b}`.
-        *   `L1 = {aⁿbⁿ | n ≥ 0}`. Questo linguaggio è libero dal contesto, non regolare, ma è ricorsivo (e quindi RE).
-        *   `L2 = A* = (a|b)*` (tutte le stringhe). Questo è regolare.
-        *   `L = L1 ∩ L2 = {aⁿbⁿ | n ≥ 0} ∩ A* = {aⁿbⁿ | n ≥ 0}`. Il risultato è `L1` stesso, che **non è regolare**.
-
-Poiché esistono scenari in cui `L` è regolare e altri in cui non lo è, la risposta corretta è "Può farne parte".
-
----
-
-### **b) L può farne parte? (Linguaggi Ricorsivi)**
-
-**Risposta Corretta:** Può farne parte.
-
-**Motivazione:**
-Il ragionamento è identico al punto precedente, ma applicato alla classe dei linguaggi ricorsivi.
-
-*   **Caso in cui `L` È Ricorsivo:**
-    Sappiamo che `L2`, essendo regolare, è anche ricorsivo. La classe dei linguaggi ricorsivi è **chiusa rispetto all'intersezione**. Quindi, se scegliamo un `L1` che è ricorsivo, il risultato `L = L1 ∩ L2` sarà garantito essere ricorsivo.
-    *   **Esempio:**
-        *   `L1 = {aⁿbⁿ | n ≥ 0}` (è ricorsivo).
-        *   `L2 = (a|b)*` (è regolare e quindi ricorsivo).
-        *   `L = L1 ∩ L2 = {aⁿbⁿ | n ≥ 0}`. Il risultato è **ricorsivo**.
-
-*   **Caso in cui `L` NON È Ricorsivo:**
-    Dobbiamo scegliere un `L1` che sia ricorsivamente enumerabile ma non ricorsivo. L'esempio canonico è il linguaggio del Problema dell'Arresto (`L_H`).
-    *   **Esempio:**
-        *   `L1 = L_H` (il linguaggio di tutte le coppie `⟨M, w⟩` tali che la macchina `M` termina sull'input `w`). `L_H` è RE ma non ricorsivo.
-        *   `L2 = A*` (tutte le stringhe). È regolare.
-        *   `L = L1 ∩ L2 = L_H ∩ A* = L_H`. Il risultato è `L_H`, che **non è ricorsivo**.
-
-Poiché `L` può essere ricorsivo o non esserlo, la risposta corretta è "Può farne parte".
-
----
-
-### **c) L può farne parte? (Linguaggi Ricorsivamente Enumerabili)**
-
-**Risposta Corretta:** Deve necessariamente farne parte.
-
-**Motivazione:**
-Qui la situazione è diversa, perché siamo nella classe di `L1` stesso e questa classe ha la proprietà di chiusura che ci serve.
-
-1.  Per ipotesi, `L1` è un linguaggio **ricorsivamente enumerabile**.
-2.  Sappiamo che `L2` è un linguaggio regolare. Dalla gerarchia dei linguaggi, sappiamo che ogni linguaggio regolare è anche ricorsivo, e ogni linguaggio ricorsivo è anche **ricorsivamente enumerabile**. Quindi, `L2` è RE.
-3.  La classe dei linguaggi ricorsivamente enumerabili è **chiusa rispetto all'intersezione**.
-
-**Dimostrazione Intuitiva:** Se hai un semi-decisore per `L1` (una TM `M1` che si ferma sulle stringhe di `L1`) e un semi-decisore per `L2` (una TM `M2` che si ferma sulle stringhe di `L2`), puoi costruire un semi-decisore per `L = L1 ∩ L2` eseguendo `M1` e `M2` sulla stessa stringa "in parallelo" (alternando un passo di `M1` e un passo di `M2`). La nuova macchina si fermerà e accetterà solo se **entrambe** le simulazioni si fermano e accettano. Questo è esattamente un semi-decisore per l'intersezione.
-
-Poiché `L` è l'intersezione di due linguaggi RE (`L1` e `L2`), il risultato è **necessariamente** ancora un linguaggio ricorsivamente enumerabile.
+*   **Linguaggi Ricorsivamente Enumerabili (RE) (o Semi-decidibili):** Riconosciuti da Macchine di Turing che sono garantite per terminare e accettare se la stringa appar
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk4NjcwNTQzLC0xNTk2MTU3NTIsMTU2ND
-kyMDc4MiwtMTcxMDY1NDQ1NywtOTc4MzgwMjcxLDE1NzA0OTc5
-OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNzMsMTY5MDA1OTAwMSw1NT
-Y5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQxNiw4MTI3MDA0
-MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MDQwNDg5LC0xND
-YxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMyNzMsLTcwOTI2
-NDExMF19
+eyJoaXN0b3J5IjpbLTEwNTEwMjc2MTcsMTk4NjcwNTQzLC0xNT
+k2MTU3NTIsMTU2NDkyMDc4MiwtMTcxMDY1NDQ1NywtOTc4Mzgw
+MjcxLDE1NzA0OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNzMsMT
+Y5MDA1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4
+OTQxNiw4MTI3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNj
+k3MDQwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2
+NzMyNzNdfQ==
 -->
