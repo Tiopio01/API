@@ -3238,69 +3238,81 @@ Poiché esiste un algoritmo che si comporta esattamente come `g6`, la funzione *
 
 
 1.  Si consideri la seguente funzione e si dica, motivando adeguatamente la risposta, se essa sia calcolabile:
-    $w(x,y) = \begin{cases} f_y(x) & \text{se } f_y(y) = f_x(x) \neq \perp \\ \perp & \text{altrimenti} \end{gomp}cases}$
-    *(Nota: la condizione `f_y(y) = f_x(x) ≠ ⊥` significa che entrambe le computazioni `f_y(y)` e `f_x(x)` devono terminare e i loro risultati devono essere uguali).*
+    $w(x,y) = \begin{cases} f_y(x) & \text{se } f_y(y) = f_x(x) \\ \perp & \text{altrimenti} \end{cases}$
+    *(Nota: `⊥` significa che la funzione non è definita / la computazione non termina)*
 
 2.  Si dica, motivando adeguatamente la risposta, se il seguente insieme `T` è ricorsivo:
     `T = {i | la MT Mᵢ possiede i stati senza transizioni uscenti}`
 
 ---
 
-### **1. La funzione `w(x,y)` è calcolabile? SÌ.**
+### **1. La funzione `w(x,y)` è calcolabile?**
 
-**Motivazione dettagliata:**
+**Risposta:** Sì, la funzione `w(x,y)` **è calcolabile**.
 
-La funzione `w(x,y)` è una **funzione parziale**. Un algoritmo che la calcola non deve terminare sempre, ma deve terminare *se e solo se* la funzione stessa è definita.
+**Motivazione:**
 
-1.  **Quando è definita `w(x,y)`?** La funzione è definita (e il suo valore è `f_y(x)`) solo se si verificano **tre** condizioni contemporaneamente:
-    a) La computazione `f_y(y)` termina.
-    b) La computazione `f_x(x)` termina.
-    c) I risultati di (a) e (b) sono uguali.
+La chiave per capire questo problema è notare che `w(x,y)` è una **funzione parziale**. Un algoritmo per calcolarla non deve terminare sempre, ma deve terminare *se e solo se* le condizioni nella definizione della funzione sono soddisfatte.
 
-2.  **Quando `w(x,y)` non è definita (`⊥`)?** In tutti gli altri casi, cioè se:
-    *   `f_y(y)` non termina.
-    *   `f_x(x)` non termina.
-    *   Entrambe terminano ma i loro risultati sono diversi.
+Analizziamo le condizioni per cui `w(x,y)` è definita:
+1.  La computazione `f_y(y)` deve terminare.
+2.  La computazione `f_x(x)` deve terminare.
+3.  I risultati delle due computazioni devono essere uguali.
+4.  La computazione `f_y(x)` deve terminare (per poter restituire il suo valore).
 
-3.  **Costruzione dell'Algoritmo:** Possiamo descrivere un algoritmo (una Macchina di Turing) che si comporta esattamente come `w(x,y)`. La sfida, come spesso accade con funzioni parziali, è gestire il rischio che una delle computazioni interne non termini, bloccando tutto. La soluzione è la **simulazione in parallelo (dovetailing)**.
+Se anche solo una di queste condizioni non si verifica (ad esempio, `f_y(y)` non termina), la funzione `w(x,y)` deve restituire `⊥` (cioè, il nostro algoritmo non deve terminare).
 
-    **Algoritmo per calcolare `w(x,y)`:**
-    *   **Input:** `x` e `y`.
-    *   **Passo 1 (Simulazione Parallela):** Simula **contemporaneamente** le due computazioni `f_y(y)` e `f_x(x)`. Questo si fa alternando un passo di simulazione per la prima e un passo per la seconda.
-    *   **Passo 2 (Attesa della Terminazione):** Questo processo di simulazione parallela si fermerà **se e solo se entrambe** le computazioni interne terminano. Se anche solo una delle due non termina, il nostro algoritmo per `w` continuerà a girare all'infinito, che è esattamente il comportamento richiesto in quel caso (`w(x,y) = ⊥`).
-    *   **Passo 3 (Confronto):** Se la simulazione parallela è terminata, abbiamo ottenuto due valori: `risultato_y` da `f_y(y)` e `risultato_x` da `f_x(x)`. Ora confrontiamo questi valori.
-        *   Se `risultato_y ≠ risultato_x`, la condizione non è soddisfatta. Il nostro algoritmo deve entrare deliberatamente in un loop infinito (`while(true){}`), per produrre l'output `⊥`, come richiesto.
-    *   **Passo 4 (Calcolo Finale):** Se `risultato_y == risultato_x`, la condizione è soddisfatta. A questo punto, e solo a questo punto, l'algoritmo deve calcolare il valore di `f_y(x)`.
-        *   Simula l'esecuzione di `M_y` sull'input `x`.
-        *   Se questa simulazione termina e produce un valore `v`, l'algoritmo restituisce `v`.
-        *   Se questa simulazione non termina, l'algoritmo non terminerà, il che è ancora un risultato valido per `w` (in questo strano caso, la condizione di uguaglianza è soddisfatta, ma il valore da restituire non è definito).
+**Costruzione dell'Algoritmo:**
+Possiamo descrivere un algoritmo (una Macchina di Turing) che calcola `w(x,y)`. La sfida è gestire le computazioni che potrebbero non terminare. La soluzione è simulare le computazioni necessarie in modo sequenziale.
 
-4.  **Conclusione:** Poiché abbiamo descritto una procedura algoritmica che si comporta esattamente come `w(x,y)`, la funzione è **calcolabile**.
+1.  **Input:** Prendi in input la coppia `(x,y)`.
+2.  **Passo 1: Simula `f_y(y)`**.
+    *   Usa una Macchina di Turing Universale per simulare l'esecuzione della macchina `M_y` sull'input `y`.
+    *   **Se questa simulazione non termina**, il nostro algoritmo per `w` non terminerà. Questo è corretto, perché siamo nel caso "altrimenti".
+    *   Se termina, salva il risultato: `risultato_yy`.
+3.  **Passo 2: Simula `f_x(x)`**.
+    *   Simula l'esecuzione della macchina `M_x` sull'input `x`.
+    *   **Se questa simulazione non termina**, il nostro algoritmo non terminerà. Anche questo è corretto.
+    *   Se termina, salva il risultato: `risultato_xx`.
+4.  **Passo 3: Confronta i risultati**.
+    *   Controlla se `risultato_yy == risultato_xx`.
+    *   **Se non sono uguali**, il nostro algoritmo entra deliberatamente in un loop infinito (`while(true){}`). Questo è corretto, perché siamo nel caso "altrimenti".
+5.  **Passo 4: Calcola il valore finale**.
+    *   Se i risultati erano uguali, ora simula l'esecuzione della macchina `M_y` sull'input `x`.
+    *   **Se questa simulazione non termina**, il nostro algoritmo non terminerà. Questo è un caso sottile: la funzione è definita (la condizione `f_y(y) = f_x(x)` è vera), ma il valore da restituire (`f_y(x)`) è `⊥`. Quindi, il comportamento è corretto.
+    *   **Se la simulazione termina** con un valore `v`, il nostro algoritmo restituisce `v`.
+
+Poiché abbiamo descritto un algoritmo che si comporta esattamente come la funzione `w` in tutti i casi, la funzione `w` **è calcolabile**.
 
 ---
 
-### **2. L'insieme `T` è ricorsivo (decidibile)? SÌ.**
+### **2. L'insieme `T` è ricorsivo?**
 
-**Motivazione dettagliata:**
+**Risposta:** Sì, l'insieme `T` **è ricorsivo** (decidibile).
 
-Un insieme è **ricorsivo (o decidibile)** se esiste un algoritmo che termina sempre e risponde correttamente "sì" o "no" all'appartenenza di un elemento.
+**Motivazione:**
 
-1.  **Natura del Problema:** La domanda "la MT `Mᵢ` possiede `i` stati senza transizioni uscenti?" è una domanda sulla **struttura (sintassi)** della Macchina di Turing, non sul suo **comportamento (semantica)**. Non ci interessa cosa fa la macchina o se termina, ma solo come è "disegnata". Problemi di questo tipo sono quasi sempre decidibili.
+La chiave qui è capire che la proprietà che definisce l'insieme `T` è **sintattica**, non semantica. Non ci interessa cosa fa la macchina `Mᵢ` (il suo comportamento), ma solo **come è fatta** (la sua struttura, la sua descrizione formale).
 
-2.  **Costruzione dell'Algoritmo di Decisione:**
-    **Algoritmo per decidere `T`:**
-    *   **Input:** un indice `i`.
-    *   **Passo 1 (Ricostruzione della Macchina):** Usa l'enumerazione standard di Gödel `E` per decodificare l'indice `i` e ottenere la descrizione formale completa della Macchina di Turing `Mᵢ`. Questa descrizione è una tupla finita che elenca: l'insieme (finito) degli stati, l'alfabeto, le regole di transizione, lo stato iniziale, ecc. Questo passo è sempre possibile e termina.
-    *   **Passo 2 (Ispezione degli Stati):**
-        1.  Inizializza un contatore a 0: `stati_senza_uscite = 0`.
-        2.  Scorri l'elenco (finito) di tutti gli stati di `Mᵢ`.
-        3.  Per ogni stato `q`, scorri l'elenco (finito) di tutte le regole di transizione di `Mᵢ`. Controlla se esiste una regola che inizia con lo stato `q` (es. una regola della forma `δ(q, simbolo) = ...`).
-        4.  Se, dopo aver controllato tutte le regole, non ne hai trovata nessuna che parte da `q`, allora `q` è uno stato senza transizioni uscenti. Incrementa il contatore: `stati_senza_uscite++`.
-    *   **Passo 3 (Confronto Finale):** Dopo aver ispezionato tutti gli stati, confronta il valore finale del contatore con l'input originale `i`.
-        *   Se `stati_senza_uscite == i`, rispondi **"sì"** (`i ∈ T`).
-        *   Altrimenti, rispondi **"no"** (`i ∉ T`).
+Un insieme è ricorsivo (decidibile) se esiste un algoritmo che termina sempre e risponde correttamente "sì" o "no".
 
-3.  **Conclusione:** Abbiamo descritto un algoritmo che consiste in un numero finito di passi (decodifica, cicli su insiemi finiti di stati e regole, confronto finale). Questo algoritmo **termina sempre** e fornisce la risposta corretta. Pertanto, l'insieme `T` è **ricorsivo (decidibile)**.
+**Costruzione dell'Algoritmo di Decisione:**
+
+1.  **Input:** Prendi in input un indice `i`.
+2.  **Passo 1: Ottieni la descrizione della Macchina**.
+    *   Usa l'enumerazione standard di Gödel `E` per "decodificare" l'indice `i` e ottenere la descrizione formale della Macchina di Turing `Mᵢ`. Questa descrizione è una tupla finita che elenca gli stati, l'alfabeto, le transizioni, ecc. Questa operazione termina sempre.
+3.  **Passo 2: Ispeziona la Descrizione**.
+    *   La descrizione di una MT è un oggetto finito. L'algoritmo può ora analizzare questa descrizione.
+    *   Inizializza un contatore `stati_senza_uscite = 0`.
+    *   Itera su ogni stato `q` nell'insieme (finito) degli stati di `Mᵢ`.
+    *   Per ogni stato `q`, controlla la lista (finita) delle transizioni. Verifica se esiste almeno una transizione che parte dallo stato `q`.
+    *   Se non esiste nessuna transizione che parte da `q`, incrementa il contatore `stati_senza_uscite`.
+4.  **Passo 3: Confronta e Decidi**.
+    *   Dopo aver controllato tutti gli stati, confronta il valore finale del contatore `stati_senza_uscite` con l'input originale `i`.
+    *   Se `stati_senza_uscite == i`, l'algoritmo si ferma e risponde **"sì"** (`i` appartiene a `T`).
+    *   Se `stati_senza_uscite != i`, l'algoritmo si ferma e risponde **"no"** (`i` non appartiene a `T`).
+
+Poiché ogni passo di questo algoritmo è un'operazione su dati finiti (decodifica, iterazione su un insieme finito di stati e transizioni, confronto di numeri), l'algoritmo **termina sempre** e fornisce la risposta corretta. Pertanto, l'insieme `T` è **ricorsivo**.
 # DATA FORMULA DESCRIVO LINGUAGGIO
 
 
@@ -3734,7 +3746,7 @@ Ora, per ogni punto, la domanda si riduce a: "Cosa succede quando intersechiamo 
 
 **Risposta:** Il potere riconoscitore è **MAGGIORE** di quello di un automa a pila non deterministico.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg5NTE0OTEzMCwxNTY0OTIwNzgyLC0xNz
+eyJoaXN0b3J5IjpbLTE1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNz
 EwNjU0NDU3LC05NzgzODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3
 MzgsMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMz
 UxODQyODkzLC0xMjE3NDg5NDE2LDgxMjcwMDQyNiwxODc1NDQ4
