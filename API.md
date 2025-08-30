@@ -2278,8 +2278,112 @@ La soluzione sceglie la **MFO**, che è un formalismo a potenza minima corretto 
 
 Questa formula descrive perfettamente il linguaggio "tutte le stringhe non vuote che terminano con `bbb`".
 
+## Es 10
 
 
+**Esercizio 1 (8 punti)**
+
+Si definisca un automa a potenza minima per il linguaggio:
+`{xcy | x, y ∈ {a, b}⁺, |x| = 2|y| oppure 2|x| = |y|}`
+
+---
+
+### **Passo 1: Analisi e Classificazione del Linguaggio**
+
+1.  **Scomposizione:** Il linguaggio `L` è l'unione di due sotto-linguaggi, `L₁` e `L₂`:
+    *   `L₁ = {xcy | x, y ∈ {a, b}⁺, |x| = 2|y|}`
+    *   `L₂ = {xcy | x, y ∈ {a, b}⁺, 2|x| = |y|}`
+    *(Nota: `x, y ∈ {a, b}⁺` significa che `x` e `y` devono essere non vuoti)*
+
+2.  **Classificazione:**
+    *   Entrambi `L₁` e `L₂` richiedono di contare la lunghezza delle stringhe `x` e `y` e di confrontarle secondo una proporzione. Questa operazione di conteggio richiede una memoria illimitata. Pertanto, nessuno dei due linguaggi (e di conseguenza nemmeno la loro unione `L`) può essere **regolare**.
+    *   Questo tipo di conteggio può essere gestito da un **Automa a Pila (Pushdown Automaton)**.
+    *   La presenza del marcatore centrale `c` fissa il punto di separazione tra `x` e `y`.
+    *   Tuttavia, all'inizio, l'automa non sa quale delle due condizioni (`|x|=2|y|` o `2|x|=|y|`) dovrà verificare. Deve "indovinare" la strategia da adottare. Questa "divinazione" richiede **non determinismo**.
+
+3.  **Conclusione:** Il linguaggio `L` è **Libero dal Contesto Non Deterministico**. L'automa a potenza minima che lo riconosce è un **Automa a Pila Non Deterministico (NPDA)**.
+
+---
+
+### **Passo 2: Guida Dettagliata al Disegno dell'Automa (NPDA)**
+
+La strategia dell'automa si basa su una scelta non deterministica iniziale: l'automa "scommette" su quale delle due condizioni la stringa di input soddisferà.
+
+#### **Elementi di Base**
+
+1.  **Stati:** Disegna 6 cerchi. Etichettali `q₀` (iniziale), `q₁` (legge `x` per il caso `|x|=2|y|`), `q₂` (legge `x` per il caso `2|x|=|y|`), `q₃` (legge `y` per il caso `|x|=2|y|`), `q₄` (legge `y` per il caso `2|x|=|y|`), e `q_f` (finale).
+2.  **Stato Iniziale:** Disegna una freccia che punta a `q₀`.
+3.  **Stato Finale:** Disegna un doppio cerchio attorno a `q_f`.
+4.  **Simboli Pila:** Useremo il simbolo `X` come "gettone" di conteggio. `Z₀` è il simbolo iniziale della pila.
+
+#### **Disegno delle Transizioni (Frecce ed Etichette)**
+
+---
+
+##### **FASE 1: La Scelta Non Deterministica Iniziale**
+
+Dallo stato `q₀`, l'automa legge il primo carattere della stringa `x` (che non può essere vuota) e sceglie uno dei due percorsi.
+
+*   **Freccia da `q₀` a `q₁` (Percorso per `|x| = 2|y|`):**
+    *   **Etichetta:** `a, Z₀ / XZ₀` e `b, Z₀ / XZ₀`
+    *   **Significato:** "Leggi il primo carattere (`a` o `b`) di `x`. Spingi **un** gettone `X` sulla pila. Ora segui il percorso per verificare la condizione `|x| = 2|y|`."
+
+*   **Freccia da `q₀` a `q₂` (Percorso per `2|x| = |y|`):**
+    *   **Etichetta:** `a, Z₀ / XXZ₀` e `b, Z₀ / XXZ₀`
+    *   **Significato:** "Leggi il primo carattere (`a` o `b`) di `x`. Spingi **due** gettoni `X` sulla pila. Ora segui il percorso per verificare la condizione `2|x| = |y|`."
+
+---
+
+##### **FASE 2: Lettura del resto di `x`**
+
+*   **Freccia da `q₁` che torna su se stesso (loop):**
+    *   **Etichetta:** `a, X / XX` e `b, X / XX`
+    *   **Significato:** "Se sei sul percorso `|x|=2|y|`, per ogni carattere letto in `x` (dopo il primo), aggiungi **un** gettone `X` alla pila."
+
+*   **Freccia da `q₂` che torna su se stesso (loop):**
+    *   **Etichetta:** `a, X / XXX` e `b, X / XXX`
+    *   **Significato:** "Se sei sul percorso `2|x|=|y|`, per ogni carattere letto in `x` (dopo il primo), aggiungi **due** gettoni `X` alla pila."
+
+---
+
+##### **FASE 3: Lettura del marcatore `c` e cambio di fase**
+
+*   **Freccia da `q₁` a `q₃`:**
+    *   **Etichetta:** `c, X / X`
+    *   **Significato:** "Quando leggi il marcatore `c`, passa alla fase di lettura di `y` per il caso `|x|=2|y|`. Lascia la pila com'è."
+
+*   **Freccia da `q₂` a `q₄`:**
+    *   **Etichetta:** `c, X / X`
+    *   **Significato:** "Quando leggi il marcatore `c`, passa alla fase di lettura di `y` per il caso `2|x|=|y|`. Lascia la pila com'è."
+
+---
+
+##### **FASE 4: Lettura di `y` e Riscontro sulla Pila**
+
+*   **Freccia da `q₃` che torna su se stesso (loop):**
+    *   **Etichetta:** `a, X / ε` e `b, X / ε`
+    *   **Significato:** "Se sei sul percorso `|x|=2|y|`, per ogni carattere letto in `y`, devi estrarre (pop) **due** gettoni `X` dalla pila." (Questo richiede un piccolo trucco: si può fare in due stati, ma per semplicità si può scrivere `a, XX / ε` che non è standard, o usare un automa come quello della soluzione dell'esame). Per un disegno standard, si fa:
+        *   `q₃ → q₃_bis`: `a, X / ε` e `b, X / ε`
+        *   `q₃_bis → q₃`: `ε, X / ε`
+    *   In breve: Per ogni carattere di `y`, rimuovi due `X`.
+
+*   **Freccia da `q₄` che torna su se stesso (loop):**
+    *   **Etichetta:** `a, X / ε` e `b, X / ε`
+    *   **Significato:** "Se sei sul percorso `2|x|=|y|`, per ogni carattere letto in `y`, estrai (pop) **un** gettone `X` dalla pila."
+
+---
+
+##### **FASE 5: Accettazione**
+
+*   **Freccia da `q₃` allo stato finale `q_f`:**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "Se, dopo aver letto `y`, la pila è vuota (contiene solo `Z₀`), significa che il conteggio `|x|=2|y|` era corretto. Accetta."
+
+*   **Freccia da `q₄` allo stato finale `q_f`:**
+    *   **Etichetta:** `ε, Z₀ / Z₀`
+    *   **Significato:** "Se, dopo aver letto `y`, la pila è vuota, significa che il conteggio `2|x|=|y|` era corretto. Accetta."
+
+**Nota:** L'automa nella soluzione dell'esame usa una strategia leggermente diversa ma equivalente per implementare il "rimuovi due gettoni", che è molto comune in questi esercizi. La logica di base del non determinismo e del conteggio proporzionale rimane la stessa.
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
 ## Es1
@@ -3290,11 +3394,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjk4OTIwMTcsMTU3MDQ5Nzk5MSwzMTIxND
-U3MzgsMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwt
-MzUxODQyODkzLC0xMjE3NDg5NDE2LDgxMjcwMDQyNiwxODc1ND
-Q4ODkyLDIwMzczOTMzLC02OTcwNDA0ODksLTE0NjEyMzE4Mjks
-MTI3NzYwODk0MywtMTkzMzY3MzI3MywtNzA5MjY0MTEwLC02OT
-U1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3LDE2NzU4MDM3NjNd
-fQ==
+eyJoaXN0b3J5IjpbLTk3ODM4MDI3MSwxNTcwNDk3OTkxLDMxMj
+E0NTczOCwxNzY0MDk1MDczLDE2OTAwNTkwMDEsNTU2OTIzMjkx
+LC0zNTE4NDI4OTMsLTEyMTc0ODk0MTYsODEyNzAwNDI2LDE4Nz
+U0NDg4OTIsMjAzNzM5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgy
+OSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC03MDkyNjQxMTAsLT
+Y5NTUzMjA3LC0zMzE1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2
+M119
 -->
