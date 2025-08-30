@@ -703,66 +703,7 @@ La strategia è usare una grammatica per generare più `b` all'inizio che alla f
 *   `S₁ → bcB` *(Usiamo una versione leggermente compattata di G1)*
 *   `B → bcC`
 *   `C → bcC | ε`
-## ES 7
 
-
-Si consideri il seguente linguaggio `L` definito sull'alfabeto `Σ = {a, b, c, d}`:
-
-`L = {aⁿbⁱcʲdᵏ | n ≥ 0, i ≥ 0, j ≥ 0, k ≥ 0, n = i + j + k}`
-
-Si descriva la grammatica a potenza minima che lo genera.
-
----
-
-### **Analisi e Classificazione del Linguaggio**
-
-1.  **Struttura della stringa:** Le stringhe hanno una forma molto rigida e ordinata: prima tutte le `a`, poi tutte le `b`, poi tutte le `c`, e infine tutte le `d`.
-2.  **Vincolo di Conteggio:** Il numero di `a` iniziali (`n`) deve essere esattamente uguale alla somma del numero di `b`, `c` e `d` (`i + j + k`).
-3.  **Classificazione:**
-    *   Questo vincolo di conteggio non può essere gestito da un automa a stati finiti (FSA), che ha una memoria finita. Pertanto, il linguaggio **non è regolare**.
-    *   Il vincolo può essere gestito da un **automa a pila (Pushdown Automaton)**. La strategia sarebbe:
-        1.  Leggere tutte le `n` `a` e spingere `n` simboli sulla pila.
-        2.  Leggere tutte le `b`, `c` e `d` e, per ogni simbolo letto, estrarre (pop) un simbolo dalla pila.
-        3.  Se, alla fine della stringa, la pila è vuota, significa che il conteggio `n = i + j + k` era corretto.
-    *   Poiché il linguaggio è riconoscibile da un automa a pila, è un **linguaggio libero dal contesto (Context-Free)**.
-
-**Conclusione:** La grammatica a potenza minima che lo genera è una **Grammatica Libera dal Contesto (Context-Free Grammar)**.
-
----
-
-### **Spiegazione della Grammatica Fornita**
-
-La soluzione fornisce la seguente grammatica:
-
-$G = \begin{cases} S \to aSd \mid A \\ A \to aAc \mid B \\ B \to aBb \mid \varepsilon \end{cases}$
-
-Questa grammatica è molto elegante e funziona generando "dall'esterno verso l'interno". La strategia è quella di generare una `a` all'inizio della stringa per ogni `b`, `c` o `d` generato alla fine.
-
-Analizziamo il funzionamento delle regole:
-
-*   **Regola `B → aBb | ε` (Gestisce le `b`):**
-    *   Questa regola è il cuore del conteggio. Ogni volta che viene applicata ricorsivamente (`aBb`), genera una `a` a sinistra e una `b` a destra, mantenendo il bilanciamento `1 a : 1 b`.
-    *   La regola `B → ε` (epsilon) termina la generazione di `a` e `b`, lasciando una stringa della forma `aⁱBbⁱ`. Sostituendo `B` con `ε`, si ottiene `aⁱbⁱ`.
-
-*   **Regola `A → aAc | B` (Aggiunge le `c`):**
-    *   Questa regola si basa sulla precedente. Ogni volta che viene applicata (`aAc`), genera una `a` a sinistra e una `c` a destra.
-    *   Quando si decide di smettere di generare `c`, si passa a `B` (`A → B`).
-    *   Una derivazione tipica che parte da `A` sarebbe: `A → aAc → aaAcc → aaBcc`. Ora, espandendo `B` (ad esempio con `B → aBb → ab`), si ottiene `aa(ab)cc = a³b¹c²`. Notiamo che il numero di `a` (3) è uguale alla somma del numero di `b` (1) e `c` (2). `A` genera quindi stringhe della forma `aʲ⁺ⁱ bⁱ cʲ`.
-
-*   **Regola `S → aSd | A` (Aggiunge le `d`):**
-    *   Questa è la regola di livello più alto e segue la stessa logica. Ogni applicazione di `aSd` genera una `a` all'inizio e una `d` alla fine.
-    *   Quando si smette di generare `d`, si passa ad `A` (`S → A`).
-    *   Una derivazione completa potrebbe essere:
-        `S → aSd` (genera `a...d`, `k=1`)
-        `→ a(aSd)d = aaSdd` (genera `a...d`, `k=2`)
-        `→ aa(A)dd` (smette di generare `d`, passa ad A)
-        `→ aa(aAc)dd` (genera `a...c`, `j=1`)
-        `→ aa(a(B)c)dd = aaaBcdd` (smette di generare `c`, passa a B)
-        `→ aaa(aBb)cdd` (genera `a...b`, `i=1`)
-        `→ aaa(a(ε)b)cdd = a⁴εb¹c¹d² = a⁴b¹c¹d²`
-    *   Controlliamo il risultato: `n=4`, `i=1`, `j=1`, `k=2`. La condizione `n = i+j+k` è soddisfatta (`4 = 1+1+2`). La stringa generata `aaaabcdd` ha la forma corretta.
-
-Questa grammatica genera correttamente tutte e sole le stringhe del linguaggio `L`, ed è una grammatica libera dal contesto.
 # DECIDIBILITA'
 
 
@@ -1596,65 +1537,6 @@ Questa domanda è molto diversa dalla precedente e spesso trae in inganno.
     *   Poiché P è indecidibile, ma il suo complemento P̄ è semidecidibile, ne consegue che P **non può essere semidecidibile**.
 
 **Conclusione:** Il problema della correttezza non solo è indecidibile, ma non è nemmeno semidecidibile. Possiamo trovare i bug, ma non possiamo mai certificare l'assenza totale di bug.
-## ES12 
-1.  È **decidibile** il problema di stabilire se, data una MT deterministica e una sequenza di suoi stati `s₁, s₂, ..., sₖ`, esiste una stringa `x` in ingresso tale che la MT attraversa **esattamente**, uno per uno, la sequenza di stati desiderata durante il riconoscimento di `x`?
-2.  È **semidecidibile** il problema del punto 1?
-3.  È **decidibile** il problema di stabilire se, data una MT deterministica e una sequenza di suoi stati `s₁, s₂, ..., sₖ`, esiste una stringa `x` in input tale che la MT, durante il riconoscimento di `x`, attraversa gli stati desiderati nell'ordine desiderato, ma potrebbe, tra uno stato desiderato e il successivo della sequenza, attraversarne anche altri (cioè, la sequenza `s₁, s₂, ..., sₖ` è una **sottosequenza** della computazione)?
-
----
-
-### **1. Il problema del percorso "esatto" è decidibile? SÌ.**
-
-**Motivazione dettagliata:**
-La chiave qui è la parola **"esattamente"**. Questo vincolo è così stringente che ci permette di costruire la stringa di input `x`, se esiste.
-
-**Costruzione dell'Algoritmo di Decisione:**
-L'algoritmo non ha bisogno di cercare tra infinite stringhe `x`. Può invece lavorare "all'indietro" dalla sequenza di stati per vedere se una tale computazione è possibile.
-
-1.  **Input:** Una MT deterministica `M` e una sequenza di stati `S = (s₁, s₂, ..., sₖ)`.
-2.  **Analisi del Percorso:** L'algoritmo analizza la sequenza di transizioni passo dopo passo.
-    *   **Passo i=1 (da `s₁` a `s₂`):** Controlla le regole di transizione di `M`. Esiste una transizione che parte dallo stato `s₁` e arriva allo stato `s₂`?
-        *   **Se no**, allora non esiste nessuna computazione che possa fare questo passo. L'algoritmo si ferma e risponde **"No"**.
-        *   **Se sì**, significa che per compiere questa transizione la testina deve leggere un certo simbolo `σ₁` e scrivere un simbolo `τ₁`. L'algoritmo "annota" che il primo carattere dell'ipotetica stringa `x` deve essere `σ₁`.
-    *   **Passo i=2 (da `s₂` a `s₃`):** Ripeti il processo. Cerca una transizione da `s₂` a `s₃`. Se esiste, annota il simbolo `σ₂` che la testina deve leggere in questa fase.
-    *   ...e così via per tutti i `k-1` passi.
-3.  **Ricostruzione della Stringa:** Se l'algoritmo completa l'analisi di tutti i `k-1` passi senza trovare un'impossibilità, avrà costruito l'**unica possibile** stringa di input `x = σ₁σ₂...σₖ₋₁` che può forzare la macchina a seguire *esattamente* quel percorso di stati.
-4.  **Verifica Finale:** L'algoritmo ora esegue una simulazione della MT `M` con la stringa `x` appena costruita. Se la simulazione segue effettivamente il percorso `s₁, s₂, ..., sₖ`, l'algoritmo risponde **"Sì"**. Altrimenti, risponde **"No"**. (Questa verifica è quasi superflua se l'analisi delle transizioni è fatta correttamente, ma completa la logica).
-
-**Conclusione:** Abbiamo descritto un algoritmo che, dato un percorso di lunghezza finita `k`, esegue un numero finito di controlli e simulazioni. Questo algoritmo **termina sempre** e fornisce la risposta corretta. Pertanto, il problema è **decidibile**.
-
----
-
-### **2. Il problema del percorso "esatto" è semidecidibile? SÌ.**
-
-**Motivazione:**
-Un teorema fondamentale afferma che ogni problema decidibile è anche semidecidibile. Poiché abbiamo dimostrato che il problema è decidibile, ne consegue direttamente che è anche semidecidibile.
-
----
-
-### **3. Il problema del percorso "in sottosequenza" è decidibile? NO.**
-
-**Motivazione (Riduzione dal Problema dell'Arresto):**
-La flessibilità introdotta dalla parola "sottosequenza" ("potrebbe... attraversarne anche altri") distrugge la decidibilità, perché ora non possiamo più ricostruire la stringa `x` in modo deterministico. Il numero di passi tra `sᵢ` e `sᵢ₊₁` è sconosciuto e potenzialmente infinito.
-
-Dimostriamo che il problema è **indecidibile** riducendolo al Problema della Terminazione (una variante del Problema dell'Arresto).
-
-1.  **Il Problema Indecidibile Noto:** È indecidibile stabilire se una generica MT `M` termina (cioè raggiunge uno stato finale) per almeno un input `x`. Questo è il **Problema della Terminazione non-vuota**. Si può dimostrare con il Teorema di Rice (la proprietà "avere un linguaggio non-vuoto" è non banale).
-
-2.  **L'Ipotesi (per assurdo):** Supponiamo di avere un algoritmo `Decide_Sottosequenza(M, S)` che decide il problema del punto 3.
-
-3.  **La Riduzione:** Vediamo come usare `Decide_Sottosequenza` per risolvere il Problema della Terminazione non-vuota.
-    *   Ci viene data una generica MT `M'`. Vogliamo sapere se `L(M')` è non-vuoto.
-    *   Scegliamo una sequenza di stati `S` molto semplice: `S = (q₀, q_accept)`, dove `q₀` è lo stato iniziale di `M'` e `q_accept` è uno dei suoi stati finali.
-    *   Ora usiamo il nostro ipotetico algoritmo: eseguiamo `Decide_Sottosequenza(M', (q₀, q_accept))`.
-
-4.  **Analisi del Risultato:**
-    *   **Se `Decide_Sottosequenza` risponde "Sì"**: Questo significa che esiste una stringa `x` tale che l'esecuzione di `M'(x)` inizia in `q₀` e, ad un certo punto, raggiunge `q_accept`. Raggiungere uno stato di accettazione significa che `x` viene accettata. Quindi, `L(M')` contiene almeno `x` e **non è vuoto**.
-    *   **Se `Decide_Sottosequenza` risponde "No"**: Questo significa che non esiste nessuna stringa `x` che possa portare la macchina dallo stato iniziale a quello finale. Quindi, nessuna stringa viene accettata e `L(M')` **è vuoto**.
-
-5.  **La Contraddizione:** Abbiamo appena creato un algoritmo infallibile per decidere il Problema della Terminazione non-vuota. Ma sappiamo che tale algoritmo non può esistere. La nostra unica assunzione è stata l'esistenza di `Decide_Sottosequenza`.
-
-**Conclusione:** L'assunzione deve essere falsa. Pertanto, il problema di stabilire se una sequenza di stati appare come sottosequenza in una computazione è **indecidibile**.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -2748,85 +2630,7 @@ La stringa di input può passare dalle `a` alle `b` in uno qualsiasi dei tre sta
 
 Ecco una rappresentazione grafica del risultato, semplificata rendendo `q_even` uno stato finale:
 
-## ES 12
-Certamente! Analizziamo questo esercizio, che è un ottimo esempio di come espressioni di linguaggio apparentemente complesse possano essere semplificate per rivelare la loro vera natura. La soluzione fornita è corretta nel suo risultato finale, anche se la formula MFO presentata è un po' confusa.
 
-Ecco una spiegazione dettagliata passo dopo passo.
-
-### **Traccia dell'Esercizio**
-
-Si considerino i seguenti linguaggi sull'alfabeto `A = {a, b, c}`:
-*   `L1 = A*b \ (A*(A \ {a})*A*b)`
-*   `L2 = A* \ (A*(A \ {b})*A)`
-*   `L3 = L1 L2`
-
-dove `*` è la stella di Kleene, `\` è la differenza insiemistica e la giustapposizione `L1 L2` è la concatenazione.
-
-Utilizzare un formalismo a potenza minima (tra tutti quelli visti a lezione) che caratterizzi il linguaggio `L3`.
-
----
-
-### **Passo 1: Semplificazione di `L1`**
-
-La definizione di `L1` è `A*b \ (A*(A \ {a})*A*b)`. Scomponiamola:
-
-*   **`A*b`**: Questo è l'insieme di tutte le stringhe sull'alfabeto `{a, b, c}` che terminano con il carattere `b`.
-*   **`A \ {a}`**: Questo è l'insieme dei caratteri in `A` che non sono `a`, ovvero `{b, c}`.
-*   **`(A*(b|c)*A*b)`**: Questa è la parte che sottraiamo. Descrive le stringhe che (1) terminano con `b` e (2) contengono almeno un `b` o un `c` da qualche parte. *Questa interpretazione è complessa, c'è un modo più semplice di leggerla.*
-
-La vera intenzione di questa scrittura è descrivere una proprietà dei caratteri *prima* della `b` finale. Leggiamola così: "Prendiamo tutte le stringhe che finiscono in `b` (`A*b`) e togliamo quelle che hanno un carattere non-'a' (`b` o `c`) in qualsiasi posizione". Questo non è del tutto corretto.
-
-L'interpretazione più logica (e quella che porta alla soluzione) è:
-"Prendiamo tutte le stringhe che finiscono in `b` (`A*b`) e togliamo quelle per cui **esiste un carattere che non è 'a'**." Questo è equivalente a dire che **tutti i caratteri devono essere 'a' o 'b' e che nessun carattere `b` o `c` deve apparire**. In pratica, togliamo tutte le stringhe che contengono `b` o `c`.
-
-Una lettura più precisa è: togliamo le stringhe che contengono un carattere non-'a' (`b` o `c`). Se una stringa in `A*b` contiene un `b` prima della `b` finale, o contiene un `c`, viene rimossa. Le uniche stringhe che rimangono sono quelle composte solo da `a` seguite da una `b`.
-
-**Conclusione per `L1`:** `L1 = a*b`.
-
-### **Passo 2: Semplificazione di `L2`**
-
-La definizione di `L2` è `A* \ (A*(A \ {b})*A)`. La logica è la stessa:
-
-*   **`A*`**: L'insieme di tutte le stringhe possibili.
-*   **`A \ {b}`**: L'insieme dei caratteri `{a, c}`.
-*   **`(A*(a|c)*A)`**: Questo descrive tutte le stringhe che contengono almeno un `a` o un `c`.
-*   **La Differenza:** Se dall'insieme di tutte le stringhe (`A*`) togliamo tutte quelle che contengono `a` o `c`, cosa rimane? Rimangono solo le stringhe composte **esclusivamente da `b`**.
-
-**Conclusione per `L2`:** `L2 = b*`.
-
-### **Passo 3: Calcolo e Classificazione di `L3`**
-
-Ora dobbiamo calcolare `L3 = L1 L2`, che è la concatenazione.
-
-*   `L3 = (a*b) ⋅ (b*)`
-*   Questo significa "una stringa da `L1`" seguita da "una stringa da `L2`".
-*   Una stringa da `L1` è una sequenza di `a` (anche zero) che finisce con una `b`.
-*   Una stringa da `L2` è una sequenza di `b` (anche zero).
-*   Concatenandole, otteniamo una sequenza di `a`, seguita da una `b`, seguita da altre `b`. Questo è equivalente a una sequenza di `a` seguita da **almeno una `b`**.
-
-**Conclusione per `L3`:** `L3 = a*b⁺`.
-
-Questo è un **linguaggio regolare**.
-
-### **Passo 4: Scelta del Formalismo a Potenza Minima**
-
-La soluzione afferma che `L3` è "star-free". Un linguaggio è **star-free** se può essere descritto da un'espressione regolare che non usa la stella di Kleene (`*` o `+`), ma può usare il complemento. La classe dei linguaggi star-free è una sotto-classe dei linguaggi regolari.
-
-Un teorema fondamentale afferma che un linguaggio è **star-free se e solo se è definibile nella Logica Monadica del Primo Ordine (MFO)**.
-
-Poiché `a*b⁺` è effettivamente un linguaggio star-free, il formalismo a potenza minima per caratterizzarlo è proprio la **MFO**.
-
-#### **Analisi (e correzione) della Formula MFO**
-
-La formula fornita nella soluzione è molto confusa e probabilmente errata. Una formula MFO corretta e molto più chiara per `L3 = a*b⁺` sarebbe:
-
-**`∃x(last(x) ∧ b(x)) ∧ ¬∃y,z(b(y) ∧ a(z) ∧ y < z)`**
-
-Spieghiamola:
-1.  **`∃x(last(x) ∧ b(x))`**: "Esiste una posizione `x` che è l'ultima posizione della stringa (`last(x)`) E il carattere in quella posizione è una `b` (`b(x)`)." Questo garantisce che la stringa termini con `b`.
-2.  **`¬∃y,z(b(y) ∧ a(z) ∧ y < z)`**: "NON (`¬`) esiste una coppia di posizioni `y` e `z` tali che in `y` ci sia una `b`, in `z` ci sia una `a`, e `y` venga prima di `z` (`y < z`)." Questo garantisce che una volta che appare una `b`, non possono più apparire delle `a`.
-
-Questa formula descrive in modo preciso ed elegante il linguaggio `a*b⁺` ed è il formalismo a potenza minima richiesto.
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
 ## Es1
@@ -3808,12 +3612,232 @@ Quindi, possiamo usare i complementi degli esempi precedenti:
 
 1.  **Esempio in cui il complemento è finito:**
     *   Prendiamo `L = A*`. Abbiamo visto che è decidibile.
+    *   Il suo complemento `L̄` è l'insieme di tutte le stringhe che non sono in `A*`, cioè `∅` (il linguaggio vuoto).
+    *   `L̄ = ∅` è **finito**.
+
+2.  **Esempio in cui il complemento è infinito:**
+    *   Prendiamo `L = ∅`. Abbiamo visto che è decidibile.
+    *   Il suo complemento `L̄` è l'insieme di tutte le stringhe che non sono nel linguaggio vuoto, cioè `A*`.
+    *   `L̄ = A*` è **infinito**.
+
+Ancora una volta, abbiamo trovato esempi validi per entrambi i casi, quindi la risposta è **possibile**.
+
+---
+
+#### **c) Se `L` è fissato, il problema di stabilire se `L` è infinito è deciso.**
+
+**Risposta Corretta:** Dipende da L.
+
+**Motivazione:**
+Questa è la domanda più sottile e interessante. Analizziamola attentamente.
+*   "**`L` è fissato**": Non stiamo parlando di un linguaggio generico, ma di uno specifico, ad esempio "il linguaggio di tutte le stringhe con un numero pari di 'a'".
+*   "**Il problema è deciso**": Un problema è "deciso" se la sua risposta è una costante booleana ("Sì" o "No"), anche se noi non sappiamo quale sia. Un problema con una risposta costante è, per definizione, decidibile (l'algoritmo è semplicemente `return true` o `return false`).
+
+Per un qualsiasi `L` specifico, la proprietà "essere infinito" è una caratteristica intrinseca di `L`. O `L` è infinito (la risposta è "Sì"), o è finito (la risposta è "No"). Non può essere entrambe le cose. Quindi, tecnicamente, per ogni `L` fissato, la risposta è una costante, e il problema è deciso.
+
+Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evidenziano un punto cruciale: **potremmo non essere in grado di determinare quale sia la risposta**.
+
+**Spiegazione dell'esempio dei numeri primi gemelli:**
+1.  **Definizione:** Una coppia di primi gemelli è una coppia di numeri primi `(p, p+2)`, come (11, 13).
+2.  **La Congettura:** La Congettura dei Primi Gemelli afferma che esistono infinite coppie di primi gemelli. Questa è una delle domande più famose e **irrisolte** della matematica.
+3.  **Costruiamo il linguaggio `L`:**
+    `L = {n | esiste una coppia di primi gemelli (p, p+2) con p > n}`.
+    Cioè, `L` contiene un numero `n` se da qualche parte dopo `n` c'è un'altra coppia di primi gemelli.
+
+4.  **`L` è decidibile? SÌ.** Sembra strano, ma lo è. Ci sono solo due possibilità per come è fatto l'universo:
+    *   **Caso A: La congettura è vera.** Esistono infinite coppie di primi gemelli. In questo caso, per *qualsiasi* `n`, troveremo sempre una coppia più grande. Quindi `L` contiene tutti i numeri naturali (`L = ℕ`). Il linguaggio `ℕ` è decidibile.
+    *   **Caso B: La congettura è falsa.** Esiste una coppia di primi gemelli più grande di tutte, `(p_max, p_max+2)`. In questo caso, `L` contiene tutti i numeri `n < p_max`. Per qualsiasi `n ≥ p_max`, non ci sono coppie più grandi. Quindi `L` è un insieme **finito**. Ogni linguaggio finito è decidibile.
+
+    Poiché in entrambi gli scenari possibili `L` risulta essere un linguaggio decidibile, possiamo concludere che `L` **è decidibile**, anche se non sappiamo quale dei due scenari sia quello vero.
+
+5.  **Il problema "L è infinito?" è deciso?**
+    *   Se il Caso A è vero, `L` è infinito. La risposta è "Sì".
+    *   Se il Caso B è vero, `L` è finito. La risposta è "No".
+
+La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
+## Es 2
+### Concetti Chiave Preliminari
+
+-   **Decidibile (o Ricorsivo):** Un insieme di indici è decidibile se esiste un algoritmo (una MT) che, dato un qualsiasi indice i, termina **sempre** e risponde correttamente "sì" (se i è nell'insieme) o "no" (se i non è nell'insieme).
+    
+-   **Semi-decidibile (o Ricorsivamente Enumerabile):** Un insieme di indici è semi-decidibile se esiste un algoritmo che, dato un indice i, termina e risponde "sì" se i è nell'insieme. Se i non è nell'insieme, l'algoritmo può rispondere "no" oppure **non terminare mai**.
+    
+-   **Teorema di Rice:** Afferma che qualsiasi proprietà **non banale** del **linguaggio** riconosciuto da una MT è indecidibile.
+    
+    -   **Proprietà del linguaggio:** Riguarda ciò che la macchina accetta (L(M)), non come è fatta (numero di stati, ecc.).
+        
+    -   **Non banale:** Esiste almeno una MT che ha la proprietà e almeno una che non ce l'ha.
+        
+
+----------
+
+### **1. S1: L'insieme di indici delle MT che accettano almeno una stringa di lunghezza k.**
+
+#### **S1 è decidibile? NO.**
+
+-   **Motivazione (Teorema di Rice):** Applichiamo il Teorema di Rice.
+    
+    1.  La proprietà "accettare almeno una stringa di lunghezza k" è una proprietà del linguaggio riconosciuto dalla macchina? **Sì**.
+        
+    2.  È una proprietà non banale? **Sì**, perché:
+        
+        -   Esiste una MT con questa proprietà (es. una macchina che accetta tutte le stringhe, A*).
+            
+        -   Esiste una MT senza questa proprietà (es. una macchina che non accetta nessuna stringa, riconoscendo il linguaggio vuoto ∅).  
+            Poiché entrambe le condizioni sono soddisfatte, per il Teorema di Rice, l'insieme S1  **non è decidibile**.
+            
+
+#### **S1 è semi-decidibile? SÌ.**
+
+-   **Motivazione (Ricerca Esaustiva):** La struttura della domanda ("almeno una") ci suggerisce che se la risposta è "sì", possiamo trovarne la prova. Dobbiamo costruire un algoritmo che termini e dica "sì" per ogni i ∈ S1.
+    
+    -   **Algoritmo:**
+        
+        1.  Dato un indice i, elenca tutte le stringhe di lunghezza k. Poiché k è un intero fissato e A è un alfabeto finito, questo è un **insieme finito** di stringhe.
+            
+        2.  Simula l'esecuzione della macchina Mᵢ su **tutte** queste stringhe "in parallelo" (usando la tecnica del **dovetailing** o interleaving, per evitare di rimanere bloccati su una computazione che non termina).
+            
+        3.  **Se anche solo una di queste simulazioni si ferma e accetta**, l'algoritmo si arresta immediatamente e restituisce "sì".
+            
+    -   **Comportamento:** Se Mᵢ accetta almeno una stringa di lunghezza k, questo algoritmo la troverà prima o poi e terminerà. Se Mᵢ non accetta nessuna stringa di lunghezza k, l'algoritmo non terminerà mai. Questo è esattamente il comportamento richiesto per un problema semi-decidibile.
+        
+
+----------
+
+### **2. S2: L'insieme di indici delle MT che accettano al più una stringa di lunghezza k.**
+
+#### **S2 è decidibile? NO.**
+
+-   **Motivazione (Teorema di Rice):** Il ragionamento è identico a quello per S1.
+    
+    1.  La proprietà "accettare al più una stringa di lunghezza k" (cioè 0 o 1 stringhe) è una proprietà del linguaggio. **Sì**.
+        
+    2.  È non banale? **Sì**, perché:
+        
+        -   Una MT che riconosce ∅ ha questa proprietà.
+            
+        -   Una MT che riconosce A* non ha questa proprietà (se |A|ᵏ > 1).  
+            Per il Teorema di Rice, l'insieme S2  **non è decidibile**.
+            
+
+#### **S2 è semi-decidibile? NO.**
+
+-   **Motivazione (Uso del Complemento):** Per dimostrare che un insieme non è semi-decidibile, una tecnica standard è dimostrare che il suo **complemento è semi-decidibile**. Esiste un teorema fondamentale: Se un insieme S e il suo complemento S̄ sono entrambi semi-decidibili, allora S è decidibile.  
+    Poiché abbiamo già stabilito che S2 è indecidibile, se riusciamo a dimostrare che S̄2 è semi-decidibile, allora S2 non può esserlo.
+    
+    1.  **Definiamo il complemento S̄2:** È l'insieme degli indici delle MT che **non** accettano al più una stringa di lunghezza k. Questo significa: l'insieme di indici delle MT che accettano **almeno due** stringhe di lunghezza k.
+        
+    2.  **Dimostriamo che S̄2 è semi-decidibile:** La logica è la stessa usata per S1.
+        
+        -   **Algoritmo per S̄2:**
+            
+            1.  Dato i, elenca tutte le stringhe di lunghezza k.
+                
+            2.  Simula Mᵢ su tutte queste stringhe in parallelo.
+                
+            3.  Tieni un contatore delle stringhe accettate.
+                
+            4.  **Non appena il contatore raggiunge 2**, l'algoritmo si arresta e restituisce "sì".
+                
+        -   Questo algoritmo termina se e solo se Mᵢ accetta almeno due stringhe di lunghezza k. Quindi, S̄2  **è semi-decidibile**.
+            
+    3.  **Conclusione:** Poiché S2 è indecidibile e il suo complemento S̄2 è semi-decidibile, S2  **non può essere semi-decidibile**.
+        
+
+----------
+
+### **3. S3: L'insieme di indici delle MT che calcolano la funzione caratteristica di S2.**
+
+#### **S3 è decidibile? SÌ.**
+
+#### **S3 è semi-decidibile? SÌ.**
+
+-   **Motivazione (Conseguenza della non decidibilità):**
+    
+    1.  Cos'è la "funzione caratteristica" di un insieme S? È una funzione totale che restituisce 1 se l'input è in S e 0 altrimenti.
+        
+    2.  Per definizione, un insieme è **decidibile** se e solo se la sua funzione caratteristica è **calcolabile** (cioè, esiste una MT che la calcola).
+        
+    3.  Nel punto precedente, abbiamo dimostrato in modo definitivo che l'insieme S2 è **indecidibile**.
+        
+    4.  Questo significa, per definizione, che **non esiste alcuna MT** in grado di calcolare la sua funzione caratteristica.
+        
+    5.  Quindi, l'insieme S3, che dovrebbe contenere gli indici di tali macchine, è necessariamente l'**insieme vuoto (∅)**.
+        
+    
+    -   **Il problema si riduce a: "L'insieme vuoto è decidibile?"** La risposta è **sì**. L'algoritmo per deciderlo è banale: "Dato un qualsiasi indice i, rispondi sempre 'no'". Questo algoritmo termina sempre ed è sempre corretto.
+        
+    -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
+  
+  ## Es 3
+
+
+
+Si consideri il linguaggio L = {0ⁿ | n ∈ N e 0ⁿ appare nell’espansione decimale di π}.
+Il linguaggio L è regolare? Si motivi esaurientemente la risposta.
+
+---
+
+
+
+Il linguaggio `L` è un insieme di stringhe. Le uniche stringhe che possono appartenere a `L` sono quelle composte solo da zeri (es. "0", "00", "00000", e anche la stringa vuota ε, che corrisponde a n=0, cioè una sequenza di zero zeri).
+
+La condizione per cui una di queste stringhe appartiene a `L` è che quella sequenza di zeri deve apparire da qualche parte nei decimali di π (3.14159...).
+
+*   **Esempio 1:** La stringa "0" appartiene a L? Dobbiamo cercare se c'è almeno uno "0" nei decimali di π. Sì, c'è (la 32ª cifra decimale è uno 0). Quindi "0" ∈ L.
+*   **Esempio 2:** La stringa "000000" appartiene a L? Sì, è famoso il "punto di Feynman", una sequenza di sei 9 consecutivi che inizia alla 762ª cifra decimale. Allo stesso modo, si sa che esistono sequenze di zeri.
+*   **Esempio 3:** La stringa "0000000000" (dieci zeri) appartiene a L? E una stringa con un miliardo di zeri?
+
+Qui sta il punto cruciale: **la matematica non sa ancora con certezza se π sia un "numero normale"**, cioè un numero la cui espansione decimale contiene ogni possibile sequenza finita di cifre. Si sospetta di sì, ma non è stato dimostrato.
+
+---
+
+### **Spiegazione della Soluzione: Il Ragionamento per Casi**
+
+Poiché non conosciamo la risposta definitiva sulla natura di π, l'unico modo per risolvere il problema è considerare **tutte le possibilità logiche**. Per la sequenza di zeri in π, ci sono solo due scenari possibili nell'universo:
+
+#### **Caso 1: Esiste una sequenza "massima" di zeri.**
+
+*   **Cosa significa:** Immaginiamo che un giorno un matematico scopra che la più lunga sequenza di zeri consecutivi che appare in π abbia, ad esempio, lunghezza 15 (`k=15`). Questo significherebbe che la stringa `0¹⁵` si trova in π, ma la stringa `0¹⁶` non si troverà mai, per quanto si continui a calcolare le cifre.
+*   **Come sarebbe fatto `L` in questo caso?** Se esistesse un tale limite `k`, il nostro linguaggio `L` sarebbe composto da un numero **finito** di stringhe:
+    `L = {ε, "0", "00", "000", ..., "0ᵏ"}`
+*   **Questo linguaggio è regolare? SÌ.** Un teorema fondamentale della teoria dei linguaggi formali afferma che **tutti i linguaggi finiti sono regolari**. Un linguaggio finito può sempre essere descritto da un'espressione regolare semplicemente elencando tutte le sue stringhe, separate dal simbolo di unione `|`. Come dice la soluzione:
+    `Espressione Regolare: ε | 0 | 00 | ... | 0ᵏ`
+    Poiché in questo scenario `L` è un linguaggio finito, `L` sarebbe regolare.
+
+#### **Caso 2: Non esiste una sequenza "massima" di zeri.**
+
+*   **Cosa significa:** Questo scenario corrisponde alla credenza (non provata) che π sia un numero normale. Significherebbe che per qualsiasi lunghezza `n` tu possa immaginare (un milione, un miliardo, un trilione), prima o poi, se calcoli abbastanza cifre di π, troverai una sequenza di `n` zeri consecutivi.
+*   **Come sarebbe fatto `L` in questo caso?** Il nostro linguaggio `L` conterrebbe tutte le possibili stringhe di zeri, di qualsiasi lunghezza:
+    `L = {ε, "0", "00", "000", "0000", ...}` (un insieme infinito)
+*   **Questo linguaggio è regolare? SÌ.** Questo insieme è esattamente il linguaggio descritto dalla famosissima espressione regolare:
+    `Espressione Regolare: 0*`
+    (che significa "zero o più occorrenze del simbolo 0").
+    Poiché in questo scenario `L` può essere descritto da un'espressione regolare, `L` sarebbe regolare.
+
+---
+
+### **Conclusione Finale**
+
+Abbiamo analizzato i due unici scenari logicamente possibili per la natura del linguaggio `L`:
+1.  O `L` è un linguaggio finito (se c'è un limite agli zeri in π).
+2.  O `L` è il linguaggio `0*` (se non c'è un limite).
+
+In **entrambi i casi**, il linguaggio risultante è **regolare**.
+
+Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è destinato a essere regolare, possiamo concludere con certezza che **SÌ, il linguaggio L è regolare**.
+
+La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
+## Es 4
+Certamente! Questo è un esercizio molto interessante che esplora il potere computazionale che si ottiene combinando diversi tipi di automi. La chiave per risolverlo è capire che la condizione di accettazione del "Riconoscitore ad Automi Gemelli" (RAG) corrisponde all'**intersezione** dei linguaggi riconosciuti dai suoi componenti.
+
+Analizziamo la soluzione punto per pu
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2NDc1NDk3MTEsMTc2OTk2NTY2NCwxND
-czMzI1NDA3LC0xNTI5MTg2ODQ1LDE1NTU0NzQ4NzUsLTE5NTU4
-MDg1NzUsNDIyMjMwNDk0LC0yNDQ2ODY0MzQsMTk4NjcwNTQzLC
-0xNTk2MTU3NTIsMTU2NDkyMDc4MiwtMTcxMDY1NDQ1NywtOTc4
-MzgwMjcxLDE1NzA0OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNz
-MsMTY5MDA1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIx
-NzQ4OTQxNl19
+eyJoaXN0b3J5IjpbMTQ3MzMyNTQwNywtMTY0NzU0OTcxMSwxNz
+Y5OTY1NjY0LDE0NzMzMjU0MDcsLTE1MjkxODY4NDUsMTU1NTQ3
+NDg3NSwtMTk1NTgwODU3NSw0MjIyMzA0OTQsLTI0NDY4NjQzNC
+wxOTg2NzA1NDMsLTE1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNzEw
+NjU0NDU3LC05NzgzODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3Mz
+gsMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMzUx
+ODQyODkzXX0=
 -->
