@@ -1172,10 +1172,6 @@ La definizione di "stato utile" ha una struttura esistenziale: "**esiste** una s
 Questo comportamento corrisponde esattamente alla definizione di un problema **semidecidibile**.
 
 ## Es 8
-Certamente! Analizziamo questo esercizio che esplora le proprietà delle Macchine di Turing Universali (MTU) e il loro legame con il Problema dell'Arresto.
-
-### **Traccia dell'Esercizio (formattata e chiarita)**
-
 1.  È possibile determinare se una **generica** macchina di Turing universale si arresta **per ogni** ingresso?
 2.  È possibile trovare, data la **terza** (secondo l'enumerazione di Gödel) macchina di Turing universale `M`, **almeno un ingresso** per cui essa non si arresta?
 3.  È possibile, data la macchina di Turing universale `M` di cui sopra, dire se essa si arresta per un **generico** ingresso `n`?
@@ -2968,7 +2964,7 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIyMTA3NjE5Nyw1NTY5MjMyOTEsLTM1MT
+eyJoaXN0b3J5IjpbMTY5MDA1OTAwMSw1NTY5MjMyOTEsLTM1MT
 g0Mjg5MywtMTIxNzQ4OTQxNiw4MTI3MDA0MjYsMTg3NTQ0ODg5
 MiwyMDM3MzkzMywtNjk3MDQwNDg5LC0xNDYxMjMxODI5LDEyNz
 c2MDg5NDMsLTE5MzM2NzMyNzMsLTcwOTI2NDExMCwtNjk1NTMy
