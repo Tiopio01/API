@@ -3829,18 +3829,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 ## Es 4
+Certamente! Questo è un esercizio molto interessante che esplora il potere computazionale che si ottiene combinando diversi tipi di automi. La chiave per risolverlo è capire che la condizione di accettazione del "Riconoscitore ad Automi Gemelli" (RAG) corrisponde all'**intersezione** dei linguaggi riconosciuti dai suoi componenti.
 
-## ES 5
-
-Certamente! Questo è un esercizio molto interessante che esplora la relazione tra linguaggi regolari, logica monadica del primo ordine (MFO) e la classe dei linguaggi "star-free". Analizziamolo in dettaglio.
-
-### **Traccia dell'Esercizio (formattata e chiarita)**
-
-Si consideri il linguaggio `L1` tale che `L1ᶜ = L2`, dove `L2 = (ab)⁺`.
-L'alfabeto è `{a, b}`.
-C
+Analizziamo la soluzione punto per pu
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIxMTgwMTk4NSwtMTUyOTE4Njg0NSwxND
+eyJoaXN0b3J5IjpbMTQ3MzMyNTQwNywtMTUyOTE4Njg0NSwxND
 czMzI1NDA3LC0xNjQ3NTQ5NzExLDE3Njk5NjU2NjQsMTU1NTQ3
 NDg3NSwtMTk1NTgwODU3NSw0MjIyMzA0OTQsLTI0NDY4NjQzNC
 wxOTg2NzA1NDMsLTE1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNzEw
