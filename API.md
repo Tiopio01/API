@@ -2748,7 +2748,85 @@ La stringa di input può passare dalle `a` alle `b` in uno qualsiasi dei tre sta
 
 Ecco una rappresentazione grafica del risultato, semplificata rendendo `q_even` uno stato finale:
 
+## ES 12
+Certamente! Analizziamo questo esercizio, che è un ottimo esempio di come espressioni di linguaggio apparentemente complesse possano essere semplificate per rivelare la loro vera natura. La soluzione fornita è corretta nel suo risultato finale, anche se la formula MFO presentata è un po' confusa.
 
+Ecco una spiegazione dettagliata passo dopo passo.
+
+### **Traccia dell'Esercizio**
+
+Si considerino i seguenti linguaggi sull'alfabeto `A = {a, b, c}`:
+*   `L1 = A*b \ (A*(A \ {a})*A*b)`
+*   `L2 = A* \ (A*(A \ {b})*A)`
+*   `L3 = L1 L2`
+
+dove `*` è la stella di Kleene, `\` è la differenza insiemistica e la giustapposizione `L1 L2` è la concatenazione.
+
+Utilizzare un formalismo a potenza minima (tra tutti quelli visti a lezione) che caratterizzi il linguaggio `L3`.
+
+---
+
+### **Passo 1: Semplificazione di `L1`**
+
+La definizione di `L1` è `A*b \ (A*(A \ {a})*A*b)`. Scomponiamola:
+
+*   **`A*b`**: Questo è l'insieme di tutte le stringhe sull'alfabeto `{a, b, c}` che terminano con il carattere `b`.
+*   **`A \ {a}`**: Questo è l'insieme dei caratteri in `A` che non sono `a`, ovvero `{b, c}`.
+*   **`(A*(b|c)*A*b)`**: Questa è la parte che sottraiamo. Descrive le stringhe che (1) terminano con `b` e (2) contengono almeno un `b` o un `c` da qualche parte. *Questa interpretazione è complessa, c'è un modo più semplice di leggerla.*
+
+La vera intenzione di questa scrittura è descrivere una proprietà dei caratteri *prima* della `b` finale. Leggiamola così: "Prendiamo tutte le stringhe che finiscono in `b` (`A*b`) e togliamo quelle che hanno un carattere non-'a' (`b` o `c`) in qualsiasi posizione". Questo non è del tutto corretto.
+
+L'interpretazione più logica (e quella che porta alla soluzione) è:
+"Prendiamo tutte le stringhe che finiscono in `b` (`A*b`) e togliamo quelle per cui **esiste un carattere che non è 'a'**." Questo è equivalente a dire che **tutti i caratteri devono essere 'a' o 'b' e che nessun carattere `b` o `c` deve apparire**. In pratica, togliamo tutte le stringhe che contengono `b` o `c`.
+
+Una lettura più precisa è: togliamo le stringhe che contengono un carattere non-'a' (`b` o `c`). Se una stringa in `A*b` contiene un `b` prima della `b` finale, o contiene un `c`, viene rimossa. Le uniche stringhe che rimangono sono quelle composte solo da `a` seguite da una `b`.
+
+**Conclusione per `L1`:** `L1 = a*b`.
+
+### **Passo 2: Semplificazione di `L2`**
+
+La definizione di `L2` è `A* \ (A*(A \ {b})*A)`. La logica è la stessa:
+
+*   **`A*`**: L'insieme di tutte le stringhe possibili.
+*   **`A \ {b}`**: L'insieme dei caratteri `{a, c}`.
+*   **`(A*(a|c)*A)`**: Questo descrive tutte le stringhe che contengono almeno un `a` o un `c`.
+*   **La Differenza:** Se dall'insieme di tutte le stringhe (`A*`) togliamo tutte quelle che contengono `a` o `c`, cosa rimane? Rimangono solo le stringhe composte **esclusivamente da `b`**.
+
+**Conclusione per `L2`:** `L2 = b*`.
+
+### **Passo 3: Calcolo e Classificazione di `L3`**
+
+Ora dobbiamo calcolare `L3 = L1 L2`, che è la concatenazione.
+
+*   `L3 = (a*b) ⋅ (b*)`
+*   Questo significa "una stringa da `L1`" seguita da "una stringa da `L2`".
+*   Una stringa da `L1` è una sequenza di `a` (anche zero) che finisce con una `b`.
+*   Una stringa da `L2` è una sequenza di `b` (anche zero).
+*   Concatenandole, otteniamo una sequenza di `a`, seguita da una `b`, seguita da altre `b`. Questo è equivalente a una sequenza di `a` seguita da **almeno una `b`**.
+
+**Conclusione per `L3`:** `L3 = a*b⁺`.
+
+Questo è un **linguaggio regolare**.
+
+### **Passo 4: Scelta del Formalismo a Potenza Minima**
+
+La soluzione afferma che `L3` è "star-free". Un linguaggio è **star-free** se può essere descritto da un'espressione regolare che non usa la stella di Kleene (`*` o `+`), ma può usare il complemento. La classe dei linguaggi star-free è una sotto-classe dei linguaggi regolari.
+
+Un teorema fondamentale afferma che un linguaggio è **star-free se e solo se è definibile nella Logica Monadica del Primo Ordine (MFO)**.
+
+Poiché `a*b⁺` è effettivamente un linguaggio star-free, il formalismo a potenza minima per caratterizzarlo è proprio la **MFO**.
+
+#### **Analisi (e correzione) della Formula MFO**
+
+La formula fornita nella soluzione è molto confusa e probabilmente errata. Una formula MFO corretta e molto più chiara per `L3 = a*b⁺` sarebbe:
+
+**`∃x(last(x) ∧ b(x)) ∧ ¬∃y,z(b(y) ∧ a(z) ∧ y < z)`**
+
+Spieghiamola:
+1.  **`∃x(last(x) ∧ b(x))`**: "Esiste una posizione `x` che è l'ultima posizione della stringa (`last(x)`) E il carattere in quella posizione è una `b` (`b(x)`)." Questo garantisce che la stringa termini con `b`.
+2.  **`¬∃y,z(b(y) ∧ a(z) ∧ y < z)`**: "NON (`¬`) esiste una coppia di posizioni `y` e `z` tali che in `y` ci sia una `b`, in `z` ci sia una `a`, e `y` venga prima di `z` (`y < z`)." Questo garantisce che una volta che appare una `b`, non possono più apparire delle `a`.
+
+Questa formula descrive in modo preciso ed elegante il linguaggio `a*b⁺` ed è il formalismo a potenza minima richiesto.
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
 ## Es1
@@ -3730,76 +3808,12 @@ Quindi, possiamo usare i complementi degli esempi precedenti:
 
 1.  **Esempio in cui il complemento è finito:**
     *   Prendiamo `L = A*`. Abbiamo visto che è decidibile.
-    *   Il suo complemento `L̄` è l'insieme di tutte le stringhe che non sono in `A*`, cioè `∅` (il linguaggio vuoto).
-    *   `L̄ = ∅` è **finito**.
-
-2.  **Esempio in cui il complemento è infinito:**
-    *   Prendiamo `L = ∅`. Abbiamo visto che è decidibile.
-    *   Il suo complemento `L̄` è l'insieme di tutte le stringhe che non sono nel linguaggio vuoto, cioè `A*`.
-    *   `L̄ = A*` è **infinito**.
-
-Ancora una volta, abbiamo trovato esempi validi per entrambi i casi, quindi la risposta è **possibile**.
-
----
-
-#### **c) Se `L` è fissato, il problema di stabilire se `L` è infinito è deciso.**
-
-**Risposta Corretta:** Dipende da L.
-
-**Motivazione:**
-Questa è la domanda più sottile e interessante. Analizziamola attentamente.
-*   "**`L` è fissato**": Non stiamo parlando di un linguaggio generico, ma di uno specifico, ad esempio "il linguaggio di tutte le stringhe con un numero pari di 'a'".
-*   "**Il problema è deciso**": Un problema è "deciso" se la sua risposta è una costante booleana ("Sì" o "No"), anche se noi non sappiamo quale sia. Un problema con una risposta costante è, per definizione, decidibile (l'algoritmo è semplicemente `return true` o `return false`).
-
-Per un qualsiasi `L` specifico, la proprietà "essere infinito" è una caratteristica intrinseca di `L`. O `L` è infinito (la risposta è "Sì"), o è finito (la risposta è "No"). Non può essere entrambe le cose. Quindi, tecnicamente, per ogni `L` fissato, la risposta è una costante, e il problema è deciso.
-
-Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evidenziano un punto cruciale: **potremmo non essere in grado di determinare quale sia la risposta**.
-
-**Spiegazione dell'esempio dei numeri primi gemelli:**
-1.  **Definizione:** Una coppia di primi gemelli è una coppia di numeri primi `(p, p+2)`, come (11, 13).
-2.  **La Congettura:** La Congettura dei Primi Gemelli afferma che esistono infinite coppie di primi gemelli. Questa è una delle domande più famose e **irrisolte** della matematica.
-3.  **Costruiamo il linguaggio `L`:**
-    `L = {n | esiste una coppia di primi gemelli (p, p+2) con p > n}`.
-    Cioè, `L` contiene un numero `n` se da qualche parte dopo `n` c'è un'altra coppia di primi gemelli.
-
-4.  **`L` è decidibile? SÌ.** Sembra strano, ma lo è. Ci sono solo due possibilità per come è fatto l'universo:
-    *   **Caso A: La congettura è vera.** Esistono infinite coppie di primi gemelli. In questo caso, per *qualsiasi* `n`, troveremo sempre una coppia più grande. Quindi `L` contiene tutti i numeri naturali (`L = ℕ`). Il linguaggio `ℕ` è decidibile.
-    *   **Caso B: La congettura è falsa.** Esiste una coppia di primi gemelli più grande di tutte, `(p_max, p_max+2)`. In questo caso, `L` contiene tutti i numeri `n < p_max`. Per qualsiasi `n ≥ p_max`, non ci sono coppie più grandi. Quindi `L` è un insieme **finito**. Ogni linguaggio finito è decidibile.
-
-    Poiché in entrambi gli scenari possibili `L` risulta essere un linguaggio decidibile, possiamo concludere che `L` **è decidibile**, anche se non sappiamo quale dei due scenari sia quello vero.
-
-5.  **Il problema "L è infinito?" è deciso?**
-    *   Se il Caso A è vero, `L` è infinito. La risposta è "Sì".
-    *   Se il Caso B è vero, `L` è finito. La risposta è "No".
-
-La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
-## Es 2
-### Concetti Chiave Preliminari
-
--   **Decidibile (o Ricorsivo):** Un insieme di indici è decidibile se esiste un algoritmo (una MT) che, dato un qualsiasi indice i, termina **sempre** e risponde correttamente "sì" (se i è nell'insieme) o "no" (se i non è nell'insieme).
-    
--   **Semi-decidibile (o Ricorsivamente Enumerabile):** Un insieme di indici è semi-decidibile se esiste un algoritmo che, dato un indice i, termina e risponde "sì" se i è nell'insieme. Se i non è nell'insieme, l'algoritmo può rispondere "no" oppure **non terminare mai**.
-    
--   **Teorema di Rice:** Afferma che qualsiasi proprietà **non banale** del **linguaggio** riconosciuto da una MT è indecidibile.
-    
-    -   **Proprietà del linguaggio:** Riguarda ciò che la macchina accetta (L(M)), non come è fatta (numero di stati, ecc.).
-        
-    -   **Non banale:** Esiste almeno una MT che ha la proprietà e almeno una che non ce l'ha.
-        
-
-----------
-
-### **1. S1: L'insieme di indici delle MT che accettano almeno una stringa di lunghezza k.**
-
-#### **S1 è decidibile? NO.**
-
--   *
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkxOTk2MTY1MSwxNzY5OTY1NjY0LDE0Nz
-MzMjU0MDcsLTE1MjkxODY4NDUsMTU1NTQ3NDg3NSwtMTk1NTgw
-ODU3NSw0MjIyMzA0OTQsLTI0NDY4NjQzNCwxOTg2NzA1NDMsLT
-E1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNzEwNjU0NDU3LC05Nzgz
-ODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3MzgsMTc2NDA5NTA3My
-wxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMzUxODQyODkzLC0xMjE3
-NDg5NDE2XX0=
+eyJoaXN0b3J5IjpbLTE2NDc1NDk3MTEsMTc2OTk2NTY2NCwxND
+czMzI1NDA3LC0xNTI5MTg2ODQ1LDE1NTU0NzQ4NzUsLTE5NTU4
+MDg1NzUsNDIyMjMwNDk0LC0yNDQ2ODY0MzQsMTk4NjcwNTQzLC
+0xNTk2MTU3NTIsMTU2NDkyMDc4MiwtMTcxMDY1NDQ1NywtOTc4
+MzgwMjcxLDE1NzA0OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNz
+MsMTY5MDA1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIx
+NzQ4OTQxNl19
 -->
