@@ -3808,12 +3808,354 @@ Quindi, possiamo usare i complementi degli esempi precedenti:
 
 1.  **Esempio in cui il complemento è finito:**
     *   Prendiamo `L = A*`. Abbiamo visto che è decidibile.
+    *   Il suo complemento `L̄` è l'insieme di tutte le stringhe che non sono in `A*`, cioè `∅` (il linguaggio vuoto).
+    *   `L̄ = ∅` è **finito**.
+
+2.  **Esempio in cui il complemento è infinito:**
+    *   Prendiamo `L = ∅`. Abbiamo visto che è decidibile.
+    *   Il suo complemento `L̄` è l'insieme di tutte le stringhe che non sono nel linguaggio vuoto, cioè `A*`.
+    *   `L̄ = A*` è **infinito**.
+
+Ancora una volta, abbiamo trovato esempi validi per entrambi i casi, quindi la risposta è **possibile**.
+
+---
+
+#### **c) Se `L` è fissato, il problema di stabilire se `L` è infinito è deciso.**
+
+**Risposta Corretta:** Dipende da L.
+
+**Motivazione:**
+Questa è la domanda più sottile e interessante. Analizziamola attentamente.
+*   "**`L` è fissato**": Non stiamo parlando di un linguaggio generico, ma di uno specifico, ad esempio "il linguaggio di tutte le stringhe con un numero pari di 'a'".
+*   "**Il problema è deciso**": Un problema è "deciso" se la sua risposta è una costante booleana ("Sì" o "No"), anche se noi non sappiamo quale sia. Un problema con una risposta costante è, per definizione, decidibile (l'algoritmo è semplicemente `return true` o `return false`).
+
+Per un qualsiasi `L` specifico, la proprietà "essere infinito" è una caratteristica intrinseca di `L`. O `L` è infinito (la risposta è "Sì"), o è finito (la risposta è "No"). Non può essere entrambe le cose. Quindi, tecnicamente, per ogni `L` fissato, la risposta è una costante, e il problema è deciso.
+
+Tuttavia, la soluzione "Dipende da L" e l'esempio dei numeri primi gemelli evidenziano un punto cruciale: **potremmo non essere in grado di determinare quale sia la risposta**.
+
+**Spiegazione dell'esempio dei numeri primi gemelli:**
+1.  **Definizione:** Una coppia di primi gemelli è una coppia di numeri primi `(p, p+2)`, come (11, 13).
+2.  **La Congettura:** La Congettura dei Primi Gemelli afferma che esistono infinite coppie di primi gemelli. Questa è una delle domande più famose e **irrisolte** della matematica.
+3.  **Costruiamo il linguaggio `L`:**
+    `L = {n | esiste una coppia di primi gemelli (p, p+2) con p > n}`.
+    Cioè, `L` contiene un numero `n` se da qualche parte dopo `n` c'è un'altra coppia di primi gemelli.
+
+4.  **`L` è decidibile? SÌ.** Sembra strano, ma lo è. Ci sono solo due possibilità per come è fatto l'universo:
+    *   **Caso A: La congettura è vera.** Esistono infinite coppie di primi gemelli. In questo caso, per *qualsiasi* `n`, troveremo sempre una coppia più grande. Quindi `L` contiene tutti i numeri naturali (`L = ℕ`). Il linguaggio `ℕ` è decidibile.
+    *   **Caso B: La congettura è falsa.** Esiste una coppia di primi gemelli più grande di tutte, `(p_max, p_max+2)`. In questo caso, `L` contiene tutti i numeri `n < p_max`. Per qualsiasi `n ≥ p_max`, non ci sono coppie più grandi. Quindi `L` è un insieme **finito**. Ogni linguaggio finito è decidibile.
+
+    Poiché in entrambi gli scenari possibili `L` risulta essere un linguaggio decidibile, possiamo concludere che `L` **è decidibile**, anche se non sappiamo quale dei due scenari sia quello vero.
+
+5.  **Il problema "L è infinito?" è deciso?**
+    *   Se il Caso A è vero, `L` è infinito. La risposta è "Sì".
+    *   Se il Caso B è vero, `L` è finito. La risposta è "No".
+
+La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conoscenze matematiche, non sappiamo quale sia**. Ecco perché la soluzione dice "Dipende da L": anche se per questo `L` fissato il problema è teoricamente deciso, noi non possiamo scrivere l'algoritmo (`return true` o `return false`) perché non sappiamo quale dei due sia quello corretto.
+## Es 2
+### Concetti Chiave Preliminari
+
+-   **Decidibile (o Ricorsivo):** Un insieme di indici è decidibile se esiste un algoritmo (una MT) che, dato un qualsiasi indice i, termina **sempre** e risponde correttamente "sì" (se i è nell'insieme) o "no" (se i non è nell'insieme).
+    
+-   **Semi-decidibile (o Ricorsivamente Enumerabile):** Un insieme di indici è semi-decidibile se esiste un algoritmo che, dato un indice i, termina e risponde "sì" se i è nell'insieme. Se i non è nell'insieme, l'algoritmo può rispondere "no" oppure **non terminare mai**.
+    
+-   **Teorema di Rice:** Afferma che qualsiasi proprietà **non banale** del **linguaggio** riconosciuto da una MT è indecidibile.
+    
+    -   **Proprietà del linguaggio:** Riguarda ciò che la macchina accetta (L(M)), non come è fatta (numero di stati, ecc.).
+        
+    -   **Non banale:** Esiste almeno una MT che ha la proprietà e almeno una che non ce l'ha.
+        
+
+----------
+
+### **1. S1: L'insieme di indici delle MT che accettano almeno una stringa di lunghezza k.**
+
+#### **S1 è decidibile? NO.**
+
+-   **Motivazione (Teorema di Rice):** Applichiamo il Teorema di Rice.
+    
+    1.  La proprietà "accettare almeno una stringa di lunghezza k" è una proprietà del linguaggio riconosciuto dalla macchina? **Sì**.
+        
+    2.  È una proprietà non banale? **Sì**, perché:
+        
+        -   Esiste una MT con questa proprietà (es. una macchina che accetta tutte le stringhe, A*).
+            
+        -   Esiste una MT senza questa proprietà (es. una macchina che non accetta nessuna stringa, riconoscendo il linguaggio vuoto ∅).  
+            Poiché entrambe le condizioni sono soddisfatte, per il Teorema di Rice, l'insieme S1  **non è decidibile**.
+            
+
+#### **S1 è semi-decidibile? SÌ.**
+
+-   **Motivazione (Ricerca Esaustiva):** La struttura della domanda ("almeno una") ci suggerisce che se la risposta è "sì", possiamo trovarne la prova. Dobbiamo costruire un algoritmo che termini e dica "sì" per ogni i ∈ S1.
+    
+    -   **Algoritmo:**
+        
+        1.  Dato un indice i, elenca tutte le stringhe di lunghezza k. Poiché k è un intero fissato e A è un alfabeto finito, questo è un **insieme finito** di stringhe.
+            
+        2.  Simula l'esecuzione della macchina Mᵢ su **tutte** queste stringhe "in parallelo" (usando la tecnica del **dovetailing** o interleaving, per evitare di rimanere bloccati su una computazione che non termina).
+            
+        3.  **Se anche solo una di queste simulazioni si ferma e accetta**, l'algoritmo si arresta immediatamente e restituisce "sì".
+            
+    -   **Comportamento:** Se Mᵢ accetta almeno una stringa di lunghezza k, questo algoritmo la troverà prima o poi e terminerà. Se Mᵢ non accetta nessuna stringa di lunghezza k, l'algoritmo non terminerà mai. Questo è esattamente il comportamento richiesto per un problema semi-decidibile.
+        
+
+----------
+
+### **2. S2: L'insieme di indici delle MT che accettano al più una stringa di lunghezza k.**
+
+#### **S2 è decidibile? NO.**
+
+-   **Motivazione (Teorema di Rice):** Il ragionamento è identico a quello per S1.
+    
+    1.  La proprietà "accettare al più una stringa di lunghezza k" (cioè 0 o 1 stringhe) è una proprietà del linguaggio. **Sì**.
+        
+    2.  È non banale? **Sì**, perché:
+        
+        -   Una MT che riconosce ∅ ha questa proprietà.
+            
+        -   Una MT che riconosce A* non ha questa proprietà (se |A|ᵏ > 1).  
+            Per il Teorema di Rice, l'insieme S2  **non è decidibile**.
+            
+
+#### **S2 è semi-decidibile? NO.**
+
+-   **Motivazione (Uso del Complemento):** Per dimostrare che un insieme non è semi-decidibile, una tecnica standard è dimostrare che il suo **complemento è semi-decidibile**. Esiste un teorema fondamentale: Se un insieme S e il suo complemento S̄ sono entrambi semi-decidibili, allora S è decidibile.  
+    Poiché abbiamo già stabilito che S2 è indecidibile, se riusciamo a dimostrare che S̄2 è semi-decidibile, allora S2 non può esserlo.
+    
+    1.  **Definiamo il complemento S̄2:** È l'insieme degli indici delle MT che **non** accettano al più una stringa di lunghezza k. Questo significa: l'insieme di indici delle MT che accettano **almeno due** stringhe di lunghezza k.
+        
+    2.  **Dimostriamo che S̄2 è semi-decidibile:** La logica è la stessa usata per S1.
+        
+        -   **Algoritmo per S̄2:**
+            
+            1.  Dato i, elenca tutte le stringhe di lunghezza k.
+                
+            2.  Simula Mᵢ su tutte queste stringhe in parallelo.
+                
+            3.  Tieni un contatore delle stringhe accettate.
+                
+            4.  **Non appena il contatore raggiunge 2**, l'algoritmo si arresta e restituisce "sì".
+                
+        -   Questo algoritmo termina se e solo se Mᵢ accetta almeno due stringhe di lunghezza k. Quindi, S̄2  **è semi-decidibile**.
+            
+    3.  **Conclusione:** Poiché S2 è indecidibile e il suo complemento S̄2 è semi-decidibile, S2  **non può essere semi-decidibile**.
+        
+
+----------
+
+### **3. S3: L'insieme di indici delle MT che calcolano la funzione caratteristica di S2.**
+
+#### **S3 è decidibile? SÌ.**
+
+#### **S3 è semi-decidibile? SÌ.**
+
+-   **Motivazione (Conseguenza della non decidibilità):**
+    
+    1.  Cos'è la "funzione caratteristica" di un insieme S? È una funzione totale che restituisce 1 se l'input è in S e 0 altrimenti.
+        
+    2.  Per definizione, un insieme è **decidibile** se e solo se la sua funzione caratteristica è **calcolabile** (cioè, esiste una MT che la calcola).
+        
+    3.  Nel punto precedente, abbiamo dimostrato in modo definitivo che l'insieme S2 è **indecidibile**.
+        
+    4.  Questo significa, per definizione, che **non esiste alcuna MT** in grado di calcolare la sua funzione caratteristica.
+        
+    5.  Quindi, l'insieme S3, che dovrebbe contenere gli indici di tali macchine, è necessariamente l'**insieme vuoto (∅)**.
+        
+    
+    -   **Il problema si riduce a: "L'insieme vuoto è decidibile?"** La risposta è **sì**. L'algoritmo per deciderlo è banale: "Dato un qualsiasi indice i, rispondi sempre 'no'". Questo algoritmo termina sempre ed è sempre corretto.
+        
+    -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
+  
+  ## Es 3
+
+
+
+Si consideri il linguaggio L = {0ⁿ | n ∈ N e 0ⁿ appare nell’espansione decimale di π}.
+Il linguaggio L è regolare? Si motivi esaurientemente la risposta.
+
+---
+
+
+
+Il linguaggio `L` è un insieme di stringhe. Le uniche stringhe che possono appartenere a `L` sono quelle composte solo da zeri (es. "0", "00", "00000", e anche la stringa vuota ε, che corrisponde a n=0, cioè una sequenza di zero zeri).
+
+La condizione per cui una di queste stringhe appartiene a `L` è che quella sequenza di zeri deve apparire da qualche parte nei decimali di π (3.14159...).
+
+*   **Esempio 1:** La stringa "0" appartiene a L? Dobbiamo cercare se c'è almeno uno "0" nei decimali di π. Sì, c'è (la 32ª cifra decimale è uno 0). Quindi "0" ∈ L.
+*   **Esempio 2:** La stringa "000000" appartiene a L? Sì, è famoso il "punto di Feynman", una sequenza di sei 9 consecutivi che inizia alla 762ª cifra decimale. Allo stesso modo, si sa che esistono sequenze di zeri.
+*   **Esempio 3:** La stringa "0000000000" (dieci zeri) appartiene a L? E una stringa con un miliardo di zeri?
+
+Qui sta il punto cruciale: **la matematica non sa ancora con certezza se π sia un "numero normale"**, cioè un numero la cui espansione decimale contiene ogni possibile sequenza finita di cifre. Si sospetta di sì, ma non è stato dimostrato.
+
+---
+
+### **Spiegazione della Soluzione: Il Ragionamento per Casi**
+
+Poiché non conosciamo la risposta definitiva sulla natura di π, l'unico modo per risolvere il problema è considerare **tutte le possibilità logiche**. Per la sequenza di zeri in π, ci sono solo due scenari possibili nell'universo:
+
+#### **Caso 1: Esiste una sequenza "massima" di zeri.**
+
+*   **Cosa significa:** Immaginiamo che un giorno un matematico scopra che la più lunga sequenza di zeri consecutivi che appare in π abbia, ad esempio, lunghezza 15 (`k=15`). Questo significherebbe che la stringa `0¹⁵` si trova in π, ma la stringa `0¹⁶` non si troverà mai, per quanto si continui a calcolare le cifre.
+*   **Come sarebbe fatto `L` in questo caso?** Se esistesse un tale limite `k`, il nostro linguaggio `L` sarebbe composto da un numero **finito** di stringhe:
+    `L = {ε, "0", "00", "000", ..., "0ᵏ"}`
+*   **Questo linguaggio è regolare? SÌ.** Un teorema fondamentale della teoria dei linguaggi formali afferma che **tutti i linguaggi finiti sono regolari**. Un linguaggio finito può sempre essere descritto da un'espressione regolare semplicemente elencando tutte le sue stringhe, separate dal simbolo di unione `|`. Come dice la soluzione:
+    `Espressione Regolare: ε | 0 | 00 | ... | 0ᵏ`
+    Poiché in questo scenario `L` è un linguaggio finito, `L` sarebbe regolare.
+
+#### **Caso 2: Non esiste una sequenza "massima" di zeri.**
+
+*   **Cosa significa:** Questo scenario corrisponde alla credenza (non provata) che π sia un numero normale. Significherebbe che per qualsiasi lunghezza `n` tu possa immaginare (un milione, un miliardo, un trilione), prima o poi, se calcoli abbastanza cifre di π, troverai una sequenza di `n` zeri consecutivi.
+*   **Come sarebbe fatto `L` in questo caso?** Il nostro linguaggio `L` conterrebbe tutte le possibili stringhe di zeri, di qualsiasi lunghezza:
+    `L = {ε, "0", "00", "000", "0000", ...}` (un insieme infinito)
+*   **Questo linguaggio è regolare? SÌ.** Questo insieme è esattamente il linguaggio descritto dalla famosissima espressione regolare:
+    `Espressione Regolare: 0*`
+    (che significa "zero o più occorrenze del simbolo 0").
+    Poiché in questo scenario `L` può essere descritto da un'espressione regolare, `L` sarebbe regolare.
+
+---
+
+### **Conclusione Finale**
+
+Abbiamo analizzato i due unici scenari logicamente possibili per la natura del linguaggio `L`:
+1.  O `L` è un linguaggio finito (se c'è un limite agli zeri in π).
+2.  O `L` è il linguaggio `0*` (se non c'è un limite).
+
+In **entrambi i casi**, il linguaggio risultante è **regolare**.
+
+Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è destinato a essere regolare, possiamo concludere con certezza che **SÌ, il linguaggio L è regolare**.
+
+La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
+## Es 4
+Certamente! Questo è un esercizio molto interessante che esplora la relazione tra linguaggi regolari, logica monadica del primo ordine (MFO) e la classe dei linguaggi "star-free". Analizziamolo in dettaglio.
+
+### **Traccia dell'Esercizio (formattata e chiarita)**
+
+Si consideri il linguaggio `L1` tale che `L1ᶜ = L2`, dove `L2 = (ab)⁺`.
+L'alfabeto è `{a, b}`.
+
+a) Si definisca `L1` nella logica MFO, se possibile, altrimenti se ne motivi l'impossibilità.
+b) **Bonus:** Con riferimento alle proprietà dei linguaggi star-free, si chiarisca se è possibile fornire un'espressione insiemistica per `L1` facendo uso solo di `{∅}`, `{a}`, `{b}`, unione `∪`, intersezione `∩`, complemento `ᶜ` e concatenamento `⋅`, **senza** usare gli operatori di Kleene (`*` e `+`).
+
+---
+
+### **Analisi Preliminare: Capire i Linguaggi `L2` e `L1`**
+
+*   **Linguaggio `L2 = (ab)⁺`:**
+    *   **Descrizione:** Questo è il linguaggio delle stringhe che consistono in una o più ripetizioni della sequenza "ab".
+    *   **Esempi:** `ab`, `abab`, `ababab`, ...
+    *   **Proprietà:** È un linguaggio **regolare**. Tuttavia, **non è star-free**. Un linguaggio è star-free se la sua espressione regolare non richiede "essenzialmente" l'operatore stella di Kleene. `(ab)⁺` non può essere riscritto senza un operatore di ripetizione. Formalmente, questo linguaggio ha una proprietà di "conteggio modulo 2" (la lunghezza è sempre pari, e i caratteri si alternano), che è una caratteristica dei linguaggi non star-free.
+
+*   **Linguaggio `L1 = L2ᶜ = ((ab)⁺)ᶜ`:**
+    *   **Descrizione:** `L1` è il **complemento** di `L2`. Contiene tutte le stringhe sull'alfabeto `{a, b}` che **non** sono della forma `(ab)ⁿ` con `n≥1`.
+    *   **Proprietà:** I linguaggi regolari sono chiusi rispetto al complemento. Poiché `L2` è regolare, anche `L1` è **regolare**.
+    *   **La domanda chiave:** Se `L2` non è star-free, cosa possiamo dire di `L1`? Anche `L1` **non è star-free**. La classe dei linguaggi star-free è chiusa rispetto al complemento. Se `L1` fosse star-free, allora anche il suo complemento `(L1)ᶜ = L2` dovrebbe esserlo, ma sappiamo che non è così.
+
+---
+
+### **a) Definizione di `L1` in MFO**
+
+La domanda chiede di definire `L1` in MFO. Ma c'è un teorema fondamentale:
+**Un linguaggio è definibile in MFO se e solo se è star-free.**
+
+Come abbiamo appena stabilito, `L1` **non è star-free**.
+
+**Conclusione:** Non è possibile definire `L1` nella logica MFO.
+
+**Motivazione dell'impossibilità:**
+Il linguaggio `L1 = ((ab)⁺)ᶜ` non è star-free. Un linguaggio è definibile in MFO se e solo se è star-free, pertanto non esiste una formula MFO che caratterizzi `L1`. La logica MFO non ha la capacità di esprimere proprietà di "conteggio modulo k", come l'alternanza richiesta per definire (o escludere) `(ab)⁺`.
+
+*(Nota: La soluzione fornita nell'immagine è **errata**. La formula che viene data non descrive correttamente il linguaggio `L1` e, più in generale, una tale formula non può esistere. La formula fornita sembra descrivere il linguaggio delle stringhe che iniziano con 'a', finiscono con 'b' e in cui ogni 'a' è seguita da una 'b' e ogni 'b' è seguita da una 'a', ma questo è proprio il linguaggio `(ab)⁺` (più forse `a(ba)*`), non il suo complemento).*
+
+---
+
+### **b) Bonus: Espressione Insiemistica per `L1` senza Operatori di Kleene**
+
+La domanda chiede se è possibile scrivere `L1` usando solo operazioni di base (unione, intersezione, complemento, concatenazione) senza `*` o `+`.
+
+Questo è un altro modo per chiedere: "**È `L1` un linguaggio star-free?**".
+La definizione formale di un linguaggio star-free è proprio quella di un linguaggio che può essere costruito a partire dagli insiemi finiti usando solo le operazioni booleane (unione, intersezione, complemento) e la concatenazione.
+
+Come abbiamo già stabilito, `L1` **non è star-free**.
+
+**Conclusione:** No, non è possibile fornire una tale espressione per `L1`.
+
+**Motivazione:**
+Fornire un'espressione per `L1` che non usi gli operatori di Kleene (`*` e `+`) è, per definizione, la prova che il linguaggio è star-free. Tuttavia, il linguaggio `L1` non è star-free. Il motivo è che il suo complemento, `L2 = (ab)⁺`, possiede una struttura ciclica intrinseca (un "conteggio modulo 2") che non può essere "spezzata" o descritta senza un qualche tipo di operatore di chiusura/ripetizione. La classe dei linguaggi star-free è chiusa per complemento, quindi se `L2` non è star-free, neanche `L1` può esserlo.
+
+*(Nota: Anche la soluzione fornita per il punto (b) nell'immagine è **errata**. L'espressione data descrive un sottoinsieme di `L1`. Ad esempio, esclude `aa` e `bb` (corretto), ma esclude anche la stringa `b` (inizia con `b` e non finisce con `b`), e `b` non è in `L2`, quindi dovrebbe essere in `L1`. L'espressione fornita è un tentativo di "rompere il ciclo" di `(ab)⁺` elencando i "fallimenti" possibili, ma non riesce a catturare la natura infinita e periodica del linguaggio da escludere).*
+
+## ES 5
+Si definisce **Riconoscitore ad Automi Gemelli (RAG)** un meccanismo di calcolo ottenuto facendo operare due automi sullo stesso nastro di ingresso. Gli automi operano indipendentemente, ognuno con la propria testina. La parola in ingresso si considera riconosciuta se e solo se **entrambi** gli automi la riconoscono.
+
+Si consideri il caso dei RAG costruiti come segue e si dica se il loro potere riconoscitore è **maggiore, minore o uguale** a quello delle loro componenti:
+
+a) RAG costituito da un automa a stati finiti **deterministico (DFA)** e uno **non deterministico (NFA)**.
+b) RAG costituito da un automa a stati finiti **deterministico (DFA)** ed un automa a pila **deterministico (DPDA)**.
+c) RAG costituito da due automi a pila **non deterministici (NPDA)**.
+
+---
+
+### **Il Concetto Chiave: Intersezione dei Linguaggi**
+
+Prima di analizzare i singoli punti, è fondamentale capire cosa fa un RAG. La definizione dice che una stringa `w` è accettata dal RAG se e solo se:
+*   L'automa 1 (`A1`) accetta `w`.
+*   **E** l'automa 2 (`A2`) accetta `w`.
+
+Questo significa che il linguaggio riconosciuto dal RAG, `L(RAG)`, è l'**intersezione** dei linguaggi riconosciuti dai due automi componenti:
+
+`L(RAG) = L(A1) ∩ L(A2)`
+
+Ora, per ogni punto, la domanda si riduce a: "Cosa succede quando intersechiamo i linguaggi di questi tipi di automi? Il linguaggio risultante appartiene alla stessa classe, a una classe meno potente o a una classe più potente?" Questo ci porta al concetto di **proprietà di chiusura** delle classi di linguaggi.
+
+---
+
+### **a) RAG = DFA + NFA**
+
+*   **Linguaggi Coinvolti:**
+    *   `L(DFA)` è un linguaggio **Regolare**.
+    *   `L(NFA)` è anch'esso un linguaggio **Regolare**. (Un teorema fondamentale afferma che DFA e NFA hanno lo stesso potere espressivo e riconoscono la stessa classe di linguaggi).
+*   **Operazione:** Stiamo calcolando l'intersezione di due linguaggi regolari: `Regolare ∩ Regolare`.
+*   **Proprietà di Chiusura:** La classe dei linguaggi regolari **è chiusa** rispetto all'operazione di intersezione. Questo significa che se prendi due linguaggi regolari qualsiasi e fai la loro intersezione, il risultato è garantito essere ancora un linguaggio regolare.
+*   **Conclusione:** Il linguaggio `L(RAG)` è regolare. Il potere riconoscitivo del RAG non supera quello di un singolo DFA o NFA.
+
+**Risposta:** Il potere riconoscitore è **UGUALE** a quello delle sue componenti.
+
+---
+
+### **b) RAG = DFA + DPDA**
+
+*   **Linguaggi Coinvolti:**
+    *   `L(DFA)` è un linguaggio **Regolare**.
+    *   `L(DPDA)` è un linguaggio **Libero dal Contesto Deterministico (DCFL)**.
+*   **Operazione:** Stiamo calcolando `Regolare ∩ DCFL`.
+*   **Proprietà di Chiusura:** La classe dei linguaggi liberi dal contesto deterministici (DCFL) **è chiusa** rispetto all'intersezione con un linguaggio regolare. Il risultato è sempre un DCFL.
+*   **Spiegazione Alternativa (Costruttiva):** Come suggerisce la soluzione, possiamo immaginare di costruire un nuovo DPDA che simuli i due automi contemporaneamente. I suoi stati sarebbero coppie `(q_dfa, q_dpda)`, dove `q_dfa` è uno stato del DFA e `q_dpda` è uno stato del DPDA. Per ogni mossa, il nuovo automa aggiorna sia la componente di stato del DFA che quella del DPDA, usando la pila come farebbe il DPDA originale. L'accettazione avviene solo se entrambe le componenti si trovano in uno stato finale. Poiché questa "macchina prodotto" è ancora un DPDA, il linguaggio risultante è un DCFL.
+*   **Conclusione:** Il potere del RAG è uguale a quello del suo componente più potente, il DPDA.
+
+**Risposta:** Il potere riconoscitore è **UGUALE** a quello di un automa a pila deterministico.
+
+---
+
+### **c) RAG = NPDA + NPDA**
+
+*   **Linguaggi Coinvolti:**
+    *   `L(NPDA)` è un linguaggio **Libero dal Contesto (CFL)**.
+    *   Anche il secondo `L(NPDA)` è un CFL.
+*   **Operazione:** Stiamo calcolando `CFL ∩ CFL`.
+*   **Proprietà di Chiusura:** La classe dei linguaggi liberi dal contesto **NON è chiusa** rispetto all'intersezione. Questo è un risultato famosissimo e fondamentale. Significa che l'intersezione di due CFL può produrre un linguaggio che non è più libero dal contesto (e che quindi non può essere riconosciuto da un singolo NPDA).
+*   **L'Esempio Classico:**
+    *   Sia `L(A1) = {aⁿbⁿcᵐ | n, m ≥ 1}`. Questo è un CFL (conta le `a` e le `b` con la pila, poi ignora le `c`).
+    *   Sia `L(A2) = {aᵐbⁿcⁿ | n, m ≥ 1}`. Anche questo è un CFL (ignora le `a`, poi conta le `b` e le `c` con la pila).
+    *   La loro intersezione `L(A1) ∩ L(A2)` è il linguaggio `{aⁿbⁿcⁿ | n ≥ 1}`.
+    *   Questo linguaggio (`aⁿbⁿcⁿ`) è l'esempio "modello" di un linguaggio che **non è libero dal contesto**, ma è **sensibile al contesto**. Richiede più memoria di una semplice pila per essere riconosciuto.
+*   **Conclusione:** Poiché il RAG può riconoscere `{aⁿbⁿcⁿ}`, che nessun singolo NPDA può riconoscere, il potere del RAG è superiore a quello di un singolo NPDA.
+
+**Risposta:** Il potere riconoscitore è **MAGGIORE** di quello di un automa a pila non deterministico.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2NDc1NDk3MTEsMTc2OTk2NTY2NCwxND
-czMzI1NDA3LC0xNTI5MTg2ODQ1LDE1NTU0NzQ4NzUsLTE5NTU4
-MDg1NzUsNDIyMjMwNDk0LC0yNDQ2ODY0MzQsMTk4NjcwNTQzLC
-0xNTk2MTU3NTIsMTU2NDkyMDc4MiwtMTcxMDY1NDQ1NywtOTc4
-MzgwMjcxLDE1NzA0OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNz
-MsMTY5MDA1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIx
-NzQ4OTQxNl19
+eyJoaXN0b3J5IjpbMTQ3MzMyNTQwNywtMTUyOTE4Njg0NSwxND
+czMzI1NDA3LC0xNjQ3NTQ5NzExLDE3Njk5NjU2NjQsMTU1NTQ3
+NDg3NSwtMTk1NTgwODU3NSw0MjIyMzA0OTQsLTI0NDY4NjQzNC
+wxOTg2NzA1NDMsLTE1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNzEw
+NjU0NDU3LC05NzgzODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3Mz
+gsMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMzUx
+ODQyODkzXX0=
 -->
