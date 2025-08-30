@@ -1956,6 +1956,97 @@ Abbiamo ridotto il problema a trovare il formalismo a potenza minima per `L2`.
 
 ## Es 8
 
+**Linguaggio:**  L = {aⁿbᵐcᵒd | n, m, o ∈ ℕ, n ≥ 1, o ≥ 0, m = 2n + o}.  
+Utilizzare un formalismo a potenza minima che caratterizzi il linguaggio L.
+
+**Soluzione Fornita:**  
+Il linguaggio è libero dal contesto, riconoscibile da un automa a pila deterministico. Riscrivere la definizione come L = {aⁿb²ⁿbᵒcᵒd; n,o ∈ ℕ,n ≥ 1} rende evidente la natura del linguaggio. Per riconoscerlo è sufficiente impilare un simbolo per ogni a, spilarne uno ogni due b, fino a quando la pila è vuota. Per le b successive, impilare un simbolo per ogni b e spilare un simbolo per ogni c effettua il conteggio del valore o, al termine del quale è sufficiente riconoscere la presenza della singola d.
+
+### **Analisi della Strategia**
+
+Prima di disegnare, capiamo a fondo la logica della soluzione:
+
+1.  **Riformulazione:** Il vincolo `m = 2n + o` viene scomposto. Il blocco di `b` viene pensato come due parti consecutive: `b²ⁿ` (per le `a`) e `bᵒ` (per le `c`). La stringa diventa `aⁿ b²ⁿ bᵒ cᵒ d`.
+2.  **Fase 1 (a vs b):** L'automa prima si occupa di verificare che il primo blocco di `b` sia lungo il doppio delle `a`.
+3.  **Fase 2 (b vs c):** Poi, si occupa di verificare che il secondo blocco di `b` sia lungo quanto le `c`.
+
+Questa separazione è la chiave per rendere l'automa deterministico.
+
+---
+
+### **Guida Dettagliata al Disegno dell'Automa (DPDA)**
+
+Ecco come disegnare il grafo, freccia per freccia, con le etichette corrette nello standard `input, pop / push`.
+
+#### **Elementi di Base**
+
+1.  **Stati:** Disegna 6 cerchi. Etichettali `q₀` (iniziale), `q₁` (legge `a` e `b` pari), `q₂` (legge `b` dispari), `q₃` (legge `b` per le `c`), `q₄` (legge `c`), `q_f` (finale).
+2.  **Stato Finale:** Disegna un doppio cerchio attorno a `q_f`.
+3.  **Simboli Pila:** `A` per contare le `a`, `B` per contare le `b` della seconda fase, `Z₀` come simbolo iniziale.
+
+---
+
+#### **FASE 1: Conteggio di `aⁿ` e Riscontro di `b²ⁿ`**
+
+*   **Freccia da `q₀` a `q₁`:**
+    *   **Etichetta:** `a, Z₀ / AZ₀`
+    *   **Significato:** "Leggi la **prima a** (soddisfa `n≥1`). Spingi un contatore `A` sulla pila."
+
+*   **Freccia da `q₁` che torna su se stesso (loop):**
+    *   **Etichetta:** `a, A / AA`
+    *   **Significato:** "Per ogni **`a` successiva**, continua a spingere contatori `A` sulla pila."
+
+*   **Freccia da `q₁` a `q₂`:**
+    *   **Etichetta:** `b, A / A`
+    *   **Significato:** "Inizia a leggere le `b`. Leggi la **prima `b` di una coppia**. Non toccare la pila, ma cambia stato per ricordarti di aver letto una `b` dispari."
+
+*   **Freccia da `q₂` a `q₁`:**
+    *   **Etichetta:** `b, A / ε`
+    *   **Significato:** "Leggi la **seconda `b` di una coppia**. Ora che la coppia è completa, estrai (pop) un contatore `A` dalla pila. Torna a `q₁` per cercare la prossima coppia."
+
+---
+
+#### **FASE 2: Transizione e Conteggio di `bᵒ`**
+
+Questa fase inizia quando tutti i contatori `A` sono stati eliminati, il che significa che abbiamo letto esattamente `2n` `b`.
+
+*   **Freccia da `q₁` a `q₃` (se `o > 0`):**
+    *   **Etichetta:** `b, Z₀ / BZ₀`
+    *   **Significato:** "Hai finito la prima fase (la pila è vuota, vedi `Z₀`) e leggi un'altra `b`. Questa deve essere la **prima `b` della seconda fase**. Inizia a contare per le `c` spingendo un contatore `B`."
+
+*   **Freccia da `q₃` che torna su se stesso (loop):**
+    *   **Etichetta:** `b, B / BB`
+    *   **Significato:** "Per ogni **`b` successiva** di questa fase, continua a spingere contatori `B`."
+
+---
+
+#### **FASE 3: Riscontro di `cᵒ`**
+
+*   **Freccia da `q₃` a `q₄`:**
+    *   **Etichetta:** `c, B / ε`
+    *   **Significato:** "Inizia a leggere le `c`. Per la **prima `c`**, estrai un contatore `B`."
+
+*   **Freccia da `q₄` che torna su se stesso (loop):**
+    *   **Etichetta:** `c, B / ε`
+    *   **Significato:** "Per ogni **`c` successiva**, continua a estrarre contatori `B`."
+
+---
+
+#### **FASE 4: Accettazione Finale**
+
+La stringa deve terminare con una `d`. L'automa deve poter leggere `d` in due scenari: se non ci sono state `c` (e quindi neanche `b` della seconda fase), oppure dopo aver letto tutte le `c`.
+
+*   **Freccia da `q₁` a `q_f` (caso `o = 0`):**
+    *   **Etichetta:** `d, Z₀ / Z₀`
+    *   **Significato:** "Se, dopo aver finito la fase `aⁿb²ⁿ`, leggi una `d` e la pila è vuota, la stringa è valida. Accetta."
+
+*   **Freccia da `q₄` a `q_f` (caso `o ≥ 0`):**
+    *   **Etichetta:** `d, Z₀ / Z₀`
+    *   **Significato:** "Se, dopo aver finito di riscontrare le `c`, leggi una `d` e la pila è vuota, la stringa è valida. Accetta."
+
+
+
+
 
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
@@ -2967,11 +3058,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1Nj
-kyMzI5MSwtMzUxODQyODkzLC0xMjE3NDg5NDE2LDgxMjcwMDQy
-NiwxODc1NDQ4ODkyLDIwMzczOTMzLC02OTcwNDA0ODksLTE0Nj
-EyMzE4MjksMTI3NzYwODk0MywtMTkzMzY3MzI3MywtNzA5MjY0
-MTEwLC02OTU1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3LDE2Nz
-U4MDM3NjMsLTE0ODkzOTUxOTksLTU5MDA4MTE3NSwtMTQ0NDEw
-MjAxMV19
+eyJoaXN0b3J5IjpbNzc3NTI0ODg4LDE3NjQwOTUwNzMsMTY5MD
+A1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQx
+Niw4MTI3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MD
+QwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMy
+NzMsLTcwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4Mz
+gzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODEx
+NzVdfQ==
 -->
