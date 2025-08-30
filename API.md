@@ -1596,6 +1596,69 @@ Questa domanda è molto diversa dalla precedente e spesso trae in inganno.
     *   Poiché P è indecidibile, ma il suo complemento P̄ è semidecidibile, ne consegue che P **non può essere semidecidibile**.
 
 **Conclusione:** Il problema della correttezza non solo è indecidibile, ma non è nemmeno semidecidibile. Possiamo trovare i bug, ma non possiamo mai certificare l'assenza totale di bug.
+## ES12 
+Certamente! Analizziamo questo esercizio che esplora la decidibilità del "path-finding" all'interno del grafo di computazione di una Macchina di Turing. La differenza tra "esattamente" e "in sottosequenza" è cruciale.
+
+### **Traccia dell'Esercizio (formattata e chiarita)**
+
+1.  È **decidibile** il problema di stabilire se, data una MT deterministica e una sequenza di suoi stati `s₁, s₂, ..., sₖ`, esiste una stringa `x` in ingresso tale che la MT attraversa **esattamente**, uno per uno, la sequenza di stati desiderata durante il riconoscimento di `x`?
+2.  È **semidecidibile** il problema del punto 1?
+3.  È **decidibile** il problema di stabilire se, data una MT deterministica e una sequenza di suoi stati `s₁, s₂, ..., sₖ`, esiste una stringa `x` in input tale che la MT, durante il riconoscimento di `x`, attraversa gli stati desiderati nell'ordine desiderato, ma potrebbe, tra uno stato desiderato e il successivo della sequenza, attraversarne anche altri (cioè, la sequenza `s₁, s₂, ..., sₖ` è una **sottosequenza** della computazione)?
+
+---
+
+### **1. Il problema del percorso "esatto" è decidibile? SÌ.**
+
+**Motivazione dettagliata:**
+La chiave qui è la parola **"esattamente"**. Questo vincolo è così stringente che ci permette di costruire la stringa di input `x`, se esiste.
+
+**Costruzione dell'Algoritmo di Decisione:**
+L'algoritmo non ha bisogno di cercare tra infinite stringhe `x`. Può invece lavorare "all'indietro" dalla sequenza di stati per vedere se una tale computazione è possibile.
+
+1.  **Input:** Una MT deterministica `M` e una sequenza di stati `S = (s₁, s₂, ..., sₖ)`.
+2.  **Analisi del Percorso:** L'algoritmo analizza la sequenza di transizioni passo dopo passo.
+    *   **Passo i=1 (da `s₁` a `s₂`):** Controlla le regole di transizione di `M`. Esiste una transizione che parte dallo stato `s₁` e arriva allo stato `s₂`?
+        *   **Se no**, allora non esiste nessuna computazione che possa fare questo passo. L'algoritmo si ferma e risponde **"No"**.
+        *   **Se sì**, significa che per compiere questa transizione la testina deve leggere un certo simbolo `σ₁` e scrivere un simbolo `τ₁`. L'algoritmo "annota" che il primo carattere dell'ipotetica stringa `x` deve essere `σ₁`.
+    *   **Passo i=2 (da `s₂` a `s₃`):** Ripeti il processo. Cerca una transizione da `s₂` a `s₃`. Se esiste, annota il simbolo `σ₂` che la testina deve leggere in questa fase.
+    *   ...e così via per tutti i `k-1` passi.
+3.  **Ricostruzione della Stringa:** Se l'algoritmo completa l'analisi di tutti i `k-1` passi senza trovare un'impossibilità, avrà costruito l'**unica possibile** stringa di input `x = σ₁σ₂...σₖ₋₁` che può forzare la macchina a seguire *esattamente* quel percorso di stati.
+4.  **Verifica Finale:** L'algoritmo ora esegue una simulazione della MT `M` con la stringa `x` appena costruita. Se la simulazione segue effettivamente il percorso `s₁, s₂, ..., sₖ`, l'algoritmo risponde **"Sì"**. Altrimenti, risponde **"No"**. (Questa verifica è quasi superflua se l'analisi delle transizioni è fatta correttamente, ma completa la logica).
+
+**Conclusione:** Abbiamo descritto un algoritmo che, dato un percorso di lunghezza finita `k`, esegue un numero finito di controlli e simulazioni. Questo algoritmo **termina sempre** e fornisce la risposta corretta. Pertanto, il problema è **decidibile**.
+
+---
+
+### **2. Il problema del percorso "esatto" è semidecidibile? SÌ.**
+
+**Motivazione:**
+Un teorema fondamentale afferma che ogni problema decidibile è anche semidecidibile. Poiché abbiamo dimostrato che il problema è decidibile, ne consegue direttamente che è anche semidecidibile.
+
+---
+
+### **3. Il problema del percorso "in sottosequenza" è decidibile? NO.**
+
+**Motivazione (Riduzione dal Problema dell'Arresto):**
+La flessibilità introdotta dalla parola "sottosequenza" ("potrebbe... attraversarne anche altri") distrugge la decidibilità, perché ora non possiamo più ricostruire la stringa `x` in modo deterministico. Il numero di passi tra `sᵢ` e `sᵢ₊₁` è sconosciuto e potenzialmente infinito.
+
+Dimostriamo che il problema è **indecidibile** riducendolo al Problema della Terminazione (una variante del Problema dell'Arresto).
+
+1.  **Il Problema Indecidibile Noto:** È indecidibile stabilire se una generica MT `M` termina (cioè raggiunge uno stato finale) per almeno un input `x`. Questo è il **Problema della Terminazione non-vuota**. Si può dimostrare con il Teorema di Rice (la proprietà "avere un linguaggio non-vuoto" è non banale).
+
+2.  **L'Ipotesi (per assurdo):** Supponiamo di avere un algoritmo `Decide_Sottosequenza(M, S)` che decide il problema del punto 3.
+
+3.  **La Riduzione:** Vediamo come usare `Decide_Sottosequenza` per risolvere il Problema della Terminazione non-vuota.
+    *   Ci viene data una generica MT `M'`. Vogliamo sapere se `L(M')` è non-vuoto.
+    *   Scegliamo una sequenza di stati `S` molto semplice: `S = (q₀, q_accept)`, dove `q₀` è lo stato iniziale di `M'` e `q_accept` è uno dei suoi stati finali.
+    *   Ora usiamo il nostro ipotetico algoritmo: eseguiamo `Decide_Sottosequenza(M', (q₀, q_accept))`.
+
+4.  **Analisi del Risultato:**
+    *   **Se `Decide_Sottosequenza` risponde "Sì"**: Questo significa che esiste una stringa `x` tale che l'esecuzione di `M'(x)` inizia in `q₀` e, ad un certo punto, raggiunge `q_accept`. Raggiungere uno stato di accettazione significa che `x` viene accettata. Quindi, `L(M')` contiene almeno `x` e **non è vuoto**.
+    *   **Se `Decide_Sottosequenza` risponde "No"**: Questo significa che non esiste nessuna stringa `x` che possa portare la macchina dallo stato iniziale a quello finale. Quindi, nessuna stringa viene accettata e `L(M')` **è vuoto**.
+
+5.  **La Contraddizione:** Abbiamo appena creato un algoritmo infallibile per decidere il Problema della Terminazione non-vuota. Ma sappiamo che tale algoritmo non può esistere. La nostra unica assunzione è stata l'esistenza di `Decide_Sottosequenza`.
+
+**Conclusione:** L'assunzione deve essere falsa. Pertanto, il problema di stabilire se una sequenza di stati appare come sottosequenza in una computazione è **indecidibile**.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -3734,122 +3797,13 @@ La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conosc
 
 #### **S1 è decidibile? NO.**
 
--   **Motivazione (Teorema di Rice):** Applichiamo il Teorema di Rice.
-    
-    1.  La proprietà "accettare almeno una stringa di lunghezza k" è una proprietà del linguaggio riconosciuto dalla macchina? **Sì**.
-        
-    2.  È una proprietà non banale? **Sì**, perché:
-        
-        -   Esiste una MT con questa proprietà (es. una macchina che accetta tutte le stringhe, A*).
-            
-        -   Esiste una MT senza questa proprietà (es. una macchina che non accetta nessuna stringa, riconoscendo il linguaggio vuoto ∅).  
-            Poiché entrambe le condizioni sono soddisfatte, per il Teorema di Rice, l'insieme S1  **non è decidibile**.
-            
-
-#### **S1 è semi-decidibile? SÌ.**
-
--   **Motivazione (Ricerca Esaustiva):** La struttura della domanda ("almeno una") ci suggerisce che se la risposta è "sì", possiamo trovarne la prova. Dobbiamo costruire un algoritmo che termini e dica "sì" per ogni i ∈ S1.
-    
-    -   **Algoritmo:**
-        
-        1.  Dato un indice i, elenca tutte le stringhe di lunghezza k. Poiché k è un intero fissato e A è un alfabeto finito, questo è un **insieme finito** di stringhe.
-            
-        2.  Simula l'esecuzione della macchina Mᵢ su **tutte** queste stringhe "in parallelo" (usando la tecnica del **dovetailing** o interleaving, per evitare di rimanere bloccati su una computazione che non termina).
-            
-        3.  **Se anche solo una di queste simulazioni si ferma e accetta**, l'algoritmo si arresta immediatamente e restituisce "sì".
-            
-    -   **Comportamento:** Se Mᵢ accetta almeno una stringa di lunghezza k, questo algoritmo la troverà prima o poi e terminerà. Se Mᵢ non accetta nessuna stringa di lunghezza k, l'algoritmo non terminerà mai. Questo è esattamente il comportamento richiesto per un problema semi-decidibile.
-        
-
-----------
-
-### **2. S2: L'insieme di indici delle MT che accettano al più una stringa di lunghezza k.**
-
-#### **S2 è decidibile? NO.**
-
--   **Motivazione (Teorema di Rice):** Il ragionamento è identico a quello per S1.
-    
-    1.  La proprietà "accettare al più una stringa di lunghezza k" (cioè 0 o 1 stringhe) è una proprietà del linguaggio. **Sì**.
-        
-    2.  È non banale? **Sì**, perché:
-        
-        -   Una MT che riconosce ∅ ha questa proprietà.
-            
-        -   Una MT che riconosce A* non ha questa proprietà (se |A|ᵏ > 1).  
-            Per il Teorema di Rice, l'insieme S2  **non è decidibile**.
-            
-
-#### **S2 è semi-decidibile? NO.**
-
--   **Motivazione (Uso del Complemento):** Per dimostrare che un insieme non è semi-decidibile, una tecnica standard è dimostrare che il suo **complemento è semi-decidibile**. Esiste un teorema fondamentale: Se un insieme S e il suo complemento S̄ sono entrambi semi-decidibili, allora S è decidibile.  
-    Poiché abbiamo già stabilito che S2 è indecidibile, se riusciamo a dimostrare che S̄2 è semi-decidibile, allora S2 non può esserlo.
-    
-    1.  **Definiamo il complemento S̄2:** È l'insieme degli indici delle MT che **non** accettano al più una stringa di lunghezza k. Questo significa: l'insieme di indici delle MT che accettano **almeno due** stringhe di lunghezza k.
-        
-    2.  **Dimostriamo che S̄2 è semi-decidibile:** La logica è la stessa usata per S1.
-        
-        -   **Algoritmo per S̄2:**
-            
-            1.  Dato i, elenca tutte le stringhe di lunghezza k.
-                
-            2.  Simula Mᵢ su tutte queste stringhe in parallelo.
-                
-            3.  Tieni un contatore delle stringhe accettate.
-                
-            4.  **Non appena il contatore raggiunge 2**, l'algoritmo si arresta e restituisce "sì".
-                
-        -   Questo algoritmo termina se e solo se Mᵢ accetta almeno due stringhe di lunghezza k. Quindi, S̄2  **è semi-decidibile**.
-            
-    3.  **Conclusione:** Poiché S2 è indecidibile e il suo complemento S̄2 è semi-decidibile, S2  **non può essere semi-decidibile**.
-        
-
-----------
-
-### **3. S3: L'insieme di indici delle MT che calcolano la funzione caratteristica di S2.**
-
-#### **S3 è decidibile? SÌ.**
-
-#### **S3 è semi-decidibile? SÌ.**
-
--   **Motivazione (Conseguenza della non decidibilità):**
-    
-    1.  Cos'è la "funzione caratteristica" di un insieme S? È una funzione totale che restituisce 1 se l'input è in S e 0 altrimenti.
-        
-    2.  Per definizione, un insieme è **decidibile** se e solo se la sua funzione caratteristica è **calcolabile** (cioè, esiste una MT che la calcola).
-        
-    3.  Nel punto precedente, abbiamo dimostrato in modo definitivo che l'insieme S2 è **indecidibile**.
-        
-    4.  Questo significa, per definizione, che **non esiste alcuna MT** in grado di calcolare la sua funzione caratteristica.
-        
-    5.  Quindi, l'insieme S3, che dovrebbe contenere gli indici di tali macchine, è necessariamente l'**insieme vuoto (∅)**.
-        
-    
-    -   **Il problema si riduce a: "L'insieme vuoto è decidibile?"** La risposta è **sì**. L'algoritmo per deciderlo è banale: "Dato un qualsiasi indice i, rispondi sempre 'no'". Questo algoritmo termina sempre ed è sempre corretto.
-        
-    -   Poiché S3 è decidibile, è anche, per definizione, semi-decidibile.
-  
-  ## Es 3
-
-
-
-Si consideri il linguaggio L = {0ⁿ | n ∈ N e 0ⁿ appare nell’espansione decimale di π}.
-Il linguaggio L è regolare? Si motivi esaurientemente la risposta.
-
----
-
-
-
-Il linguaggio `L` è un insieme di stringhe. Le uniche stringhe che possono appartenere a `L` sono quelle composte solo da zeri (es. "0", "00", "00000", e anche la stringa vuota ε, che corrisponde a n=0, cioè una sequenza di zero zeri).
-
-La condizione per cui una di queste stringhe appartiene a `L` è che quella sequenza di zeri deve apparire da qualche parte nei decimali di π (3.14159...).
-
-*   **Esempio 1:** La stringa "0" appartiene a L? Dobbiamo cercare se c'è almeno uno "0" nei decima
+-   *
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTc2OTk2NTY2NCwxNDczMzI1NDA3LC0xNT
-I5MTg2ODQ1LDE1NTU0NzQ4NzUsLTE5NTU4MDg1NzUsNDIyMjMw
-NDk0LC0yNDQ2ODY0MzQsMTk4NjcwNTQzLC0xNTk2MTU3NTIsMT
-U2NDkyMDc4MiwtMTcxMDY1NDQ1NywtOTc4MzgwMjcxLDE1NzA0
-OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNzMsMTY5MDA1OTAwMS
-w1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQxNiw4MTI3
-MDA0MjZdfQ==
+eyJoaXN0b3J5IjpbLTYxNDI2MjM3OCwxNzY5OTY1NjY0LDE0Nz
+MzMjU0MDcsLTE1MjkxODY4NDUsMTU1NTQ3NDg3NSwtMTk1NTgw
+ODU3NSw0MjIyMzA0OTQsLTI0NDY4NjQzNCwxOTg2NzA1NDMsLT
+E1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNzEwNjU0NDU3LC05Nzgz
+ODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3MzgsMTc2NDA5NTA3My
+wxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMzUxODQyODkzLC0xMjE3
+NDg5NDE2XX0=
 -->
