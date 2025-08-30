@@ -2138,6 +2138,85 @@ La stringa deve terminare con una `d`. L'automa deve poter leggere `d` in due sc
 
 ## Es 9
 
+Si costruisca una grammatica o automa o formula logica a potenza minima per il seguente linguaggio:
+`{a²ⁿΣ⁺b³ⁿ | n > 0} ∪ {Σ⁺b³ⁿ | n > 0}`
+con `Σ = {a, b}`.
+
+---
+
+### Spiegazione e Analisi della Soluzione
+
+#### **Passo 1: Analizzare i due linguaggi componenti**
+
+Il linguaggio `L` è l'unione di due insiemi, `L₁` e `L₂`:
+*   `L₁ = {a²ⁿΣ⁺b³ⁿ | n > 0}`
+*   `L₂ = {Σ⁺b³ⁿ | n > 0}`
+
+**L₁:** Questo linguaggio è composto da stringhe che:
+*   Iniziano con un numero pari e non nullo di `a` (es. `aa`, `aaaa`, ...).
+*   Sono seguite da una sequenza non vuota di `a` e/o `b` (`Σ⁺`).
+*   Terminano con un numero di `b` che è un multiplo di 3 non nullo, e questo numero di `b` (`3n`) è correlato al numero di `a` iniziali (`2n`).
+
+**L₂:** Questo linguaggio è composto da stringhe che:
+*   Iniziano con una sequenza non vuota di `a` e/o `b` (`Σ⁺`).
+*   Terminano con un numero di `b` che è un multiplo di 3 non nullo (`b³`, `b⁶`, ...).
+
+#### **Passo 2: L'osservazione fondamentale (Inclusione degli insiemi)**
+
+La soluzione fa un'osservazione cruciale: **`L₁` è un sottoinsieme di `L₂`**. Vediamo perché.
+
+Prendiamo una qualsiasi stringa `w` che appartiene a `L₁`. Per definizione, `w` ha la forma `a²ⁿs b³ⁿ`, dove `s` è una stringa non vuota (`s ∈ Σ⁺`).
+
+Ora chiediamoci: questa stessa stringa `w` appartiene anche a `L₂`?
+Per appartenere a `L₂`, una stringa deve avere la forma `t b³k`, dove `t` è una stringa non vuota (`t ∈ Σ⁺`) e `k > 0`.
+
+*   La nostra stringa `w = a²ⁿs b³ⁿ` termina con `b³ⁿ`, che soddisfa il requisito del suffisso.
+*   La parte che precede il suffisso è `a²ⁿs`. Chiamiamo questa parte `t'`.
+*   È `t'` non vuota? Sì, perché `n>0` (quindi `a²ⁿ` ha almeno due `a`) e `s` è non vuota. La concatenazione di due stringhe non vuote è non vuota.
+*   Quindi, `w` può essere scritta nella forma richiesta da `L₂`.
+
+Poiché ogni stringa in `L₁` è anche in `L₂`, si ha che `L₁ ⊂ L₂`.
+
+#### **Passo 3: Semplificazione del Linguaggio e Classificazione**
+
+L'operazione richiesta è l'**unione** (`∪`). Quando si unisce un insieme con un suo sottoinsieme, il risultato è semplicemente l'insieme più grande.
+`L = L₁ ∪ L₂ = L₂`
+
+Il problema si è quindi semplificato enormemente. Dobbiamo solo trovare il formalismo a potenza minima per `L₂ = {Σ⁺b³ⁿ | n > 0}`.
+
+Analizziamo `L₂`:
+*   Il vincolo `b³ⁿ` significa che la stringa deve terminare con `bbb`, o `bbbbbb`, o `bbbbbbbbb`, etc.
+*   Tuttavia, il prefisso `Σ⁺` può essere qualsiasi cosa, purché non sia vuoto. Può anche terminare con delle `b`.
+*   **Esempio:** Consideriamo la stringa `abbbbbb`.
+    *   Può essere vista come `t="abbb"` e suffisso `b³` (`n=1`). Appartiene a `L₂`.
+    *   Può anche essere vista come `t="a"` e suffisso `b⁶` (`n=2`). Appartiene a `L₂`.
+*   **L'osservazione finale:** A causa della flessibilità del prefisso `Σ⁺`, l'unica vera condizione che rimane è che la stringa deve iniziare con almeno un carattere (`Σ⁺`) e finire con almeno tre `b`. Qualsiasi cosa in mezzo può essere "assorbita" dal prefisso `Σ⁺`.
+
+Il linguaggio si semplifica ulterior-mente in:
+`L = {w | w ∈ Σ⁺ e w termina con bbb}`.
+In notazione con espressioni regolari, questo è **`Σ⁺ b³`** o, equivalentemente, **`(a|b)⁺ bbb`**.
+
+Questo è un **linguaggio regolare**.
+
+#### **Passo 4: Scelta del Formalismo a Potenza Minima**
+
+I linguaggi regolari possono essere descritti da:
+*   Espressioni Regolari
+*   Automi a Stati Finiti (FSA)
+*   Grammatiche Regolari (Tipo 3)
+*   **Logica Monadica del Primo Ordine (MFO)**
+
+La soluzione sceglie la **MFO**, che è un formalismo a potenza minima corretto per i linguaggi regolari (in particolare, per i linguaggi *aperiodici* o *star-free* come questo).
+
+**Spiegazione della Formula MFO:**
+`∃y(y > 0 ∧ b(y) ∧ b(y+1) ∧ b(y+2) ∧ last(y+2))`
+
+*   `∃y`: "Esiste una posizione `y` nella stringa..."
+*   `y > 0`: "...che non è l'inizio della stringa". (Questo assicura che il prefisso `Σ⁺` non sia vuoto, perché il suffisso `bbb` inizia da una posizione `y > 0`). *Nota: in realtà questa parte della formula potrebbe essere ridondante se si assume che `y` sia una posizione valida e la stringa abbia almeno 3 caratteri.*
+*   `b(y) ∧ b(y+1) ∧ b(y+2)`: "...tale che in posizione `y`, `y+1` e `y+2` ci siano tre 'b' consecutive".
+*   `∧ last(y+2)`: "...e la posizione `y+2` è l'ultima posizione della stringa".
+
+Questa formula descrive perfettamente il linguaggio "tutte le stringhe non vuote che terminano con `bbb`".
 
 
 # FUNZIONI CALCOLABILI(DECIDIBILI)
@@ -3150,7 +3229,7 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjE5Njg1NDY0LDE3NjQwOTUwNzMsMTY5MD
+eyJoaXN0b3J5IjpbMzEyMTQ1NzM4LDE3NjQwOTUwNzMsMTY5MD
 A1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQx
 Niw4MTI3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MD
 QwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMy
