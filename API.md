@@ -1236,7 +1236,100 @@ Questa domanda è, in essenza, il **Problema dell'Arresto** sotto mentite spogli
 
 **Conclusione:** L'assunzione deve essere falsa. Pertanto, il problema di decidere se una MTU si arresta su un input generico è **indecidibile**.
 
-##
+## Es 9
+Certamente! Analizziamo questo esercizio che tocca tre aspetti molto diversi e importanti della teoria e della pratica dell'informatica: l'equivalenza semantica, l'equivalenza sintattica e l'analisi statica del codice.
+
+### **Traccia dell'Esercizio**
+
+1.  Dire se è decidibile il problema di stabilire se due programmi, uno scritto in C e uno scritto in Java, calcolano la stessa funzione.
+2.  Dire se è decidibile il problema di stabilire se due programmi, entrambi scritti in C, sono identici, salvo per il fatto che i nomi delle variabili usate sono diversi tra un programma e l'altro.
+3.  Dire se è decidibile il problema di stabilire se, dato un programma C che fa uso di puntatori, esiste un'esecuzione in cui, ad un certo punto, due variabili puntano entrambe allo stesso indirizzo (fenomeno dell'aliasing).
+
+---
+
+### **1. Equivalenza Funzionale (C vs. Java)**
+
+**Risposta:** Il problema è **indecidibile**.
+
+**Motivazione:**
+Questo è un classico problema di teoria della computabilità, riconducibile al Teorema di Rice.
+
+1.  **Potenza dei Linguaggi:** Sia C che Java sono linguaggi di programmazione **Turing-completi**. Questo significa che possono essere usati per implementare qualsiasi algoritmo e calcolare qualsiasi funzione calcolabile. Ai fini della teoria della computabilità, sono equivalenti a una Macchina di Turing.
+
+2.  **Proprietà Semantica:** La domanda "calcolano la stessa funzione?" non riguarda come sono scritti i programmi (la loro sintassi), ma **cosa fanno** (la loro semantica). Stiamo chiedendo se, per ogni possibile input, i due programmi producono lo stesso output oppure entrambi non terminano.
+
+3.  **Teorema di Rice:** Il Teorema di Rice afferma che ogni proprietà **non banale** del comportamento (la funzione calcolata) di un programma è indecidibile.
+    *   La nostra proprietà è "essere funzionalmente equivalente a un dato programma Java".
+    *   Questa proprietà è **non banale**? Sì. Esiste almeno un programma C che la soddisfa (una traduzione del programma Java in C) e infiniti altri programmi C che non la soddisfano (ad esempio, un programma che stampa solo "Hello World").
+
+Poiché stiamo chiedendo di una proprietà semantica e non banale di programmi scritti in linguaggi Turing-completi, il problema dell'equivalenza è **indecidibile**. È, di fatto, una versione ancora più generale del Problema dell'Arresto.
+
+---
+
+### **2. Identità Sintattica (salvo nomi delle variabili)**
+
+**Risposta:** Il problema è **decidibile**.
+
+**Motivazione:**
+A differenza del punto precedente, questa domanda è puramente **sintattica**. Non ci interessa cosa fanno i programmi, ma solo come sono strutturati, ignorando i nomi specifici delle variabili. Questo problema è noto come **equivalenza-alfa** (alpha equivalence).
+
+Esiste un algoritmo che può decidere questo problema. Ecco come funzionerebbe:
+
+1.  **Parsing:** L'algoritmo analizza (effettua il "parsing") entrambi i codici sorgente C per costruire una rappresentazione strutturale, come un **Abstract Syntax Tree (AST)**. Questo è esattamente ciò che fa un compilatore.
+2.  **Normalizzazione:** L'algoritmo attraversa entrambi gli AST e rinomina sistematicamente tutte le variabili secondo una regola fissa. Ad esempio, la prima variabile dichiarata in ogni scope diventa `var_0`, la seconda `var_1`, e così via.
+3.  **Confronto:** Una volta che entrambi gli AST sono stati "normalizzati", l'algoritmo li confronta. Se gli alberi normalizzati sono identici, significa che i programmi originali erano identici a meno del nome delle variabili. Altrimenti, non lo erano.
+
+Poiché abbiamo descritto un algoritmo che termina sempre e fornisce la risposta corretta, il problema è **decidibile**.
+
+---
+
+### **3. Aliasing dei Puntatori in C**
+
+**Risposta:** Il problema è **indecidibile**.
+
+**Motivazione:**
+Questo problema, noto come **analisi dei puntatori (pointer analysis)**, è un problema fondamentale nell'analisi statica dei programmi e nella compilazione. Sebbene possa sembrare un problema di analisi del codice, è anch'esso riconducibile al Problema dell'Arresto.
+
+La domanda è: "**esiste un'esecuzione** in cui si verifica l'aliasing?". L'aliasing si verifica quando due puntatori contengono lo stesso indirizzo di memoria.
+
+Vediamo perché è indecidibile con una **riduzione dal Problema dell'Arresto**:
+
+1.  **Il Problema dell'Arresto:** Sappiamo che è indecidibile stabilire se un generico programma `P` con un generico input `I` terminerà la sua esecuzione.
+
+2.  **La Riduzione:** Costruiamo un nuovo programma C, `P_alias`, in questo modo:
+
+    ```c
+    #include <stdio.h>
+
+    void P_alias() {
+        int a, b;
+        int *ptr1 = &a; // ptr1 punta ad a
+        int *ptr2 = &b; // ptr2 punta a b
+
+        // Inizialmente, ptr1 e ptr2 NON sono alias.
+
+        // Inseriamo qui il codice del programma P con l'input I
+        // di cui vogliamo testare la terminazione.
+        // Esempio:
+        // while(1) { ... } // se P(I) non termina
+        
+        // Questa riga viene raggiunta SE E SOLO SE l'esecuzione di P(I) termina.
+        ptr2 = &a; 
+
+        // Ora ptr1 e ptr2 sono alias (puntano entrambi ad a).
+    }
+    ```
+
+3.  **L'Equivalenza:**
+    *   L'aliasing tra `ptr1` e `ptr2` si verifica in `P_alias` **se e solo se** la riga `ptr2 = &a;` viene mai eseguita.
+    *   Questa riga viene eseguita **se e solo se** il programma `P` con l'input `I` termina.
+
+4.  **La Contraddizione:** Se avessimo un algoritmo `Decide_Aliasing(programma)` in grado di decidere se in un programma si verifica l'aliasing, potremmo usarlo per risolvere il Problema dell'Arresto:
+    *   Per sapere se `P(I)` termina, basterebbe costruire `P_alias` e darlo in pasto a `Decide_Aliasing`.
+    *   Se `Decide_Aliasing(P_alias)` risponde "Sì", allora `P(I)` termina.
+    *   Se risponde "No", allora `P(I)` non termina.
+
+Poiché abbiamo ridotto il Problema dell'Arresto all'analisi dell'aliasing, e il primo è indecidibile, anche il secondo deve essere **indecidibile**.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -3060,11 +3153,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA1MzI3NzkxNiwxNzY0MDk1MDczLDE2OT
-AwNTkwMDEsNTU2OTIzMjkxLC0zNTE4NDI4OTMsLTEyMTc0ODk0
-MTYsODEyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNzM5MzMsLTY5Nz
-A0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQzLC0xOTMzNjcz
-MjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMzE1NTYxNCw1OD
-M4MzgxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNTkwMDgx
-MTc1XX0=
+eyJoaXN0b3J5IjpbNDYxNTM4MDAzLDE3NjQwOTUwNzMsMTY5MD
+A1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQx
+Niw4MTI3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MD
+QwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMy
+NzMsLTcwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4Mz
+gzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODEx
+NzVdfQ==
 -->
