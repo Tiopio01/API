@@ -1461,6 +1461,82 @@ Questa domanda è profondamente diversa dalla precedente. Non stiamo più chiede
         *   **Esiste almeno una MT che NON ha la proprietà `P`?** Sì, certamente. Una macchina di Turing che accetta il linguaggio vuoto, o che accetta tutte le stringhe, non ha la proprietà `P` (a meno che `L1 ∩ L2` non sia uno di questi casi, ma possiamo sempre trovare un controesempio).
 
 4.  **Conclusione:** Poiché "accettare il linguaggio `L1 ∩ L2`" è una proprietà non banale del comportamento di una Macchina di Turing, per il Teorema di Rice, il problema di stabilire se una generica macchina `M` possiede questa proprietà è **indecidibile**.
+
+## ES 11
+Nel corso di Prova Finale di API si richiede di sviluppare in C una funzione `f` da ℕ a ℕ. Un generatore di test, fornito agli studenti, enumera gli input per `f` e i corrispondenti output attesi.
+
+a) È **decidibile** il problema di stabilire se la codifica di `f` fatta da un generico studente è corretta rispetto ad **ogni possibile** caso di test fornito dal generatore?
+b) Ada e Pasquale si sono consultati prima di scrivere le proprie implementazioni. È **decidibile** il problema di stabilire se le loro codifiche di `f` sono equivalenti?
+c) È **semidecidibile** il problema del punto a)?
+
+---
+
+### **a) Decidibilità della Correttezza rispetto al Generatore**
+
+**Risposta:** No, il problema **non è decidibile**.
+
+**Motivazione (Teorema di Rice):**
+
+1.  **Cosa significa "corretta"?** Un'implementazione `f_studente` è "corretta" se per **ogni** input `x` enumerato dal generatore di test, l'output `f_studente(x)` è uguale all'output atteso `f_atteso(x)`.
+2.  **Il Dominio del Problema:** Il generatore "enumera" gli input, il che implica che l'insieme dei casi di test è **infinito**. Dobbiamo quindi verificare la correttezza su un numero infinito di casi.
+3.  **Applichiamo il Teorema di Rice:** Il problema di verificare se un programma `P` è corretto rispetto a una specifica `S` (in questo caso, l'insieme infinito di test) è un problema di **verifica della correttezza del software**.
+    *   **La Proprietà:** La proprietà che stiamo verificando è "essere funzionalmente equivalente alla funzione attesa `f_atteso` su tutti gli input generati".
+    *   **È una proprietà semantica?** Sì, riguarda *cosa* fa il programma (il suo comportamento), non come è scritto.
+    *   **È una proprietà non banale?** Sì.
+        *   Esiste almeno un'implementazione corretta (si spera!).
+        *   Esiste almeno un'implementazione non corretta (ad esempio, una che restituisce sempre 0).
+4.  **Conclusione:** Poiché stiamo verificando una proprietà semantica e non banale di un programma generico, per il Teorema di Rice il problema è **indecidibile**. Non esiste un algoritmo universale che possa prendere il codice di uno studente e garantire che funzioni correttamente su tutti gli infiniti test.
+
+---
+
+### **b) Decidibilità dell'Equivalenza tra Ada e Pasquale**
+
+**Risposta:** Sì, il problema è **decidibile**.
+
+**Motivazione ("Domanda Chiusa"):**
+
+Questa domanda è molto diversa dalla precedente e spesso trae in inganno.
+
+1.  **Cosa chiede il problema?** Non ci viene dato il codice di due studenti *generici* come input. Ci viene chiesto di rispondere a una domanda su **due implementazioni specifiche e fisse**: quella di Ada e quella di Pasquale.
+2.  **L'argomento della "Domanda Chiusa":** Le implementazioni di Ada e Pasquale o sono equivalenti, o non lo sono. La risposta a questa domanda è una singola costante booleana: o è "Vero" o è "Falso". Non dipende da alcun input esterno.
+3.  **Esistenza dell'Algoritmo:** Poiché la risposta è una costante, un algoritmo che decide il problema esiste sempre:
+    *   **Se la risposta vera è "Sì"**, allora l'algoritmo `Algoritmo_Ada_Pasquale() { return "Sì"; }` è un algoritmo che termina sempre e fornisce la risposta corretta.
+    *   **Se la risposta vera è "No"**, allora l'algoritmo `Algoritmo_Ada_Pasquale() { return "No"; }` è un algoritmo corretto.
+4.  **Conclusione:** Poiché un algoritmo decisore esiste (anche se non siamo in grado di scrivere quale dei due sia quello giusto senza risolvere il problema di equivalenza per questo caso specifico), il problema è, per definizione, **decidibile**.
+
+*(Nota: Questo è diverso dal problema generale "Dati due programmi P1 e P2, sono equivalenti?", che è indecidibile. Qui i programmi non sono input, sono costanti del problema).*
+
+---
+
+### **c) Semidecidibilità della Correttezza**
+
+**Risposta:** No, il problema **non è semidecidibile**.
+
+**Motivazione (Uso del Complemento):**
+
+1.  **Cosa significa Semidecidibile?** Un problema è semidecidibile se esiste un algoritmo che termina e dice "Sì" per tutte le istanze positive. Nel nostro caso, dovrebbe esistere un algoritmo che, dato un programma corretto, si ferma e lo certifica come tale.
+
+2.  **Analizziamo il Problema Inverso (il Complemento):**
+    *   Il problema originale (P) è: "L'implementazione è corretta?" (cioè, non ha discrepanze).
+    *   Il problema complemento (P̄) è: "L'implementazione **non** è corretta?" (cioè, esiste **almeno una discrepanza**).
+
+3.  **Il Complemento È Semidecidibile? SÌ.**
+    Possiamo costruire un "cercatore di bug" che semidecide il problema P̄. Ecco come funziona:
+    *   Prendi il programma dello studente.
+    *   Inizia a enumerare i casi di test dal generatore, uno per uno.
+    *   Per ogni caso di test `(input_i, output_atteso_i)`:
+        *   Esegui il programma dello studente con `input_i` per ottenere `output_studente_i`.
+        *   Confronta `output_studente_i` con `output_atteso_i`.
+        *   **Se sono diversi**, hai trovato un bug! L'implementazione non è corretta. L'algoritmo si ferma e risponde "Sì, ho trovato una discrepanza".
+    *   **Comportamento:** Se il programma ha un bug, questo algoritmo prima o poi lo troverà e terminerà. Se il programma è perfettamente corretto, l'algoritmo continuerà a testare all'infinito, senza mai fermarsi. Questo è esattamente il comportamento di un semi-decisore per il problema P̄.
+
+4.  **Torniamo al Problema Originale:**
+    *   Abbiamo stabilito che P ("è corretto?") è **indecidibile** (punto a).
+    *   Abbiamo stabilito che il suo complemento P̄ ("non è corretto?") è **semidecidibile**.
+    *   Un teorema fondamentale della computabilità dice: *Un problema è decidibile se e solo se sia esso che il suo complemento sono semidecidibili.*
+    *   Poiché P è indecidibile, ma il suo complemento P̄ è semidecidibile, ne consegue che P **non può essere semidecidibile**.
+
+**Conclusione:** Il problema della correttezza non solo è indecidibile, ma non è nemmeno semidecidibile. Possiamo trovare i bug, ma non possiamo mai certificare l'assenza totale di bug.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -3753,97 +3829,13 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 ## Es 4
-Si definisce **Riconoscitore ad Automi Gemelli (RAG)** un meccanismo di calcolo ottenuto facendo operare due automi sullo stesso nastro di ingresso. Gli automi operano indipendentemente, ognuno con la propria testina. La parola in ingresso si considera riconosciuta se e solo se **entrambi** gli automi la riconoscono.
-
-Si consideri il caso dei RAG costruiti come segue e si dica se il loro potere riconoscitore è **maggiore, minore o uguale** a quello delle loro componenti:
-
-a) RAG costituito da un automa a stati finiti **deterministico (DFA)** e uno **non deterministico (NFA)**.
-b) RAG costituito da un automa a stati finiti **deterministico (DFA)** ed un automa a pila **deterministico (DPDA)**.
-c) RAG costituito da due automi a pila **non deterministici (NPDA)**.
-
----
-
-### **Il Concetto Chiave: Intersezione dei Linguaggi**
-
-Prima di analizzare i singoli punti, è fondamentale capire cosa fa un RAG. La definizione dice che una stringa `w` è accettata dal RAG se e solo se:
-*   L'automa 1 (`A1`) accetta `w`.
-*   **E** l'automa 2 (`A2`) accetta `w`.
-
-Questo significa che il linguaggio riconosciuto dal RAG, `L(RAG)`, è l'**intersezione** dei linguaggi riconosciuti dai due automi componenti:
-
-`L(RAG) = L(A1) ∩ L(A2)`
-
-Ora, per ogni punto, la domanda si riduce a: "Cosa succede quando intersechiamo i linguaggi di questi tipi di automi? Il linguaggio risultante appartiene alla stessa classe, a una classe meno potente o a una classe più potente?" Questo ci porta al concetto di **proprietà di chiusura** delle classi di linguaggi.
-
----
-
-### **a) RAG = DFA + NFA**
-
-*   **Linguaggi Coinvolti:**
-    *   `L(DFA)` è un linguaggio **Regolare**.
-    *   `L(NFA)` è anch'esso un linguaggio **Regolare**. (Un teorema fondamentale afferma che DFA e NFA hanno lo stesso potere espressivo e riconoscono la stessa classe di linguaggi).
-*   **Operazione:** Stiamo calcolando l'intersezione di due linguaggi regolari: `Regolare ∩ Regolare`.
-*   **Proprietà di Chiusura:** La classe dei linguaggi regolari **è chiusa** rispetto all'operazione di intersezione. Questo significa che se prendi due linguaggi regolari qualsiasi e fai la loro intersezione, il risultato è garantito essere ancora un linguaggio regolare.
-*   **Conclusione:** Il linguaggio `L(RAG)` è regolare. Il potere riconoscitivo del RAG non supera quello di un singolo DFA o NFA.
-
-**Risposta:** Il potere riconoscitore è **UGUALE** a quello delle sue componenti.
-
----
-
-### **b) RAG = DFA + DPDA**
-
-*   **Linguaggi Coinvolti:**
-    *   `L(DFA)` è un linguaggio **Regolare**.
-    *   `L(DPDA)` è un linguaggio **Libero dal Contesto Deterministico (DCFL)**.
-*   **Operazione:** Stiamo calcolando `Regolare ∩ DCFL`.
-*   **Proprietà di Chiusura:** La classe dei linguaggi liberi dal contesto deterministici (DCFL) **è chiusa** rispetto all'intersezione con un linguaggio regolare. Il risultato è sempre un DCFL.
-*   **Spiegazione Alternativa (Costruttiva):** Come suggerisce la soluzione, possiamo immaginare di costruire un nuovo DPDA che simuli i due automi contemporaneamente. I suoi stati sarebbero coppie `(q_dfa, q_dpda)`, dove `q_dfa` è uno stato del DFA e `q_dpda` è uno stato del DPDA. Per ogni mossa, il nuovo automa aggiorna sia la componente di stato del DFA che quella del DPDA, usando la pila come farebbe il DPDA originale. L'accettazione avviene solo se entrambe le componenti si trovano in uno stato finale. Poiché questa "macchina prodotto" è ancora un DPDA, il linguaggio risultante è un DCFL.
-*   **Conclusione:** Il potere del RAG è uguale a quello del suo componente più potente, il DPDA.
-
-**Risposta:** Il potere riconoscitore è **UGUALE** a quello di un automa a pila deterministico.
-
----
-
-### **c) RAG = NPDA + NPDA**
-
-*   **Linguaggi Coinvolti:**
-    *   `L(NPDA)` è un linguaggio **Libero dal Contesto (CFL)**.
-    *   Anche il secondo `L(NPDA)` è un CFL.
-*   **Operazione:** Stiamo calcolando `CFL ∩ CFL`.
-*   **Proprietà di Chiusura:** La classe dei linguaggi liberi dal contesto **NON è chiusa** rispetto all'intersezione. Questo è un risultato famosissimo e fondamentale. Significa che l'intersezione di due CFL può produrre un linguaggio che non è più libero dal contesto (e che quindi non può essere riconosciuto da un singolo NPDA).
-*   **L'Esempio Classico:**
-    *   Sia `L(A1) = {aⁿbⁿcᵐ | n, m ≥ 1}`. Questo è un CFL (conta le `a` e le `b` con la pila, poi ignora le `c`).
-    *   Sia `L(A2) = {aᵐbⁿcⁿ | n, m ≥ 1}`. Anche questo è un CFL (ignora le `a`, poi conta le `b` e le `c` con la pila).
-    *   La loro intersezione `L(A1) ∩ L(A2)` è il linguaggio `{aⁿbⁿcⁿ | n ≥ 1}`.
-    *   Questo linguaggio (`aⁿbⁿcⁿ`) è l'esempio "modello" di un linguaggio che **non è libero dal contesto**, ma è **sensibile al contesto**. Richiede più memoria di una semplice pila per essere riconosciuto.
-*   **Conclusione:** Poiché il RAG può riconoscere `{aⁿbⁿcⁿ}`, che nessun singolo NPDA può riconoscere, il potere del RAG è superiore a quello di un singolo NPDA.
-
-**Risposta:** Il potere riconoscitore è **MAGGIORE** di quello di un automa a pila non deterministico.
-## ES 5
-Sia `L1` un linguaggio ricorsivamente enumerabile, `L2` un linguaggio regolare e `L = L1 ∩ L2` la loro intersezione.
-Per ciascuna delle seguenti classi di linguaggi, si argomenti se `L` **può farne parte**, **deve necessariamente farne parte** o **non può farne parte**:
-
-a) linguaggi regolari;
-b) linguaggi ricorsivi;
-c) linguaggi ricorsivamente enumerabili.
-
-Motivare opportunamente e fornire esempi laddove appropriato.
-
----
-
-### **Concetti Preliminari Fondamentali**
-
-Prima di iniziare, è cruciale ricordare la gerarchia dei linguaggi e le loro proprietà:
-
-*   **Linguaggi Regolari:** La classe più semplice. Riconosciuti da automi a stati finiti (FSA). Sono sempre **decidibili** (ricorsivi).
-*   **Linguaggi Ricorsivi (o Decidibili):** Riconosciuti da Macchine di Turing che **terminano sempre**, per ogni input.
-*   **Linguaggi Ricorsivamente Enumerabili (RE) (o Semi-decidibili):** Riconosciuti da Macchine di Turing che sono garantite per terminare e accettare se la stringa appar
+Si definisce **Riconoscitore ad Automi Gemelli (RAG)** un meccanismo di calcolo ottenuto facendo operare due automi sullo stesso nastro di ingres
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI0NDY4NjQzNCwxOTg2NzA1NDMsLTE1OT
-YxNTc1MiwxNTY0OTIwNzgyLC0xNzEwNjU0NDU3LC05NzgzODAy
-NzEsMTU3MDQ5Nzk5MSwzMTIxNDU3MzgsMTc2NDA5NTA3MywxNj
-kwMDU5MDAxLDU1NjkyMzI5MSwtMzUxODQyODkzLC0xMjE3NDg5
-NDE2LDgxMjcwMDQyNiwxODc1NDQ4ODkyLDIwMzczOTMzLC02OT
-cwNDA0ODksLTE0NjEyMzE4MjksMTI3NzYwODk0MywtMTkzMzY3
-MzI3M119
+eyJoaXN0b3J5IjpbNDIyMjMwNDk0LC0yNDQ2ODY0MzQsMTk4Nj
+cwNTQzLC0xNTk2MTU3NTIsMTU2NDkyMDc4MiwtMTcxMDY1NDQ1
+NywtOTc4MzgwMjcxLDE1NzA0OTc5OTEsMzEyMTQ1NzM4LDE3Nj
+QwOTUwNzMsMTY5MDA1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5
+MywtMTIxNzQ4OTQxNiw4MTI3MDA0MjYsMTg3NTQ0ODg5MiwyMD
+M3MzkzMywtNjk3MDQwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5
+NDNdfQ==
 -->
