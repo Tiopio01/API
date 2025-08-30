@@ -3598,12 +3598,79 @@ In **entrambi i casi**, il linguaggio risultante è **regolare**.
 Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è destinato a essere regolare, possiamo concludere con certezza che **SÌ, il linguaggio L è regolare**.
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
+## Es 4
+Si definisce **Riconoscitore ad Automi Gemelli (RAG)** un meccanismo di calcolo ottenuto facendo operare due automi sullo stesso nastro di ingresso. Gli automi operano indipendentemente, ognuno con la propria testina. La parola in ingresso si considera riconosciuta se e solo se **entrambi** gli automi la riconoscono.
+
+Si consideri il caso dei RAG costruiti come segue e si dica se il loro potere riconoscitore è **maggiore, minore o uguale** a quello delle loro componenti:
+
+a) RAG costituito da un automa a stati finiti **deterministico (DFA)** e uno **non deterministico (NFA)**.
+b) RAG costituito da un automa a stati finiti **deterministico (DFA)** ed un automa a pila **deterministico (DPDA)**.
+c) RAG costituito da due automi a pila **non deterministici (NPDA)**.
+
+---
+
+### **Il Concetto Chiave: Intersezione dei Linguaggi**
+
+Prima di analizzare i singoli punti, è fondamentale capire cosa fa un RAG. La definizione dice che una stringa `w` è accettata dal RAG se e solo se:
+*   L'automa 1 (`A1`) accetta `w`.
+*   **E** l'automa 2 (`A2`) accetta `w`.
+
+Questo significa che il linguaggio riconosciuto dal RAG, `L(RAG)`, è l'**intersezione** dei linguaggi riconosciuti dai due automi componenti:
+
+`L(RAG) = L(A1) ∩ L(A2)`
+
+Ora, per ogni punto, la domanda si riduce a: "Cosa succede quando intersechiamo i linguaggi di questi tipi di automi? Il linguaggio risultante appartiene alla stessa classe, a una classe meno potente o a una classe più potente?" Questo ci porta al concetto di **proprietà di chiusura** delle classi di linguaggi.
+
+---
+
+### **a) RAG = DFA + NFA**
+
+*   **Linguaggi Coinvolti:**
+    *   `L(DFA)` è un linguaggio **Regolare**.
+    *   `L(NFA)` è anch'esso un linguaggio **Regolare**. (Un teorema fondamentale afferma che DFA e NFA hanno lo stesso potere espressivo e riconoscono la stessa classe di linguaggi).
+*   **Operazione:** Stiamo calcolando l'intersezione di due linguaggi regolari: `Regolare ∩ Regolare`.
+*   **Proprietà di Chiusura:** La classe dei linguaggi regolari **è chiusa** rispetto all'operazione di intersezione. Questo significa che se prendi due linguaggi regolari qualsiasi e fai la loro intersezione, il risultato è garantito essere ancora un linguaggio regolare.
+*   **Conclusione:** Il linguaggio `L(RAG)` è regolare. Il potere riconoscitivo del RAG non supera quello di un singolo DFA o NFA.
+
+**Risposta:** Il potere riconoscitore è **UGUALE** a quello delle sue componenti.
+
+---
+
+### **b) RAG = DFA + DPDA**
+
+*   **Linguaggi Coinvolti:**
+    *   `L(DFA)` è un linguaggio **Regolare**.
+    *   `L(DPDA)` è un linguaggio **Libero dal Contesto Deterministico (DCFL)**.
+*   **Operazione:** Stiamo calcolando `Regolare ∩ DCFL`.
+*   **Proprietà di Chiusura:** La classe dei linguaggi liberi dal contesto deterministici (DCFL) **è chiusa** rispetto all'intersezione con un linguaggio regolare. Il risultato è sempre un DCFL.
+*   **Spiegazione Alternativa (Costruttiva):** Come suggerisce la soluzione, possiamo immaginare di costruire un nuovo DPDA che simuli i due automi contemporaneamente. I suoi stati sarebbero coppie `(q_dfa, q_dpda)`, dove `q_dfa` è uno stato del DFA e `q_dpda` è uno stato del DPDA. Per ogni mossa, il nuovo automa aggiorna sia la componente di stato del DFA che quella del DPDA, usando la pila come farebbe il DPDA originale. L'accettazione avviene solo se entrambe le componenti si trovano in uno stato finale. Poiché questa "macchina prodotto" è ancora un DPDA, il linguaggio risultante è un DCFL.
+*   **Conclusione:** Il potere del RAG è uguale a quello del suo componente più potente, il DPDA.
+
+**Risposta:** Il potere riconoscitore è **UGUALE** a quello di un automa a pila deterministico.
+
+---
+
+### **c) RAG = NPDA + NPDA**
+
+*   **Linguaggi Coinvolti:**
+    *   `L(NPDA)` è un linguaggio **Libero dal Contesto (CFL)**.
+    *   Anche il secondo `L(NPDA)` è un CFL.
+*   **Operazione:** Stiamo calcolando `CFL ∩ CFL`.
+*   **Proprietà di Chiusura:** La classe dei linguaggi liberi dal contesto **NON è chiusa** rispetto all'intersezione. Questo è un risultato famosissimo e fondamentale. Significa che l'intersezione di due CFL può produrre un linguaggio che non è più libero dal contesto (e che quindi non può essere riconosciuto da un singolo NPDA).
+*   **L'Esempio Classico:**
+    *   Sia `L(A1) = {aⁿbⁿcᵐ | n, m ≥ 1}`. Questo è un CFL (conta le `a` e le `b` con la pila, poi ignora le `c`).
+    *   Sia `L(A2) = {aᵐbⁿcⁿ | n, m ≥ 1}`. Anche questo è un CFL (ignora le `a`, poi conta le `b` e le `c` con la pila).
+    *   La loro intersezione `L(A1) ∩ L(A2)` è il linguaggio `{aⁿbⁿcⁿ | n ≥ 1}`.
+    *   Questo linguaggio (`aⁿbⁿcⁿ`) è l'esempio "modello" di un linguaggio che **non è libero dal contesto**, ma è **sensibile al contesto**. Richiede più memoria di una semplice pila per essere riconosciuto.
+*   **Conclusione:** Poiché il RAG può riconoscere `{aⁿbⁿcⁿ}`, che nessun singolo NPDA può riconoscere, il potere del RAG è superiore a quello di un singolo NPDA.
+
+**Risposta:** Il potere riconoscitore è **MAGGIORE** di quello di un automa a pila non deterministico.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NjY1MTkxMDQsLTE3MTA2NTQ0NTcsLT
-k3ODM4MDI3MSwxNTcwNDk3OTkxLDMxMjE0NTczOCwxNzY0MDk1
-MDczLDE2OTAwNTkwMDEsNTU2OTIzMjkxLC0zNTE4NDI4OTMsLT
-EyMTc0ODk0MTYsODEyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNzM5
-MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQzLC
-0xOTMzNjczMjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMzE1
-NTYxNF19
+eyJoaXN0b3J5IjpbMTU2NDkyMDc4MiwtMTcxMDY1NDQ1NywtOT
+c4MzgwMjcxLDE1NzA0OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUw
+NzMsMTY5MDA1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMT
+IxNzQ4OTQxNiw4MTI3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3Mzkz
+MywtNjk3MDQwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLT
+E5MzM2NzMyNzMsLTcwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1
+NjE0XX0=
 -->
