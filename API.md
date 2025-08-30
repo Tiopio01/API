@@ -3029,7 +3029,113 @@ Analizziamo il comportamento di questo algoritmo di simulazione:
 
 Poiché abbiamo descritto un algoritmo il cui comportamento specchia perfettamente quello della funzione `g` su tutti gli input del suo dominio (infinito), la funzione `g` è, per definizione, **calcolabile**.
 
-## Es
+## Es 9
+
+
+### **Concetti Chiave**
+
+*   **Funzione Computabile:** Esiste un algoritmo (una Macchina di Turing) che la calcola. Se la funzione è **totale** (definita per ogni input, come `g1`, `g3`, `g5`), l'algoritmo deve terminare sempre. Se è **parziale** (può essere indefinita `⊥`, come `g2`, `g4`, `g6`), l'algoritmo deve non terminare per gli input su cui la funzione è indefinita.
+*   **Domanda Chiusa:** Una domanda la cui risposta è una costante "Sì" o "No", anche se non la conosciamo. Ad esempio, "Esiste vita su Marte?". La risposta è una, non dipende da un input. Un problema che si basa su una domanda chiusa è sempre decidibile.
+*   **Teorema di Rice:** Qualsiasi proprietà **non banale** del **comportamento** di una Macchina di Turing è indecidibile. "Non banale" significa che almeno una macchina ha la proprietà e almeno una non ce l'ha.
+
+---
+
+### **a) g1(y) = 1 se f₁₀(10) > 10, 0 altrimenti**
+
+**Risposta:** **Computabile.**
+
+**Motivazione:**
+La funzione `g1` prende un input `y`, ma il suo comportamento **non dipende affatto da `y`**. La condizione `f₁₀(10) > 10` è una "domanda chiusa". La computazione della decima macchina sull'input 10 o termina o non termina. Se termina, il suo risultato o è maggiore di 10 o non lo è.
+
+Di conseguenza, la condizione `f₁₀(10) > 10` è o **sempre vera** o **sempre falsa**.
+*   **Caso 1: La condizione è vera.** Allora `g1(y)` è la funzione costante `g1(y) = 1`. Questa è banalmente computabile (l'algoritmo è `return 1`).
+*   **Caso 2: La condizione è falsa.** Allora `g1(y)` è la funzione costante `g1(y) = 0`. Anche questa è computabile (l'algoritmo è `return 0`).
+
+Poiché, in entrambi gli scenari possibili, la funzione risultante è computabile, possiamo concludere che `g1` **è computabile**. Non abbiamo bisogno di sapere *quale* dei due casi sia vero, ci basta sapere che uno dei due algoritmi la calcola.
+
+---
+
+### **b) g2(y) = 1 se f₁₀(10) > 10, ⊥ altrimenti**
+
+**Risposta:** **Computabile.**
+
+**Motivazione:**
+Il ragionamento è identico al punto (a). La condizione è sempre la stessa "domanda chiusa".
+*   **Caso 1: La condizione è vera.** La funzione è `g2(y) = 1`. È computabile.
+*   **Caso 2: La condizione è falsa.** La funzione è `g2(y) = ⊥` (la funzione ovunque indefinita). Anche questa è computabile: un algoritmo che la calcola è `while(true){}`.
+
+Poiché la funzione è computabile in entrambi gli scenari, `g2` **è computabile**.
+
+---
+
+### **c) g3(y) = 1 se fᵧ(10) > 10, 0 altrimenti**
+
+**Risposta:** **Non computabile.**
+
+**Motivazione (Teorema di Rice):**
+Qui la situazione cambia radicalmente: il comportamento della funzione dipende dall'input `y`. La funzione `g3` è **totale**, quindi per essere computabile, dovrebbe **decidere** una proprietà della macchina `Mᵧ`.
+
+1.  **La Proprietà:** La proprietà in esame è "la funzione calcolata dalla macchina `Mᵧ` restituisce un valore maggiore di 10 per l'input 10".
+2.  **Applichiamo il Teorema di Rice:**
+    *   È una proprietà del **comportamento**? Sì, riguarda l'output della funzione, non la struttura della macchina.
+    *   È **non banale**? Sì. Come dice la soluzione, la funzione costante `f(x) = 11` ha questa proprietà, mentre la funzione costante `f(x) = 9` non ce l'ha.
+3.  **Conclusione:** Poiché è una proprietà non banale del comportamento, il Teorema di Rice ci dice che è **indecidibile**. Un algoritmo che calcola `g3` dovrebbe decidere questo problema. Poiché il problema è indecidibile, un tale algoritmo non può esistere.
+
+---
+
+### **d) g4(y) = 1 se fᵧ(10) > 10, ⊥ altrimenti**
+
+**Risposta:** **Computabile.**
+
+**Motivazione:**
+Questa è la versione **parziale** di `g3`. Non deve decidere il problema, ma solo **semi-deciderlo**. Può non terminare se la condizione è falsa. Questo fa tutta la differenza.
+
+Possiamo costruire un algoritmo che calcola `g4`:
+1.  Prendi in input `y`.
+2.  **Simula** la macchina `Mᵧ` con l'input `10`.
+3.  **Analizza il risultato della simulazione:**
+    *   **Se la simulazione termina** con un risultato `v`:
+        *   Se `v > 10`, l'algoritmo si ferma e restituisce `1` (corretto).
+        *   Se `v ≤ 10`, l'algoritmo entra in un loop infinito (`while(true){}`). Questo produce `⊥` (corretto).
+    *   **Se la simulazione di `Mᵧ(10)` non termina**: Il nostro algoritmo di simulazione non terminerà a sua volta. Questo produce `⊥` (corretto).
+
+Poiché abbiamo descritto un algoritmo che si comporta esattamente come `g4`, la funzione **è computabile**.
+
+---
+
+### **e) g5(y,x) = 1 se fᵧ(10) > x, 0 altrimenti**
+
+**Risposta:** **Non computabile.**
+
+**Motivazione (Riduzione):**
+Questo problema è una generalizzazione di `g3`. Se potessimo risolvere questo problema, potremmo risolvere anche `g3`, che sappiamo essere irrisolvibile.
+
+1.  **Ipotesi:** Supponiamo per assurdo che `g5` sia computabile.
+2.  **La Riduzione:** Vogliamo calcolare `g3(y)`. Possiamo farlo usando `g5`? Sì.
+    `g3(y)` è definito come `1` se `fᵧ(10) > 10` e `0` altrimenti.
+    Basta calcolare `g5(y, 10)`. Per definizione, `g5(y, 10)` vale `1` se `fᵧ(10) > 10` e `0` altrimenti.
+    Quindi, `g3(y) = g5(y, 10)`.
+3.  **La Contraddizione:** Abbiamo appena mostrato che se `g5` fosse computabile, potremmo calcolare `g3` semplicemente fissando `x=10`. Ma abbiamo già dimostrato in (c) che `g3` **non è computabile**. Questa è una contraddizione.
+4.  **Conclusione:** La nostra ipotesi iniziale deve essere falsa. `g5` non è computabile.
+
+---
+
+### **f) g6(y,x) = 1 se fᵧ(10) > x, ⊥ altrimenti**
+
+**Risposta:** **Computabile.**
+
+**Motivazione:**
+Questa è la versione **parziale** di `g5`, e il ragionamento è identico a quello per `g4`. Possiamo costruire un algoritmo che la calcola.
+
+1.  Prendi in input `y` e `x`.
+2.  **Simula** la macchina `Mᵧ` con l'input `10`.
+3.  **Analizza il risultato della simulazione:**
+    *   **Se la simulazione termina** con un risultato `v`:
+        *   Se `v > x`, l'algoritmo si ferma e restituisce `1` (corretto).
+        *   Se `v ≤ x`, l'algoritomo entra in un loop infinito, producendo `⊥` (corretto).
+    *   **Se la simulazione di `Mᵧ(10)` non termina**: Il nostro algoritmo non terminerà, producendo `⊥` (corretto).
+
+Poiché esiste un algoritmo che si comporta esattamente come `g6`, la funzione **è computabile**.
 # DATA FORMULA DESCRIVO LINGUAGGIO
 
 
@@ -3396,11 +3502,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3MDYyODg3OSwtOTc4MzgwMjcxLDE1Nz
-A0OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNzMsMTY5MDA1OTAw
-MSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQxNiw4MT
-I3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MDQwNDg5
-LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMyNzMsLT
-cwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4MzgzODEx
-N119
+eyJoaXN0b3J5IjpbLTE3MTA2NTQ0NTcsLTk3ODM4MDI3MSwxNT
+cwNDk3OTkxLDMxMjE0NTczOCwxNzY0MDk1MDczLDE2OTAwNTkw
+MDEsNTU2OTIzMjkxLC0zNTE4NDI4OTMsLTEyMTc0ODk0MTYsOD
+EyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNzM5MzMsLTY5NzA0MDQ4
+OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC
+03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMzE1NTYxNCw1ODM4Mzgx
+MTddfQ==
 -->
