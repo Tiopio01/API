@@ -1327,6 +1327,66 @@ Vediamo perché è indecidibile con una **riduzione dal Problema dell'Arresto**:
     *   Se risponde "No", allora `P(I)` non termina.
 
 Poiché abbiamo ridotto il Problema dell'Arresto all'analisi dell'aliasing, e il primo è indecidibile, anche il secondo deve essere **indecidibile**.
+## Es 10
+
+1.  Siano dati due automi a pila deterministici con linguaggi `L1` e `L2`: è **ricorsivo** (decidibile) il linguaggio `L1 ∩ L2`?
+2.  Siano dati due automi a pila deterministici con linguaggi `L1` e `L2` e una macchina di Turing `M`: è **decidibile** se `M` calcola `L1 ∩ L2`?
+
+---
+
+### **1. Il linguaggio `L1 ∩ L2` è ricorsivo (decidibile)?**
+
+**Risposta:** Sì, il linguaggio `L1 ∩ L2` è ricorsivo (decidibile).
+
+**Motivazione dettagliata:**
+
+Un linguaggio `L` è detto ricorsivo (o decidibile) se esiste un algoritmo (implementabile da una Macchina di Turing) che, per qualsiasi stringa di input `w`, **termina sempre** e risponde correttamente "sì" (se `w ∈ L`) o "no" (se `w ∉ L`).
+
+La domanda, quindi, è: possiamo costruire un tale algoritmo per il linguaggio `L1 ∩ L2`?
+
+1.  **Definizione di Intersezione:** Una stringa `w` appartiene a `L1 ∩ L2` se e solo se `w` appartiene a `L1` **E** `w` appartiene a `L2`.
+
+2.  **Costruzione dell'Algoritmo (una Macchina di Turing `M_inter`):**
+    Il nostro algoritmo `M_inter` prenderà in input una stringa `w` e la descrizione dei due automi a pila deterministici (`APD₁` e `APD₂`).
+    *   **Passo 1: Simula `APD₁` su `w`.**
+        *   La proprietà fondamentale di un **automa a pila deterministico (APD)** è che la sua computazione su un qualsiasi input finito è garantita per **terminare** in un tempo finito. Non può entrare in un loop infinito.
+        *   Quindi, la simulazione di `APD₁` su `w` si fermerà e darà una risposta chiara: "accetta" o "rifiuta".
+    *   **Passo 2: Analizza il risultato del Passo 1.**
+        *   Se `APD₁` **rifiuta** `w`, allora `w` non è in `L1`, e quindi non può essere nell'intersezione. Il nostro algoritmo `M_inter` si ferma e risponde **"no"**.
+    *   **Passo 3: Simula `APD₂` su `w`.**
+        *   Se `APD₁` ha accettato `w`, procediamo a simulare `APD₂` sulla stessa stringa `w`.
+        *   Anche questa simulazione è garantita per **terminare**.
+    *   **Passo 4: Analizza il risultato del Passo 3.**
+        *   Se `APD₂` **accetta** `w`, significa che sia `APD₁` che `APD₂` hanno accettato. Pertanto, `w` è nell'intersezione. Il nostro algoritmo `M_inter` si ferma e risponde **"sì"**.
+        *   Se `APD₂` **rifiuta** `w`, allora `w` non è nell'intersezione. Il nostro algoritmo `M_inter` si ferma e risponde **"no"**.
+
+3.  **Conclusione:** Abbiamo appena descritto un algoritmo che, per qualsiasi stringa `w`, termina sempre e risponde correttamente. Pertanto, il linguaggio `L1 ∩ L2` è **decidibile**.
+
+*(Nota: Questo non significa che `L1 ∩ L2` sia necessariamente un linguaggio riconoscibile da un APD. Significa solo che è riconoscibile da una Macchina di Turing che si ferma sempre).*
+
+---
+
+### **2. È decidibile se una generica MT `M` calcola `L1 ∩ L2`?**
+
+**Risposta:** No, questo problema è **indecidibile**.
+
+**Motivazione dettagliata (Teorema di Rice):**
+
+Questa domanda è profondamente diversa dalla precedente. Non stiamo più chiedendo se una *stringa* appartiene a un linguaggio, ma se un *programma generico* (`M`) è funzionalmente equivalente a una specifica data (`L1 ∩ L2`). Questo è un problema di **verifica della correttezza del software**, che nel caso generale è impossibile da risolvere.
+
+1.  **Il Problema in Questione:** Vogliamo decidere se il linguaggio accettato da `M`, `L(M)`, è uguale al linguaggio `L1 ∩ L2`.
+
+2.  **Teorema di Rice:** Questo teorema fondamentale della teoria della computabilità afferma che **qualsiasi proprietà non banale del comportamento (cioè, del linguaggio riconosciuto) di una Macchina di Turing è indecidibile.**
+    *   Una proprietà è **del comportamento (semantica)** se non dipende da come è scritto il programma (es. numero di stati), ma solo da ciò che fa (le stringhe che accetta). La nostra è chiaramente una proprietà del comportamento.
+    *   Una proprietà è **non banale** se esiste almeno una Macchina di Turing che la possiede e almeno una che non la possiede.
+
+3.  **Applichiamo il Teorema di Rice al nostro caso:**
+    *   **La proprietà `P`** che stiamo testando su `M` è: "`M` accetta il linguaggio `L1 ∩ L2`".
+    *   **`P` è non banale?**
+        *   **Esiste almeno una MT che ha la proprietà `P`?** Sì. Nel punto 1, abbiamo descritto come costruire una MT (`M_inter`) che decide `L1 ∩ L2`. Quella macchina ha la proprietà `P`.
+        *   **Esiste almeno una MT che NON ha la proprietà `P`?** Sì, certamente. Una macchina di Turing che accetta il linguaggio vuoto, o che accetta tutte le stringhe, non ha la proprietà `P` (a meno che `L1 ∩ L2` non sia uno di questi casi, ma possiamo sempre trovare un controesempio).
+
+4.  **Conclusione:** Poiché "accettare il linguaggio `L1 ∩ L2`" è una proprietà non banale del comportamento di una Macchina di Turing, per il Teorema di Rice, il problema di stabilire se una generica macchina `M` possiede questa proprietà è **indecidibile**.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -3230,11 +3290,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQwOTcxMTgxNiwxNTcwNDk3OTkxLDMxMj
-E0NTczOCwxNzY0MDk1MDczLDE2OTAwNTkwMDEsNTU2OTIzMjkx
-LC0zNTE4NDI4OTMsLTEyMTc0ODk0MTYsODEyNzAwNDI2LDE4Nz
-U0NDg4OTIsMjAzNzM5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgy
-OSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC03MDkyNjQxMTAsLT
-Y5NTUzMjA3LC0zMzE1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2
-M119
+eyJoaXN0b3J5IjpbNjk4OTIwMTcsMTU3MDQ5Nzk5MSwzMTIxND
+U3MzgsMTc2NDA5NTA3MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwt
+MzUxODQyODkzLC0xMjE3NDg5NDE2LDgxMjcwMDQyNiwxODc1ND
+Q4ODkyLDIwMzczOTMzLC02OTcwNDA0ODksLTE0NjEyMzE4Mjks
+MTI3NzYwODk0MywtMTkzMzY3MzI3MywtNzA5MjY0MTEwLC02OT
+U1MzIwNywtMzMxNTU2MTQsNTgzODM4MTE3LDE2NzU4MDM3NjNd
+fQ==
 -->
