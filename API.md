@@ -1170,6 +1170,75 @@ La definizione di "stato utile" ha una struttura esistenziale: "**esiste** una s
 *   **Se lo stato `q` non è utile:** Nessuna stringa `w` e nessun numero di passi `i` porterà mai la macchina a raggiungere `q`. La nostra procedura di ricerca non troverà mai una corrispondenza e continuerà a girare all'infinito.
 
 Questo comportamento corrisponde esattamente alla definizione di un problema **semidecidibile**.
+
+## Es 8
+Certamente! Analizziamo questo esercizio che esplora le proprietà delle Macchine di Turing Universali (MTU) e il loro legame con il Problema dell'Arresto.
+
+### **Traccia dell'Esercizio (formattata e chiarita)**
+
+1.  È possibile determinare se una **generica** macchina di Turing universale si arresta **per ogni** ingresso?
+2.  È possibile trovare, data la **terza** (secondo l'enumerazione di Gödel) macchina di Turing universale `M`, **almeno un ingresso** per cui essa non si arresta?
+3.  È possibile, data la macchina di Turing universale `M` di cui sopra, dire se essa si arresta per un **generico** ingresso `n`?
+
+---
+
+### **Spiegazione e Analisi della Soluzione**
+
+#### **1. Determinare se una *generica* MTU si arresta *per ogni* ingresso**
+
+**Risposta:** Sì, è possibile determinarlo. La risposta è sempre **NO**.
+
+**Motivazione:**
+Questa domanda è sottile. Non chiede se il "Problema della Totalità" (stabilire se una *qualsiasi* MT si ferma sempre) sia decidibile. Chiede se lo è per la classe specifica delle MTU.
+
+Il ragionamento è il seguente:
+1.  **Definizione di MTU:** Una Macchina di Turing Universale `M_U` è una macchina in grado di simulare qualsiasi altra Macchina di Turing `M_i`. L'input di una MTU è tipicamente una coppia `⟨i, x⟩`, dove `i` è la codifica (l'indice) della macchina da simulare e `x` è l'input per quella macchina.
+2.  **Esistenza di Macchine che non terminano:** Sappiamo che esistono Macchine di Turing che non terminano mai (ad esempio, una macchina banale che va in loop infinito, `M_loop`). Questa `M_loop` ha un suo indice, diciamo `k`.
+3.  **La Simulazione:** Se diamo a una *qualsiasi* MTU `M_U` l'input `⟨k, "qualsiasi_cosa"⟩`, la `M_U` inizierà a simulare fedelmente il comportamento di `M_loop`. Poiché `M_loop` non termina mai, anche la simulazione eseguita da `M_U` **non terminerà mai**.
+4.  **Conclusione:** Abbiamo appena dimostrato che per *qualsiasi* MTU, esiste almeno un input (la codifica di una macchina che va in loop) per cui essa non si arresta.
+5.  **Risposta alla domanda:** La domanda era "una generica MTU si arresta per ogni ingresso?". La risposta è inequivocabilmente **NO**. Poiché la risposta è una costante ("NO") e possiamo dimostrarla logicamente, il problema è **deciso**, e quindi **decidibile**. L'algoritmo che lo decide è banale: `return "No"`.
+
+---
+
+#### **2. Trovare, per una *specifica* MTU `M`, *almeno un* ingresso per cui non si arresta**
+
+**Risposta:** Sì, è possibile.
+
+**Motivazione:**
+Questa domanda è la versione "costruttiva" della precedente. Non ci chiede solo di sapere se esiste un tale input, ma se possiamo effettivamente trovarlo.
+
+Il ragionamento è identico a quello del punto 1, ma più concreto:
+1.  **Costruisci una Macchina che va in Loop:** È banale scrivere la descrizione di una Macchina di Turing che, indipendentemente dall'input, entra in un ciclo infinito. Chiamiamola `M_loop`.
+2.  **Codifica `M_loop`:** Prendi la descrizione di `M_loop` e trasformala nella stringa di input che la nostra specifica MTU `M` (la terza dell'enumerazione) si aspetta per rappresentare una macchina. Chiamiamo questa stringa di codifica `n_loop`.
+3.  **L'Ingresso Trovato:** La stringa `n_loop` (o, più precisamente, la coppia `⟨n_loop, "qualsiasi_input"⟩`) è l'ingresso che stavamo cercando. Quando daremo questo input a `M`, essa simulerà `M_loop` e, di conseguenza, non si arresterà.
+
+**Conclusione:** Sì, possiamo trovare tale ingresso. Basta codificare una macchina che sappiamo non terminare.
+
+---
+
+#### **3. Dire se una *specifica* MTU `M` si arresta per un *generico* ingresso `n`**
+
+**Risposta:** No, questo non è possibile. È **indecidibile**.
+
+**Motivazione (Riduzione dal Problema dell'Arresto):**
+Questa domanda è, in essenza, il **Problema dell'Arresto** sotto mentite spoglie.
+
+1.  **Cosa significa "generico ingresso n"?** Significa che l'input `n` può essere qualsiasi cosa. In particolare, `n` può essere la codifica di una qualsiasi coppia `⟨M_y, x⟩`, dove `M_y` è una macchina di Turing arbitraria e `x` è un input arbitrario per essa.
+
+2.  **Il Problema dell'Arresto:** Il Problema dell'Arresto (Halting Problem) chiede: "Data una generica MT `M_y` e un generico input `x`, la computazione `M_y(x)` termina?". Questo problema è il più famoso problema indecidibile.
+
+3.  **La Riduzione:** Mostriamo che se potessimo risolvere il nostro problema (domanda 3), potremmo risolvere l'Halting Problem.
+    *   **Ipotesi (per assurdo):** Supponiamo di avere un algoritmo `A(n)` che decide se la nostra MTU `M` si arresta sull'input `n`.
+    *   **Come risolvere l'Halting Problem:**
+        1.  Ci vengono dati una MT generica `M_y` e un input generico `x`.
+        2.  Codifichiamo la coppia `⟨M_y, x⟩` nel formato di stringa che la nostra MTU `M` accetta in input. Chiamiamo questa stringa `n_codificato`.
+        3.  Ora, usiamo il nostro ipotetico algoritmo `A` sull'input `n_codificato`: eseguiamo `A(n_codificato)`.
+        4.  Se `A` risponde "Sì", significa che `M` si arresta su `n_codificato`. Poiché `M` sta simulando `M_y(x)`, questo significa che `M_y(x)` si arresta.
+        5.  Se `A` risponde "No", significa che `M_y(x)` non si arresta.
+
+4.  **La Contraddizione:** Abbiamo appena descritto un metodo infallibile per risolvere il Problema dell'Arresto per qualsiasi macchina e qualsiasi input, usando `A` come "subroutine". Ma sappiamo che un tale metodo non può esistere. La nostra unica assunzione era l'esistenza dell'algoritmo `A`.
+
+**Conclusione:** L'assunzione deve essere falsa. Pertanto, il problema di decidere se una MTU si arresta su un input generico è **indecidibile**.
 # MODELLO A POTENZA MINIMA
 
 ## Es1
@@ -2899,11 +2968,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTU2OTIzMjkxLC0zNTE4NDI4OTMsLTEyMT
-c0ODk0MTYsODEyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNzM5MzMs
-LTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQzLC0xOT
-MzNjczMjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMzE1NTYx
-NCw1ODM4MzgxMTcsMTY3NTgwMzc2MywtMTQ4OTM5NTE5OSwtNT
-kwMDgxMTc1LC0xNDQ0MTAyMDExLDQ3ODk0MTc0LDk3MjEyMjI5
-XX0=
+eyJoaXN0b3J5IjpbLTIyMTA3NjE5Nyw1NTY5MjMyOTEsLTM1MT
+g0Mjg5MywtMTIxNzQ4OTQxNiw4MTI3MDA0MjYsMTg3NTQ0ODg5
+MiwyMDM3MzkzMywtNjk3MDQwNDg5LC0xNDYxMjMxODI5LDEyNz
+c2MDg5NDMsLTE5MzM2NzMyNzMsLTcwOTI2NDExMCwtNjk1NTMy
+MDcsLTMzMTU1NjE0LDU4MzgzODExNywxNjc1ODAzNzYzLC0xND
+g5Mzk1MTk5LC01OTAwODExNzUsLTE0NDQxMDIwMTEsNDc4OTQx
+NzRdfQ==
 -->
