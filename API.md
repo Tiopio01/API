@@ -1237,9 +1237,6 @@ Questa domanda è, in essenza, il **Problema dell'Arresto** sotto mentite spogli
 **Conclusione:** L'assunzione deve essere falsa. Pertanto, il problema di decidere se una MTU si arresta su un input generico è **indecidibile**.
 
 ## Es 9
-Certamente! Analizziamo questo esercizio che tocca tre aspetti molto diversi e importanti della teoria e della pratica dell'informatica: l'equivalenza semantica, l'equivalenza sintattica e l'analisi statica del codice.
-
-### **Traccia dell'Esercizio**
 
 1.  Dire se è decidibile il problema di stabilire se due programmi, uno scritto in C e uno scritto in Java, calcolano la stessa funzione.
 2.  Dire se è decidibile il problema di stabilire se due programmi, entrambi scritti in C, sono identici, salvo per il fatto che i nomi delle variabili usate sono diversi tra un programma e l'altro.
@@ -3153,11 +3150,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDYxNTM4MDAzLDE3NjQwOTUwNzMsMTY5MD
-A1OTAwMSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQx
-Niw4MTI3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MD
-QwNDg5LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMy
-NzMsLTcwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4Mz
-gzODExNywxNjc1ODAzNzYzLC0xNDg5Mzk1MTk5LC01OTAwODEx
-NzVdfQ==
+eyJoaXN0b3J5IjpbLTEyMjk1MjgxMjEsMTc2NDA5NTA3MywxNj
+kwMDU5MDAxLDU1NjkyMzI5MSwtMzUxODQyODkzLC0xMjE3NDg5
+NDE2LDgxMjcwMDQyNiwxODc1NDQ4ODkyLDIwMzczOTMzLC02OT
+cwNDA0ODksLTE0NjEyMzE4MjksMTI3NzYwODk0MywtMTkzMzY3
+MzI3MywtNzA5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2MTQsNT
+gzODM4MTE3LDE2NzU4MDM3NjMsLTE0ODkzOTUxOTksLTU5MDA4
+MTE3NV19
 -->
