@@ -1597,10 +1597,6 @@ Questa domanda è molto diversa dalla precedente e spesso trae in inganno.
 
 **Conclusione:** Il problema della correttezza non solo è indecidibile, ma non è nemmeno semidecidibile. Possiamo trovare i bug, ma non possiamo mai certificare l'assenza totale di bug.
 ## ES12 
-Certamente! Analizziamo questo esercizio che esplora la decidibilità del "path-finding" all'interno del grafo di computazione di una Macchina di Turing. La differenza tra "esattamente" e "in sottosequenza" è cruciale.
-
-### **Traccia dell'Esercizio (formattata e chiarita)**
-
 1.  È **decidibile** il problema di stabilire se, data una MT deterministica e una sequenza di suoi stati `s₁, s₂, ..., sₖ`, esiste una stringa `x` in ingresso tale che la MT attraversa **esattamente**, uno per uno, la sequenza di stati desiderata durante il riconoscimento di `x`?
 2.  È **semidecidibile** il problema del punto 1?
 3.  È **decidibile** il problema di stabilire se, data una MT deterministica e una sequenza di suoi stati `s₁, s₂, ..., sₖ`, esiste una stringa `x` in input tale che la MT, durante il riconoscimento di `x`, attraversa gli stati desiderati nell'ordine desiderato, ma potrebbe, tra uno stato desiderato e il successivo della sequenza, attraversarne anche altri (cioè, la sequenza `s₁, s₂, ..., sₖ` è una **sottosequenza** della computazione)?
@@ -3799,7 +3795,7 @@ La risposta è una costante ("Sì" o "No"), ma **allo stato attuale delle conosc
 
 -   *
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYxNDI2MjM3OCwxNzY5OTY1NjY0LDE0Nz
+eyJoaXN0b3J5IjpbLTkxOTk2MTY1MSwxNzY5OTY1NjY0LDE0Nz
 MzMjU0MDcsLTE1MjkxODY4NDUsMTU1NTQ3NDg3NSwtMTk1NTgw
 ODU3NSw0MjIyMzA0OTQsLTI0NDY4NjQzNCwxOTg2NzA1NDMsLT
 E1OTYxNTc1MiwxNTY0OTIwNzgyLC0xNzEwNjU0NDU3LC05Nzgz
