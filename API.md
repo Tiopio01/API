@@ -2384,6 +2384,112 @@ Dallo stato `q₀`, l'automa legge il primo carattere della stringa `x` (che non
     *   **Significato:** "Se, dopo aver letto `y`, la pila è vuota, significa che il conteggio `2|x|=|y|` era corretto. Accetta."
 
 **Nota:** L'automa nella soluzione dell'esame usa una strategia leggermente diversa ma equivalente per implementare il "rimuovi due gettoni", che è molto comune in questi esercizi. La logica di base del non determinismo e del conteggio proporzionale rimane la stessa.
+
+## ES 11
+Certamente! Questo esercizio richiede di costruire un "traduttore", ovvero una macchina che non solo riconosce un linguaggio, ma trasforma le stringhe in input in stringhe di output secondo una regola precisa.
+
+Ecco un'analisi completa che include la traccia, la spiegazione del formalismo e una guida dettagliata per disegnare la soluzione.
+
+---
+
+### **Traccia dell'Esercizio**
+
+**Esercizio 2 (7 punti)**
+
+Si considerino i linguaggi `L_s = {aⁿb²ᵐ | n, m ≥ 0}` e `L_d = {ε, a, aa}`.
+Si realizzi un traduttore a potenza minima che calcoli la seguente traduzione da `L_s` a `L_d`:
+
+`τ(aⁿb²ᵐ) = aⁿ mod 3`
+
+dove `x mod y` indica il resto della divisione intera `x/y`.
+
+---
+
+### **Passo 1: Analisi del Problema e Scelta del Formalismo**
+
+1.  **Analisi della Traduzione:** La funzione `τ` prende una stringa in input e ne produce una in output.
+    *   La parte `b²ᵐ` dell'input (un numero pari di `b`) viene **completamente ignorata** ai fini dell'output. Il traduttore deve solo assicurarsi che la stringa di input sia valida (cioè che le `b` siano in numero pari), ma non userà le `b` per costruire l'output.
+    *   L'output dipende **esclusivamente** dal numero `n` di `a` iniziali.
+    *   La regola di calcolo è `n mod 3`. Vediamo i possibili risultati:
+        *   Se `n` è un multiplo di 3 (es. 0, 3, 6, ...), `n mod 3 = 0`. L'output è `a⁰`, cioè la stringa vuota `ε`.
+        *   Se `n` ha resto 1 se diviso per 3 (es. 1, 4, 7, ...), `n mod 3 = 1`. L'output è `a¹`, cioè `a`.
+        *   Se `n` ha resto 2 se diviso per 3 (es. 2, 5, 8, ...), `n mod 3 = 2`. L'output è `a²`, cioè `aa`.
+
+2.  **Scelta del Formalismo a Potenza Minima:**
+    *   Il traduttore deve eseguire due compiti principali: contare le `a` modulo 3 e verificare che il numero di `b` sia pari.
+    *   Entrambi questi compiti ("contare modulo k" e "verificare la parità") possono essere svolti da un **Automa a Stati Finiti (FSA)**, che ha una memoria finita.
+    *   Poiché la macchina deve produrre un output, il formalismo corretto è la versione "con output" di un FSA, ovvero un **Traduttore a Stati Finiti (Finite State Transducer - FST)**. Questo è il modello a potenza minima in grado di eseguire il compito.
+
+*(Nota: Il diagramma nella soluzione fornita è un FST, anche se la sua notazione è un po' confusa e potenzialmente errata. La guida seguente costruirà un FST corretto e più facile da capire).*
+
+---
+
+### **Passo 2: Guida al Disegno del Traduttore a Stati Finiti (FST)**
+
+La nostra strategia sarà:
+1.  Usare degli stati per tenere traccia del conteggio delle `a` (modulo 3).
+2.  Passare a un'altra serie di stati per verificare la parità delle `b`.
+3.  Produrre l'output finale solo alla fine, quando la stringa è stata letta completamente e validata.
+
+#### **Elementi di Base**
+
+*   **Stati:** Disegneremo 6 stati: `q₀`, `q₁`, `q₂` per contare le `a`, e `q_even`, `q_odd` per contare le `b`. Infine, uno stato finale `q_f`.
+*   **Stato Iniziale:** `q₀`.
+*   **Stato Finale:** `q_f`.
+*   **Notazione delle Frecce:** Useremo lo standard `input / output`.
+
+#### **Disegno delle Transizioni (Frecce e Loro Etichette)**
+
+**Fase 1: Lettura e Conteggio delle `a`**
+
+*   **Disegna gli stati `q₀`, `q₁`, `q₂` in un ciclo.** `q₀` è lo stato iniziale e rappresenta `n mod 3 = 0`. `q₁` rappresenta `n mod 3 = 1`, e `q₂` rappresenta `n mod 3 = 2`.
+*   **Freccia da `q₀` a `q₁`:**
+    *   **Etichetta:** `a / ε`
+    *   **Significato:** "Leggi una `a` (ora `n=1`), non produrre output per ora, e vai allo stato che ricorda `n mod 3 = 1`."
+*   **Freccia da `q₁` a `q₂`:**
+    *   **Etichetta:** `a / ε`
+    *   **Significato:** "Leggi un'altra `a` (ora `n=2`), non produrre output, e vai allo stato che ricorda `n mod 3 = 2`."
+*   **Freccia da `q₂` a `q₀`:**
+    *   **Etichetta:** `a / ε`
+    *   **Significato:** "Leggi un'altra `a` (ora `n=3`), non produrre output, e torna allo stato che ricorda `n mod 3 = 0`."
+
+**Fase 2: Transizione alla Lettura delle `b`**
+
+La stringa di input può passare dalle `a` alle `b` in uno qualsiasi dei tre stati di conteggio.
+
+*   **Disegna gli stati `q_even` e `q_odd`** per la parte delle `b`.
+*   **Freccia da `q₀` a `q_even`:**
+    *   **Etichetta:** `ε / ε`
+    *   **Significato:** "Senza leggere input, passa dalla fase 'a' (con `n mod 3 = 0`) alla fase 'b'."
+*   **Freccia da `q₁` a `q_even`:**
+    *   **Etichetta:** `ε / a`
+    *   **Significato:** "Senza leggere input, passa dalla fase 'a' (con `n mod 3 = 1`) alla fase 'b', **producendo l'output finale 'a'**."
+*   **Freccia da `q₂` a `q_even`:**
+    *   **Etichetta:** `ε / aa`
+    *   **Significato:** "Senza leggere input, passa dalla fase 'a' (con `n mod 3 = 2`) alla fase 'b', **producendo l'output finale 'aa'**."
+
+**Fase 3: Verifica della Parità delle `b`**
+
+*   **Freccia da `q_even` a `q_odd`:**
+    *   **Etichetta:** `b / ε`
+    *   **Significato:** "Leggi una `b`, non produrre output, e vai allo stato che ricorda un numero dispari di `b`."
+*   **Freccia da `q_odd` a `q_even`:**
+    *   **Etichetta:** `b / ε`
+    *   **Significato:** "Leggi un'altra `b`, non produrre output, e torna allo stato che ricorda un numero pari di `b`."
+
+**Fase 4: Accettazione Finale**
+
+*   **Disegna lo stato finale `q_f` con un doppio cerchio.**
+*   L'input è valido se, dopo aver letto tutta la stringa, il numero di `b` è pari. Lo stato `q_even` rappresenta questa condizione.
+*   **Freccia da `q_even` a `q_f`:**
+    *   **Etichetta:** `ε / ε`
+    *   **Significato:** "Se sei nello stato `q_even` e l'input è terminato, la stringa è valida. Passa allo stato finale."
+
+*(Nota: in molti formalismi, uno stato può essere direttamente finale. In questo disegno, `q_even` potrebbe essere lo stato finale, semplificando ulteriormente il diagramma).*
+
+Ecco una rappresentazione grafica del risultato, semplificata rendendo `q_even` uno stato finale:
+
+
 # FUNZIONI CALCOLABILI(DECIDIBILI)
 
 ## Es1
@@ -3502,11 +3608,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3MTA2NTQ0NTcsLTk3ODM4MDI3MSwxNT
-cwNDk3OTkxLDMxMjE0NTczOCwxNzY0MDk1MDczLDE2OTAwNTkw
-MDEsNTU2OTIzMjkxLC0zNTE4NDI4OTMsLTEyMTc0ODk0MTYsOD
-EyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNzM5MzMsLTY5NzA0MDQ4
-OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC
-03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMzE1NTYxNCw1ODM4Mzgx
-MTddfQ==
+eyJoaXN0b3J5IjpbLTI4NDAyMTI2LC0xNzEwNjU0NDU3LC05Nz
+gzODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3MzgsMTc2NDA5NTA3
+MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMzUxODQyODkzLC0xMj
+E3NDg5NDE2LDgxMjcwMDQyNiwxODc1NDQ4ODkyLDIwMzczOTMz
+LC02OTcwNDA0ODksLTE0NjEyMzE4MjksMTI3NzYwODk0MywtMT
+kzMzY3MzI3MywtNzA5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2
+MTRdfQ==
 -->
