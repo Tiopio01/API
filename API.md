@@ -2386,15 +2386,6 @@ Dallo stato `q₀`, l'automa legge il primo carattere della stringa `x` (che non
 **Nota:** L'automa nella soluzione dell'esame usa una strategia leggermente diversa ma equivalente per implementare il "rimuovi due gettoni", che è molto comune in questi esercizi. La logica di base del non determinismo e del conteggio proporzionale rimane la stessa.
 
 ## ES 11
-Certamente! Questo esercizio richiede di costruire un "traduttore", ovvero una macchina che non solo riconosce un linguaggio, ma trasforma le stringhe in input in stringhe di output secondo una regola precisa.
-
-Ecco un'analisi completa che include la traccia, la spiegazione del formalismo e una guida dettagliata per disegnare la soluzione.
-
----
-
-### **Traccia dell'Esercizio**
-
-**Esercizio 2 (7 punti)**
 
 Si considerino i linguaggi `L_s = {aⁿb²ᵐ | n, m ≥ 0}` e `L_d = {ε, a, aa}`.
 Si realizzi un traduttore a potenza minima che calcoli la seguente traduzione da `L_s` a `L_d`:
@@ -3608,11 +3599,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI4NDAyMTI2LC0xNzEwNjU0NDU3LC05Nz
-gzODAyNzEsMTU3MDQ5Nzk5MSwzMTIxNDU3MzgsMTc2NDA5NTA3
-MywxNjkwMDU5MDAxLDU1NjkyMzI5MSwtMzUxODQyODkzLC0xMj
-E3NDg5NDE2LDgxMjcwMDQyNiwxODc1NDQ4ODkyLDIwMzczOTMz
-LC02OTcwNDA0ODksLTE0NjEyMzE4MjksMTI3NzYwODk0MywtMT
-kzMzY3MzI3MywtNzA5MjY0MTEwLC02OTU1MzIwNywtMzMxNTU2
-MTRdfQ==
+eyJoaXN0b3J5IjpbLTE3NjY1MTkxMDQsLTE3MTA2NTQ0NTcsLT
+k3ODM4MDI3MSwxNTcwNDk3OTkxLDMxMjE0NTczOCwxNzY0MDk1
+MDczLDE2OTAwNTkwMDEsNTU2OTIzMjkxLC0zNTE4NDI4OTMsLT
+EyMTc0ODk0MTYsODEyNzAwNDI2LDE4NzU0NDg4OTIsMjAzNzM5
+MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgyOSwxMjc3NjA4OTQzLC
+0xOTMzNjczMjczLC03MDkyNjQxMTAsLTY5NTUzMjA3LC0zMzE1
+NTYxNF19
 -->
