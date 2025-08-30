@@ -3028,6 +3028,8 @@ Analizziamo il comportamento di questo algoritmo di simulazione:
 *   **Se `M(s)` non si arresta (va in loop):** La nostra simulazione continuerà a girare all'infinito, senza mai fermarsi. Questo significa che il nostro algoritmo non termina. Questo comportamento corrisponde esattamente alla definizione `g(s) = ⊥`.
 
 Poiché abbiamo descritto un algoritmo il cui comportamento specchia perfettamente quello della funzione `g` su tutti gli input del suo dominio (infinito), la funzione `g` è, per definizione, **calcolabile**.
+
+## Es
 # DATA FORMULA DESCRIVO LINGUAGGIO
 
 
@@ -3394,11 +3396,11 @@ Poiché, indipendentemente dalla verità matematica su π, il linguaggio `L` è 
 
 La parte affascinante e controintuitiva è che, sebbene possiamo dimostrare che `L` *è* regolare, allo stato attuale non siamo in grado di dire *quale* dei due automi finiti o delle due espressioni regolari sia quella corretta per descriverlo.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk3ODM4MDI3MSwxNTcwNDk3OTkxLDMxMj
-E0NTczOCwxNzY0MDk1MDczLDE2OTAwNTkwMDEsNTU2OTIzMjkx
-LC0zNTE4NDI4OTMsLTEyMTc0ODk0MTYsODEyNzAwNDI2LDE4Nz
-U0NDg4OTIsMjAzNzM5MzMsLTY5NzA0MDQ4OSwtMTQ2MTIzMTgy
-OSwxMjc3NjA4OTQzLC0xOTMzNjczMjczLC03MDkyNjQxMTAsLT
-Y5NTUzMjA3LC0zMzE1NTYxNCw1ODM4MzgxMTcsMTY3NTgwMzc2
-M119
+eyJoaXN0b3J5IjpbLTE3MDYyODg3OSwtOTc4MzgwMjcxLDE1Nz
+A0OTc5OTEsMzEyMTQ1NzM4LDE3NjQwOTUwNzMsMTY5MDA1OTAw
+MSw1NTY5MjMyOTEsLTM1MTg0Mjg5MywtMTIxNzQ4OTQxNiw4MT
+I3MDA0MjYsMTg3NTQ0ODg5MiwyMDM3MzkzMywtNjk3MDQwNDg5
+LC0xNDYxMjMxODI5LDEyNzc2MDg5NDMsLTE5MzM2NzMyNzMsLT
+cwOTI2NDExMCwtNjk1NTMyMDcsLTMzMTU1NjE0LDU4MzgzODEx
+N119
 -->
